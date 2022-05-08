@@ -1,0 +1,26 @@
+{
+  "name": "cli3pro-server",
+  "version": "1.0.0",
+  "description": "Backend server for cli3pro version",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Aleksandr Glek<avglek@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "oracledb": "^5.3.0",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
