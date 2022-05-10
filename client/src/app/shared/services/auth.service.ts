@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private token: string | null = null;
+  private token: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -21,20 +21,20 @@ export class AuthService {
     );
   }
 
-  setToken(token: string|null) {
+  setToken(token: string) {
     this.token = token;
   }
 
-  getToken(): string | null {
+  getToken(): string {
     return this.token;
   }
 
-  isAuthenticated():boolean {
-    return !!this.token
+  isAuthenticated(): boolean {
+    return !!this.token;
   }
 
-  logout(){
-    this.setToken(null)
-    localStorage.clear()
+  logout() {
+    this.setToken('');
+    localStorage.clear();
   }
 }

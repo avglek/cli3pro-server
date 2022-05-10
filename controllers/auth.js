@@ -36,12 +36,12 @@ module.exports.login = async function (req, res) {
         });
       } else {
         res.status(401).json({
-          message: 'Password wrong.',
+          message: 'Неправильный пароль.',
         });
       }
     } else {
       res.status(404).json({
-        message: 'User not found.',
+        message: `Пользователь "${candidate}" не найден.`,
       });
     }
   } catch (e) {

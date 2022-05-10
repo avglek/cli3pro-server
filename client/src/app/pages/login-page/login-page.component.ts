@@ -4,6 +4,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/interfaces';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-login-page',
@@ -18,7 +19,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private msg: NzNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +29,15 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       password: [null, [Validators.required]],
     });
 
-    this.route.queryParams.subscribe((params) => {});
+    this.route.queryParams.subscribe((params) => {
+      if (params['registered']) {
+        //Теперь вы можете зайти в систему
+        this.msg.success('Вход в систему','Теперь вы можете зайти в систему')
+      } else if (params['accessDenied']) {
+        this.msg.warning('Вход в систему','Для начала авторизируйтесь')
+        //Для начала авторизируйтесь
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,7 +61,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
           this.router.navigate(['/overview']);
         },
         (error) => {
-          console.warn(error);
+          console.warn(error, 'test:');
+          this.msg.error('Ошибка авторизации', error.error.message);
           this.validateForm.enable();
         }
       );
