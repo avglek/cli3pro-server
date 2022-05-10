@@ -32,10 +32,15 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       if (params['registered']) {
         //Теперь вы можете зайти в систему
-        this.msg.success('Вход в систему','Теперь вы можете зайти в систему')
+        this.msg.success('Вход в систему', 'Теперь вы можете зайти в систему');
       } else if (params['accessDenied']) {
-        this.msg.warning('Вход в систему','Для начала авторизируйтесь')
+        this.msg.warning('Вход в систему', 'Для начала авторизируйтесь');
         //Для начала авторизируйтесь
+      } else if (params['sessionFailed']) {
+        this.msg.warning(
+          'Вход в систему',
+          'Пожалуйста войдите в систему заново'
+        );
       }
     });
   }
