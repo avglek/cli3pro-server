@@ -10,7 +10,7 @@ module.exports.get = async function (req, res) {
   };
 
   try {
-    const result = await database.procExecute(sql, bind);
+    const result = await database.procedureExecute(sql, bind);
 
     res.status(200).json(result);
   } catch (e) {

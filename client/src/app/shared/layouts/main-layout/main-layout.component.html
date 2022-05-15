@@ -1,0 +1,19 @@
+<!-- Container for sidebar(s) + page content -->
+<ng-sidebar-container>
+  <!-- A sidebar -->
+  <ng-sidebar [(opened)]="opened" mode="push">
+    <div class="menu-sidebar">
+      <p>Sidebar contents</p>
+    </div>
+  </ng-sidebar>
+
+  <!-- Page content -->
+  <div ng-sidebar-content class="page-content">
+    <header>
+      <app-burger-button></app-burger-button>
+      Header
+    </header>
+    <div class="content">Content</div>
+    <footer>Footer</footer>
+  </div>
+</ng-sidebar-container>

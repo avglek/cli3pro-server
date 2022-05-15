@@ -5,7 +5,6 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
   declarations: [LoginPageComponent],

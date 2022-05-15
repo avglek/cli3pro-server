@@ -13,14 +13,10 @@ async function close() {
 
 module.exports.close = close;
 
-async function procedureExecute(statement, binds = [], opts = {}) {
-  const conn = await oracledb.getConnection();
-  return await conn.execute(statement, binds, opts);
-}
+async function procedureExecute(proc, binds = [], opts = {}) {
+  let conn;
+  let resultSet;
 
-module.exports.procedureExecute = procedureExecute;
-
-async function procExecute(proc, binds = [], opts = {}) {
   const params = Object.keys(binds);
   const paramString = params.reduce((acc, param) => {
     return acc + `:${param},`;
@@ -28,18 +24,12 @@ async function procExecute(proc, binds = [], opts = {}) {
 
   const sql = `begin ${proc}(${paramString.slice(0, -1)});end;`;
 
-  // const statement = 'sql:',
-  //   sql,
-  //   ' param:',
-  //   params,
-  //   binds[params[0]]?.type === oracledb.CURSOR
-  // );
   const arr = [];
   try {
-    const conn = await oracledb.getConnection();
+    conn = await oracledb.getConnection();
     const result = await conn.execute(sql, binds, opts);
 
-    const resultSet = result.outBinds[params[0]];
+    resultSet = result.outBinds[params[0]];
     const meta = resultSet.metaData;
 
     let row;
@@ -50,15 +40,32 @@ async function procExecute(proc, binds = [], opts = {}) {
       });
       arr.push(obj);
     }
-    await resultSet.close();
   } catch (err) {
     console.error('error:', err);
     throw new Error(err.message);
+  } finally {
+    if (resultSet) {
+      try {
+        await resultSet.close();
+      } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+      }
+    }
+    if (conn) {
+      // conn assignment worked, need to close
+      try {
+        await conn.close();
+      } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+      }
+    }
   }
   return arr;
 }
 
-module.exports.procExecute = procExecute;
+module.exports.procedureExecute = procedureExecute;
 
 function simpleExecute(statement, binds = [], opts = {}) {
   return new Promise(async (resolve, reject) => {
@@ -98,7 +105,7 @@ async function getUser(user) {
     pUser: user,
   };
 
-  const result = await procExecute(sql, bind);
+  const result = await procedureExecute(sql, bind);
   return result;
 }
 

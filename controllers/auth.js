@@ -20,7 +20,7 @@ module.exports.login = async function (req, res) {
           pUser: candidate,
         };
 
-        const roles = await database.procExecute(sql, bind);
+        const roles = await database.procedureExecute(sql, bind);
 
         const token = jwt.sign(
           {
