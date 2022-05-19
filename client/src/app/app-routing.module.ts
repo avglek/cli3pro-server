@@ -20,20 +20,19 @@ const routes: Routes = [
   },
   {
     path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [{ path: 'home', component: WelcomeComponent }],
+  },
+  {
+    path: '',
     component: SiteLayoutsComponent,
     canActivate: [AuthGuard],
     children: [
       { path: 'hello', component: HelloPageComponent },
       { path: 'overview', component: OverviewPageComponent },
-      { path: 'welcome', component: WelcomeComponent },
     ],
   },
-  {
-    path: 'test',
-    component: MainLayoutComponent,
-  },
-  // { path: '', pathMatch: 'full', redirectTo: '/welcome' },
-  // { path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule) }
 ];
 
 @NgModule({

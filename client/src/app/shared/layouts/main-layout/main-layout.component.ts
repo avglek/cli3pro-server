@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./main-layout.component.less'],
 })
 export class MainLayoutComponent implements OnInit {
-  opened: boolean = false;
+  opened: boolean = true;
 
   toggleSidebar() {
     this.opened = !this.opened;

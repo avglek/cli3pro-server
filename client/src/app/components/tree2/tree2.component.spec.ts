@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BurgerButtonComponent } from './burger-button.component';
+import { Tree2Component } from './tree2.component';
 
-describe('BurgerButtonComponent', () => {
-  let component: BurgerButtonComponent;
-  let fixture: ComponentFixture<BurgerButtonComponent>;
+describe('Tree2Component', () => {
+  let component: Tree2Component;
+  let fixture: ComponentFixture<Tree2Component>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BurgerButtonComponent ]
+      declarations: [ Tree2Component ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BurgerButtonComponent);
+    fixture = TestBed.createComponent(Tree2Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

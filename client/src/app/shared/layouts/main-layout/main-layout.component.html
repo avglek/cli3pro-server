@@ -1,19 +1,18 @@
 <!-- Container for sidebar(s) + page content -->
 <ng-sidebar-container>
   <!-- A sidebar -->
-  <ng-sidebar [(opened)]="opened" mode="push">
+  <ng-sidebar [opened]="opened" mode="push">
     <div class="menu-sidebar">
-      <p>Sidebar contents</p>
+      <app-tree2></app-tree2>
     </div>
   </ng-sidebar>
 
   <!-- Page content -->
   <div ng-sidebar-content class="page-content">
-    <header>
-      <app-burger-button></app-burger-button>
-      Header
-    </header>
-    <div class="content">Content</div>
-    <footer>Footer</footer>
+    <app-tool-box (onToggle)="toggleSidebar()"></app-tool-box>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
   </div>
 </ng-sidebar-container>
