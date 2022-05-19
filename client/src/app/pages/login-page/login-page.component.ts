@@ -14,6 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class LoginPageComponent implements OnInit, OnDestroy {
   validateForm!: FormGroup;
   authSub!: Subscription;
+  passwordVisible!: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -52,6 +53,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   }
 
   submitForm(): void {
+    console.log('submit');
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
       const user: User = {

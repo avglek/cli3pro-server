@@ -1,25 +1,72 @@
-.login-form {
-  max-width: 300px;
-}
+@primary-color: #1A759C;
 
-.login-form-margin {
-  margin-bottom: 16px;
-}
-
-.login-form-forgot {
-  float: right;
-}
-
-.login-form-button {
-  width: 100%;
-}
+///@import url("../../../styles");
 
 .wrapper{
-  margin: 100px auto;
-  padding: 25px;
-  border: 1px solid #7f7f7f;
-  border-radius: 5px;
-  width: 350px;
-  height: 250px;
-  box-shadow: 7px 0 7px -7px rgba(0, 0, 0, .5);
+  position: relative;
+  top:0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 800px;
+  background-image: url("../../../assets/img/elbrus.jpg");
+}
+.wrapper-form{
+  width: 412px;
+  height: 312px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-form{
+  height: 50px;
+  font-family: 'Jura', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 47px;
+
+  color: @primary-color;
+  text-align: center;
+}
+.input-login-form{
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.field-input{
+  width: 278px;
+}
+i {
+  cursor: pointer;
+}
+
+.field-submit{
+  width: 278px;
+  height: 42px;
+  text-align: center;
+
+  background: @primary-color;
+  color: #F4F4F4;
+  border-radius: 4px;
+
+  font-family: 'Jura', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 38px;
+  letter-spacing: 0.3em;
+  border: 1px solid #424242;
+
+  &:hover {
+    background-color: #144a56;
+  }
 }
