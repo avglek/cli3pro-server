@@ -4,7 +4,7 @@ const controller = require('../controllers/tree');
 const router = express.Router();
 
 router.get(
-  '/:shema',
+  '/:schema',
   passport.authenticate('jwt', { session: false }),
   controller.get
 );

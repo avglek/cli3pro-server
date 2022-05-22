@@ -16,7 +16,7 @@ module.exports = (passport) => {
         const result = await database.getUser(payload.user);
         console.log('result:', result);
         if (result.length > 0) {
-          return done(null, result[0]['USER_NAME']);
+          return done(null, result[0]['userName']);
         } else {
           return done(null, false);
         }

@@ -1,30 +1,18 @@
-const dbserver = require('./services/database');
 const oracledb = require('oracledb');
 
-async function startup() {
-  try {
-    await dbserver.initialize();
-    console.log('db init');
-    const stm = `begin test(:pDoc);end;`;
-    const bind = {
-      pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    };
+function simpleExecute(conn, statement, binds = [], opts = {}) {
+  return new Promise(async (resolve, reject) => {
+    opts.outFormat = oracledb.OBJECT;
+    opts.autoCommit = true;
 
-    const data = await dbserver.simpleExecute(stm, bind);
-    console.log('data:', data);
-    //console.log('cursor:', data.outBinds.pDoc);
+    try {
+      const result = await conn.execute(statement, binds, opts);
 
-    const resultSet = data.outBinds.pDoc;
-    let row;
-    while ((row = await resultSet.getRow())) {
-      console.log(row);
+      resolve(result);
+    } catch (err) {
+      reject(err);
     }
-
-    await resultSet.close();
-    await dbserver.close();
-  } catch (e) {
-    console.log('error:', e);
-  }
+  });
 }
 
 async function run() {
@@ -35,19 +23,47 @@ async function run() {
       connectString: 'eva',
     });
 
-    const stm = `begin test(:pDoc);end;`;
+    const stm = `begin get_left_tree(:pDoc,:pOwn);end;`;
     const bind = {
       pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
+      pOwn: 'sevstal_ch',
     };
 
     const result = await connection.execute(stm, bind);
 
     const resultSet = result.outBinds.pDoc;
     let row;
+    const rowArray = [];
+    console.log(new Date());
+    const meta = resultSet.metaData;
+
     while ((row = await resultSet.getRow())) {
-      console.log('row:', row);
+      const obj = {};
+      meta.forEach((i, index) => {
+        const str = i.name;
+        const inx = str.indexOf('_');
+        let key;
+        if (inx > 0) {
+          key =
+            str.slice(0, inx).toLowerCase() +
+            str.slice(inx + 1, inx + 2) +
+            str.slice(inx + 2).toLowerCase();
+        } else {
+          key = str.toLowerCase();
+        }
+
+        // console.log(key, str.indexOf('_'));
+        obj[key] = row[index];
+      });
+      rowArray.push(obj);
     }
+    console.log(rowArray[0], rowArray.length);
+    console.log(new Date());
     await resultSet.close();
+    //console.log(new Date());
+    // const rows = simpleExecute(connection, 'select * from v_test2');
+    // console.log(rows[0], rows.length);
+    //console.log(new Date());
   } catch (err) {
     console.error(err.message);
   } finally {
@@ -61,24 +77,6 @@ async function run() {
   }
 }
 
-async function run2() {
-  await dbserver.initialize();
-  const stm = `begin test(:pDoc);end;`;
-  const bind = {
-    pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-  };
-
-  const result = await dbserver.procedureExecute(stm, bind);
-  //const result = await dbserver.simpleExecute(stm, bind);
-  const resultSet = result.outBinds.pDoc;
-  let row;
-  while ((row = await resultSet.getRow())) {
-    console.log('row:', row);
-  }
-  await resultSet.close();
-  // await dbserver.close();
-}
-
 console.log('start test');
-run2();
+run();
 console.log('end test');

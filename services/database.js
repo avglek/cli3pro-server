@@ -36,7 +36,20 @@ async function procedureExecute(proc, binds = [], opts = {}) {
     while ((row = await resultSet.getRow())) {
       const obj = {};
       meta.forEach((i, index) => {
-        obj[i.name] = row[index];
+        const str = i.name;
+        const inx = str.indexOf('_');
+        let key;
+        if (inx > 0) {
+          key =
+            str.slice(0, inx).toLowerCase() +
+            str.slice(inx + 1, inx + 2) +
+            str.slice(inx + 2).toLowerCase();
+        } else {
+          key = str.toLowerCase();
+        }
+
+        // console.log(key, str.indexOf('_'));
+        obj[key] = row[index];
       });
       arr.push(obj);
     }

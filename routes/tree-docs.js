@@ -4,7 +4,7 @@ const controller = require('../controllers/tree-docs');
 const router = express.Router();
 
 router.get(
-  '/:shema',
+  '/:schema/:parent',
   passport.authenticate('jwt', { session: false }),
   controller.get
 );

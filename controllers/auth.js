@@ -10,8 +10,8 @@ module.exports.login = async function (req, res) {
     const result = await database.getUser(candidate);
 
     if (result.length > 0) {
-      const passwordResult = result[0]['PASSWORD'];
-      const owner = result[0]['OWNER'];
+      const passwordResult = result[0]['password'];
+      const owner = result[0]['owner'];
 
       if (passwordResult === req.body.password) {
         const sql = 'get_roles';
@@ -25,7 +25,7 @@ module.exports.login = async function (req, res) {
         const token = jwt.sign(
           {
             user: candidate,
-            roles: roles.map((i) => i['ROLE_NAME']),
+            roles: roles.map((i) => i['roleName']),
             owner,
           },
           config.jwt,

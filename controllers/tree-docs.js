@@ -6,8 +6,11 @@ module.exports.get = async function (req, res) {
   const sql = 'get_tree_doc';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    pOwn: req.param('shema'),
+    pOwn: req.params['schema'],
+    pParent: req.params['parent'],
   };
+
+  console.log(req.params);
 
   try {
     const result = await database.procedureExecute(sql, bind);
