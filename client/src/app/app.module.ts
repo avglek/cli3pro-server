@@ -16,7 +16,6 @@ import { LoginPageModule } from './pages/login-page/login-page.module';
 import { TokenInterceptor } from './shared/classes/token.interceptor';
 import { NzNotificationServiceModule } from 'ng-zorro-antd/notification';
 
-import { SiteLayoutsModule } from './shared/layouts/site-layouts/site-layouts.module';
 import { MainLayoutModule } from './shared/layouts/main-layout/main-layout.module';
 
 registerLocaleData(ru);
@@ -32,7 +31,6 @@ registerLocaleData(ru);
     BrowserAnimationsModule,
     IconsProviderModule,
     NzNotificationServiceModule,
-    SiteLayoutsModule,
     MainLayoutModule,
   ],
   providers: [
