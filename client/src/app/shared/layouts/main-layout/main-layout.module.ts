@@ -10,9 +10,15 @@ import { FooterComponent } from '../../../components/footer/footer.component';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AppRoutingModule } from '../../../app-routing.module';
+import { HomePageComponent } from '../../../pages/home-page/home-page.component';
 
 @NgModule({
-  declarations: [MainLayoutComponent, TreeComponent, FooterComponent],
+  declarations: [
+    MainLayoutComponent,
+    TreeComponent,
+    FooterComponent,
+    HomePageComponent,
+  ],
   imports: [
     CommonModule,
     NzLayoutModule,

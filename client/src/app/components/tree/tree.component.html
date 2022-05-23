@@ -15,7 +15,9 @@
         >
           <!--          <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>-->
           <i nz-icon nzType="file-text" nzTheme="outline"></i>
-          <a [routerLink]="['home', node.docId]">{{ node.docName }}</a>
+          <span class="left-menu-item"
+            ><a [routerLink]="['home', node.docId]">{{ node.docName }}</a></span
+          >
         </li>
         <li
           *ngIf="node.children"

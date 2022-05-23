@@ -18,12 +18,14 @@ import { NzNotificationServiceModule } from 'ng-zorro-antd/notification';
 
 import { MainLayoutModule } from './shared/layouts/main-layout/main-layout.module';
 import { RouterModule } from '@angular/router';
+import { DocsLayoutModule } from './shared/layouts/docs-layout/docs-layout.module';
 
 registerLocaleData(ru);
 
 @NgModule({
   declarations: [AppComponent, AuthLayoutsComponent],
   imports: [
+    DocsLayoutModule,
     LoginPageModule,
     BrowserModule,
     AppRoutingModule,

@@ -120,7 +120,7 @@ export class TreeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
-    this.treeService.getLeftTree('sevstal_ch').subscribe((data) => {
+    this.treeService.getLeftTree().subscribe((data) => {
       this.tree = data;
     });
   }

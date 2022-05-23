@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HelloPageComponent } from './hello-page.component';
+import { DocsLayoutComponent } from './docs-layout.component';
 
-describe('HelloPageComponent', () => {
-  let component: HelloPageComponent;
-  let fixture: ComponentFixture<HelloPageComponent>;
+describe('DocsLayoutComponent', () => {
+  let component: DocsLayoutComponent;
+  let fixture: ComponentFixture<DocsLayoutComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HelloPageComponent ]
+      declarations: [ DocsLayoutComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HelloPageComponent);
+    fixture = TestBed.createComponent(DocsLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -16,3 +16,12 @@ export interface ITreeNode {
   disabled?: boolean;
   children?: ITreeNode[];
 }
+
+export interface ITreeDocs {
+  docId: number;
+  docName: string;
+  imgIndex: number;
+  ordering: number;
+  parentId: number;
+  prognoz: number | null;
+}

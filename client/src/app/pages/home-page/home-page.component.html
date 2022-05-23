@@ -1,1 +1,12 @@
-<p>home-page works!</p>
+<div class="root">
+  <ul nz-menu nzMode="inline">
+    <ng-container *ngFor="let doc of docs">
+      <li nz-menu-item>
+        <i nz-icon nzType="file-text" nzTheme="outline"></i>
+        <span class="left-menu-item">
+          <a [routerLink]="['/doc', doc.docId]">{{ doc.docName }}</a>
+        </span>
+      </li>
+    </ng-container>
+  </ul>
+</div>
