@@ -1,0 +1,39 @@
+<div class="tree">
+  <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ng-container
+      *ngTemplateOutlet="menuTpl; context: { $implicit: tree }"
+    ></ng-container>
+    <ng-template #menuTpl let-tree>
+      <ng-container *ngFor="let node of tree">
+        <!--suppress TypeScriptValidateTypes -->
+        <li
+          *ngIf="!node.children"
+          nz-menu-item
+          [nzMatchRouter]="true"
+          [nzPaddingLeft]="node.lev * 24"
+          [nzSelected]="node.selected"
+        >
+          <!--          <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>-->
+          <i nz-icon nzType="file-text" nzTheme="outline"></i>
+          <a [routerLink]="['home', node.docId]">{{ node.docName }}</a>
+        </li>
+        <li
+          *ngIf="node.children"
+          nz-submenu
+          [nzPaddingLeft]="node.lev * 24"
+          [nzOpen]="node.open"
+          [nzTitle]="node.docName!"
+          [nzDisabled]="false"
+          [nzIcon]="subMenuIcon"
+          (nzOpenChange)="onOpenChange($event)"
+        >
+          <ul>
+            <ng-container
+              *ngTemplateOutlet="menuTpl; context: { $implicit: node.children }"
+            ></ng-container>
+          </ul>
+        </li>
+      </ng-container>
+    </ng-template>
+  </ul>
+</div>

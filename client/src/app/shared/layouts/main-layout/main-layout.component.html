@@ -1,0 +1,21 @@
+<!-- Container for sidebar(s) + page content -->
+<ng-sidebar-container>
+  <!-- A sidebar -->
+  <ng-sidebar [opened]="opened" mode="push">
+    <div class="side-wrapper">
+      <div class="logo">Logo</div>
+      <div class="menu-sidebar">
+        <app-tree></app-tree>
+      </div>
+    </div>
+  </ng-sidebar>
+
+  <!-- Page content -->
+  <div ng-sidebar-content class="page-content">
+    <app-tool-box (onToggle)="toggleSidebar()"></app-tool-box>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</ng-sidebar-container>
