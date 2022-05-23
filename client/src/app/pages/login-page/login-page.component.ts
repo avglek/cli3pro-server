@@ -53,26 +53,23 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   }
 
   submitForm(): void {
-    console.log('submit');
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
       const user: User = {
         user: this.validateForm.value.userName,
         password: this.validateForm.value.password,
       };
       this.validateForm.disable();
 
-      this.authSub = this.auth.login(user).subscribe(
-        () => {
-          console.log('login success');
+      this.authSub = this.auth.login(user).subscribe({
+        next: () => {
           this.router.navigate(['/home']);
         },
-        (error) => {
+        error: (error) => {
           console.warn(error, 'test:');
           this.msg.error('Ошибка авторизации', error.error.message);
           this.validateForm.enable();
-        }
-      );
+        },
+      });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {

@@ -5,5 +5,19 @@
     [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
     (click)="toogle()"
   ></i>
-  <div class="tool-menu"></div>
+  <div class="main-box">
+    <div class="right-box">
+      <nz-space nzAlign="center">
+        <button nz-button nzType="primary" nzSize="large">О нас</button>
+        <nz-divider nzType="vertical"></nz-divider>
+        <i
+          nz-icon
+          nzType="logout"
+          nzTheme="outline"
+          class="trigger"
+          (click)="logout()"
+        ></i>
+      </nz-space>
+    </div>
+  </div>
 </div>
