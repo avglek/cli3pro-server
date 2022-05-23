@@ -17,6 +17,7 @@ import { TokenInterceptor } from './shared/classes/token.interceptor';
 import { NzNotificationServiceModule } from 'ng-zorro-antd/notification';
 
 import { MainLayoutModule } from './shared/layouts/main-layout/main-layout.module';
+import { RouterModule } from '@angular/router';
 
 registerLocaleData(ru);
 
@@ -32,6 +33,7 @@ registerLocaleData(ru);
     IconsProviderModule,
     NzNotificationServiceModule,
     MainLayoutModule,
+    RouterModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: ru_RU },

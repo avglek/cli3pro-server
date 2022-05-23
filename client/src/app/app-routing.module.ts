@@ -5,6 +5,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { AuthGuard } from './shared/classes/auth.guard';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { MainLayoutComponent } from './shared/layouts/main-layout/main-layout.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,10 @@ const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
-    children: [{ path: 'home', component: WelcomeComponent }],
+    children: [
+      { path: 'home', component: WelcomeComponent },
+      { path: 'home/:di', component: HomePageComponent },
+    ],
   },
 ];
 

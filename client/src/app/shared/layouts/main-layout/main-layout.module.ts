@@ -7,7 +7,9 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { ToolBoxModule } from '../../../components/tool-box/tool-box.module';
 import { TreeComponent } from '../../../components/tree/tree.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
-import { RouterModule } from '@angular/router';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { AppRoutingModule } from '../../../app-routing.module';
 
 @NgModule({
   declarations: [MainLayoutComponent, TreeComponent, FooterComponent],
@@ -17,7 +19,10 @@ import { RouterModule } from '@angular/router';
     NzMenuModule,
     SidebarModule.forRoot(),
     ToolBoxModule,
-    RouterModule,
+    NzToolTipModule,
+    NzIconModule,
+    AppRoutingModule,
   ],
+  exports: [],
 })
 export class MainLayoutModule {}
