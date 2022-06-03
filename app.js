@@ -4,6 +4,7 @@ const passport = require('passport');
 const authRoutes = require('./routes/auth');
 const treeRoutes = require('./routes/tree');
 const treeDocsRoutes = require('./routes/tree-docs');
+const descriptionRoutes = require('./routes/description');
 
 const database = require('./services/database');
 
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/tree', treeRoutes);
 app.use('/api/tree-docs', treeDocsRoutes);
+app.use('/api/desc', descriptionRoutes);
 
 app.get('/test', async (req, res) => {
   const result = await database.simpleExecute(

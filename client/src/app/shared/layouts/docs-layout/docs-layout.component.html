@@ -1,1 +1,14 @@
-<p>docs-layout works!</p>
+<nz-tabset
+  nzType="editable-card"
+  (nzClose)="closeTab($event)"
+  [(nzSelectedIndex)]="selectedIndex"
+  [nzHideAdd]="true"
+>
+  <nz-tab *ngFor="let tab of tabs" nzClosable [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <i nz-icon nzType="loading" nzTheme="outline"></i>
+      {{ tab.title }}
+    </ng-template>
+    {{ tab.title }}
+  </nz-tab>
+</nz-tabset>

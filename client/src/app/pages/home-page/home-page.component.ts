@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
-import { ITreeDocs } from '../../shared/interfaces';
+import { ITabData, ITreeDocs } from '../../shared/interfaces';
+import { customAlphabet } from 'nanoid';
+import { TabDataService } from '../../shared/services/tab-data.service';
 
 @Component({
   selector: 'app-home-page',
@@ -11,13 +13,16 @@ import { ITreeDocs } from '../../shared/interfaces';
 })
 export class HomePageComponent implements OnInit {
   docs!: ITreeDocs[];
+
   constructor(
-    private router: ActivatedRoute,
-    private treeService: TreeService
+    private activateRoute: ActivatedRoute,
+    private treeService: TreeService,
+    private router: Router,
+    private dataService: TabDataService
   ) {}
 
   ngOnInit(): void {
-    this.router.params
+    this.activateRoute.params
       .pipe(
         switchMap((params) => {
           return this.treeService.getDocs(params['id']);
@@ -25,8 +30,17 @@ export class HomePageComponent implements OnInit {
       )
 
       .subscribe((data) => {
-        console.log(data);
         this.docs = data;
       });
+  }
+
+  async onClick(docId: number) {
+    await this.router.navigate(['/doc']);
+    console.log(docId);
+    const data: ITabData = {
+      docId: docId,
+      title: `Документ № ${docId}`,
+    };
+    this.dataService.add(data);
   }
 }

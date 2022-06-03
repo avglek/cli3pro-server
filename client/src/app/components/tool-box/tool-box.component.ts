@@ -1,6 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
-import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tool-box',
@@ -10,20 +13,44 @@ import { Router } from '@angular/router';
 export class ToolBoxComponent implements OnInit {
   isCollapsed: boolean = true;
 
-  @Output() onToggle = new EventEmitter();
+  @Output() onOpen = new EventEmitter();
+  menuTitle: string = 'Меню';
+  navEnd!: Observable<NavigationEnd>;
+  prevUrl!: string;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private location: Location
+  ) {
+    this.navEnd = router.events.pipe(
+      filter((evt) => evt instanceof NavigationEnd)
+    ) as Observable<NavigationEnd>;
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.navEnd.subscribe((nav) => {
+      this.menuTitle = nav.url.includes('home') ? 'Запросы' : 'Меню';
+      this.prevUrl = nav.url;
+    });
+  }
 
-  toogle() {
-    this.onToggle.emit();
+  open() {
+    this.onOpen.emit();
     this.isCollapsed = !this.isCollapsed;
   }
 
   async logout() {
-    console.log('log out');
     await this.router.navigate(['/login']);
     this.auth.logout();
+  }
+
+  async menuToggle() {
+    const href = this.router.url;
+    if (href.includes('home')) {
+      await this.router.navigate(['doc']);
+    } else {
+      this.location.back();
+    }
   }
 }

@@ -25,3 +25,11 @@ export interface ITreeDocs {
   parentId: number;
   prognoz: number | null;
 }
+
+export interface ITabData {
+  uid?: string;
+  docId?: number;
+  title?: string;
+  isLoading?: string;
+  data?: any;
+}

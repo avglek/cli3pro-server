@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class MainLayoutComponent implements OnInit {
   opened: boolean = true;
 
-  toggleSidebar() {
+  openSidebar() {
     this.opened = !this.opened;
   }
 

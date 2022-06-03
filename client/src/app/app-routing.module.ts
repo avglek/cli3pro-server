@@ -24,7 +24,7 @@ const routes: Routes = [
     children: [
       { path: 'home', component: WelcomeComponent },
       { path: 'home/:id', component: HomePageComponent },
-      { path: 'doc/:id', component: DocsLayoutComponent },
+      { path: 'doc', component: DocsLayoutComponent },
     ],
   },
 ];

@@ -35,7 +35,10 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/styles.less", "src/google-fonts.css"],
+            "styles": ["src/google-fonts.css", "src/styles.less"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles/themes"]
+            },
             "scripts": []
           },
           "configurations": {

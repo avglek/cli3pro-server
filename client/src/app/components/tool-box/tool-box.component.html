@@ -3,11 +3,19 @@
     class="trigger"
     nz-icon
     [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-    (click)="toogle()"
+    (click)="open()"
   ></i>
   <div class="main-box">
     <div class="right-box">
       <nz-space nzAlign="center">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="menuToggle()"
+        >
+          {{ menuTitle }}
+        </button>
         <button nz-button nzType="primary" nzSize="large">О нас</button>
         <nz-divider nzType="vertical"></nz-divider>
         <i

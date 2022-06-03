@@ -3,8 +3,10 @@
     <ng-container *ngFor="let doc of docs">
       <li nz-menu-item class="menu-row">
         <i nz-icon nzType="file-text" nzTheme="outline"></i>
-        <span class="left-menu-item">
-          <a [routerLink]="['/doc', doc.docId]">{{ doc.docName }}</a>
+        <span class="left-menu-item" (click)="onClick(doc.docId)">
+          <!--          <a [routerLink]="['/doc', doc.docId]">-->
+          {{ doc.docName }}
+          <!--          </a>-->
         </span>
       </li>
     </ng-container>

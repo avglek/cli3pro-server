@@ -12,9 +12,7 @@ module.exports = (passport) => {
   passport.use(
     new JwtStratege(options, async (payload, done) => {
       try {
-        console.log('jwt passport:', payload);
         const result = await database.getUser(payload.user);
-        console.log('result:', result);
         if (result.length > 0) {
           return done(null, result[0]['userName']);
         } else {

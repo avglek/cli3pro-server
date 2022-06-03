@@ -12,7 +12,7 @@
 
   <!-- Page content -->
   <div ng-sidebar-content class="page-content">
-    <app-tool-box (onToggle)="toggleSidebar()"></app-tool-box>
+    <app-tool-box (onOpen)="openSidebar()"></app-tool-box>
     <div class="content">
       <router-outlet></router-outlet>
     </div>
