@@ -11,14 +11,11 @@ module.exports.get = async function (req, res) {
     const stm = query.stm;
 
     const bind = query.bind;
-    console.log(stm, bind);
 
     connection = await oracledb.getConnection();
     oracledb.fetchAsString = [oracledb.CLOB];
     const result = await connection.execute(stm, bind);
-    console.log('result:', result);
     const outParams = docParams.filter((item) => item.inOut === 'OUT');
-    console.log(outParams);
     const allData = await outParams.reduce(async (acc, param) => {
       //console.log(param.type, param.name);
       let collection = await acc;
