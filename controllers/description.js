@@ -22,7 +22,7 @@ module.exports.get = async function (req, res) {
     doc.id = docId;
 
     if (descResult.length > 0) {
-      doc.description = descResult;
+      doc.description = descResult[0];
     }
 
     if (paramsResult.length > 0) {
@@ -47,6 +47,8 @@ module.exports.get = async function (req, res) {
 
       if (params.length > 0) {
         doc.form = 'Y';
+      } else {
+        doc.form = 'N';
       }
 
       const outParams = paramsResult.filter((i) => i.inOut === 'OUT');

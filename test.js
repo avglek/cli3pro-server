@@ -1,4 +1,23 @@
 const oracledb = require('oracledb');
+const oraTypes = require('./common/ora-types');
+const { BIND_OUT } = require('oracledb');
+
+const proc = 'COMMON.HIPPO_2730';
+const params = [
+  {
+    name: 'P_NV',
+    type: 'VARCHAR2',
+    position: 2,
+    inOut: 'IN',
+    value: '29215332',
+  },
+  {
+    name: 'P_TEXT',
+    type: 'CLOB',
+    position: 1,
+    inOut: 'OUT',
+  },
+];
 
 function simpleExecute(conn, statement, binds = [], opts = {}) {
   return new Promise(async (resolve, reject) => {
@@ -23,15 +42,23 @@ async function run() {
       connectString: 'eva',
     });
 
-    const stm = `begin get_left_tree(:pDoc,:pOwn);end;`;
-    const bind = {
-      pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-      pOwn: 'sevstal_ch',
-    };
+    // const stm = `begin ${proc}(:P_DOC,:P_SUBGR);end;`;
+    // const bind = {
+    //   P_DOC: { type: oracledb['CURSOR'], dir: oracledb['BIND_OUT'] },
+    //   P_SUBGR: {
+    //     type: oracledb['VARCHAR'],
+    //     dir: oracledb['BIND_IN'],
+    //     val: 'КД',
+    //   },
+    // };
+
+    const query = prepareSql(params);
+    const stm = query.stm;
+    const bind = query.bind;
 
     const result = await connection.execute(stm, bind);
 
-    const resultSet = result.outBinds.pDoc;
+    const resultSet = result.outBinds['P_DOC'];
     let row;
     const rowArray = [];
     console.log(new Date());
@@ -60,10 +87,6 @@ async function run() {
     console.log(rowArray[0], rowArray.length);
     console.log(new Date());
     await resultSet.close();
-    //console.log(new Date());
-    // const rows = simpleExecute(connection, 'select * from v_test2');
-    // console.log(rows[0], rows.length);
-    //console.log(new Date());
   } catch (err) {
     console.error(err.message);
   } finally {
@@ -77,6 +100,42 @@ async function run() {
   }
 }
 
+function prepareSql(inParams) {
+  const localParams = inParams.sort((a, b) => a.position - b.position);
+
+  const stm2 = localParams.reduce((acc, cur) => acc + `:${cur.name}` + ',', '');
+
+  let stm = `begin ${proc}(${stm2.slice(0, -1)});end;`;
+
+  console.log('stm:', stm);
+
+  let bind = {
+    ora: oraTypes.type['VARCHAR2'],
+    type: oracledb[oraTypes.type['REF_CURSOR']],
+    dir: oracledb[oraTypes.dir['OUT']],
+  };
+
+  bind = localParams.reduce((acc, curr) => {
+    const currType = curr.type.trim().replaceAll(' ', '_');
+    acc[curr.name] = {
+      type: oracledb[oraTypes.type[currType]],
+      dir: oracledb[oraTypes.dir[curr.inOut]],
+    };
+    if (curr.value) {
+      acc[curr.name].val = curr.value;
+    }
+    return acc;
+  }, {});
+
+  console.log('bind:', bind);
+  return {
+    stm,
+    bind,
+  };
+}
+
 console.log('start test');
-run();
+//prepareSql(params);
+//run();
+console.log(JSON.stringify(params));
 console.log('end test');

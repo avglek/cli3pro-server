@@ -37,4 +37,14 @@ export class TabDataService {
     this.tabs.splice(index, 1);
     return true;
   }
+
+  update(tab: ITabData) {
+    if (this.tabs.length > 0) {
+      const index = this.tabs.findIndex((i) => i.uid === tab.uid);
+      if (index >= 0) {
+        const item = { ...tab };
+        this.tabs.splice(index, 1, item);
+      }
+    }
+  }
 }

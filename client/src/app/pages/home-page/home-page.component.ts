@@ -3,8 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
 import { ITabData, ITreeDocs } from '../../shared/interfaces';
-import { customAlphabet } from 'nanoid';
 import { TabDataService } from '../../shared/services/tab-data.service';
+import { DataServerService } from '../../shared/services/data-server.service';
+import { Common } from '../../shared/classes/common';
 
 @Component({
   selector: 'app-home-page',
@@ -13,13 +14,18 @@ import { TabDataService } from '../../shared/services/tab-data.service';
 })
 export class HomePageComponent implements OnInit {
   docs!: ITreeDocs[];
+  owner!: string;
 
   constructor(
     private activateRoute: ActivatedRoute,
     private treeService: TreeService,
     private router: Router,
-    private dataService: TabDataService
-  ) {}
+    private tabService: TabDataService,
+    private server: DataServerService
+  ) {
+    const common = new Common();
+    this.owner = common.owner;
+  }
 
   ngOnInit(): void {
     this.activateRoute.params
@@ -36,11 +42,29 @@ export class HomePageComponent implements OnInit {
 
   async onClick(docId: number) {
     await this.router.navigate(['/doc']);
-    console.log(docId);
-    const data: ITabData = {
+
+    const tab: ITabData = {
       docId: docId,
       title: `Документ № ${docId}`,
+      data: '',
+      isLoading: true,
     };
-    this.dataService.add(data);
+    const uid = this.tabService.add(tab);
+
+    this.server.getDesc(this.owner, docId).subscribe({
+      next: (data) => {
+        console.log('get:', data);
+        const newTab: ITabData = {
+          uid,
+          docId: tab.docId,
+          title: data.description.docTitle
+            ? data.description.docTitle
+            : data.description.docName,
+          data,
+          isLoading: false,
+        };
+        this.tabService.update(newTab);
+      },
+    });
   }
 }
