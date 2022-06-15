@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { ITreeDocs, ITreeNode } from '../interfaces';
 import { Common } from '../classes/common';
 

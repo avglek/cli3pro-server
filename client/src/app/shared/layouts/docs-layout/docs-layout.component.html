@@ -9,6 +9,7 @@
       <i *ngIf="tab.isLoading" nz-icon nzType="loading" nzTheme="outline"></i>
       {{ tab.title }}
     </ng-template>
-    {{ tab.title }}
+    <app-form *ngIf="tab.isForm; else report" [tabData]="tab"> </app-form>
+    <ng-template #report><app-report [tabData]="tab"></app-report></ng-template>
   </nz-tab>
 </nz-tabset>

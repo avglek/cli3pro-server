@@ -1,0 +1,14 @@
+<div class="root">
+  <div class="container">
+    <ag-grid-angular
+      style="width: 100%; height: 100%"
+      class="ag-theme-balham"
+      (gridReady)="onGridReady($event)"
+      [defaultColDef]="defaultColDef"
+      [rowSelection]="rowSelection"
+      [rowModelType]="rowModelType"
+      [cacheBlockSize]="cacheBlockSize"
+      [cacheOverflowSize]="cacheOverflowSize"
+    ></ag-grid-angular>
+  </div>
+</div>

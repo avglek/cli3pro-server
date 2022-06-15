@@ -26,7 +26,17 @@ module.exports.get = async function (req, res) {
     }
 
     if (paramsResult.length > 0) {
-      doc.procName = paramsResult[0].objectName;
+      paramsResult.forEach((item) => {
+        const keys = Object.keys(item);
+        keys.forEach((key) => {
+          if (typeof item[key] === 'string') {
+            item[key] = item[key].replaceAll(' ', '_');
+          }
+        });
+      });
+      doc.procName = paramsResult[0].packageName
+        ? `${paramsResult[0].objectOwner}.${paramsResult[0].packageName}.${paramsResult[0].objectName}`
+        : `${paramsResult[0].objectOwner}.${paramsResult[0].objectName}`;
 
       const inParams = paramsResult.filter((i) => i.inOut === 'IN');
 

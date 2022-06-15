@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
-import { ITabData, ITreeDocs } from '../../shared/interfaces';
+import { IDesc, ITabData, ITreeDocs } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { DataServerService } from '../../shared/services/data-server.service';
 import { Common } from '../../shared/classes/common';
@@ -46,23 +46,25 @@ export class HomePageComponent implements OnInit {
     const tab: ITabData = {
       docId: docId,
       title: `Документ № ${docId}`,
-      data: '',
       isLoading: true,
     };
     const uid = this.tabService.add(tab);
 
     this.server.getDesc(this.owner, docId).subscribe({
       next: (data) => {
-        console.log('get:', data);
+        console.log('data:', data);
         const newTab: ITabData = {
           uid,
           docId: tab.docId,
-          title: data.description.docTitle
-            ? data.description.docTitle
-            : data.description.docName,
-          data,
+          title: data.description.docName,
+          description: data.description,
+          procName: data.procName,
+          params: data.params,
+          isForm: data.form === 'Y',
+          reportType: data.description.docClass,
           isLoading: false,
         };
+        console.log('tabs:', newTab);
         this.tabService.update(newTab);
       },
     });

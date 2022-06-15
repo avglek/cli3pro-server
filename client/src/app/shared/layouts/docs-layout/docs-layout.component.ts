@@ -20,6 +20,7 @@ export class DocsLayoutComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.dataService);
     this.tabs = this.dataService.getAll();
+    this.selectedIndex = this.tabs.length;
   }
 
   closeTab(event: { index: number }) {

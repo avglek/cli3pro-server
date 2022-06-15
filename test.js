@@ -5,17 +5,14 @@ const { BIND_OUT } = require('oracledb');
 const proc = 'COMMON.HIPPO_2730';
 const params = [
   {
-    name: 'P_NV',
-    type: 'VARCHAR2',
-    position: 2,
-    inOut: 'IN',
-    value: '29215332',
-  },
-  {
-    name: 'P_TEXT',
-    type: 'CLOB',
+    name: 'P_DOC',
+    type: 'REF_CURSOR',
     position: 1,
     inOut: 'OUT',
+    start: 0,
+    end: 50,
+    sort: { ksnv: 'desc' },
+    filter: [{ field: 'msnv', value: 'Мга', rules: 'eq' }],
   },
 ];
 
@@ -134,8 +131,15 @@ function prepareSql(inParams) {
   };
 }
 
+function camalize(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+}
+
 console.log('start test');
 //prepareSql(params);
 //run();
-console.log(JSON.stringify(params));
+const str = JSON.stringify(params); //camalize('KOL_ST_P');
+console.log(str);
 console.log('end test');

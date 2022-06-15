@@ -28,8 +28,8 @@ module.exports.login = async function (req, res) {
             roles: roles.map((i) => i['roleName']),
             owner,
           },
-          config.jwt,
-          { expiresIn: 60 * 60 }
+          config.jwt
+          //{ expiresIn: 60 * 60 }
         );
         res.status(200).json({
           token: `Bearer ${token}`,

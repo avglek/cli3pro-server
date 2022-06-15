@@ -1,0 +1,6 @@
+<div class="root" [ngSwitch]="reportType">
+  <app-grid-data
+    *ngSwitchCase="types.Table"
+    [tabData]="tabData"
+  ></app-grid-data>
+</div>

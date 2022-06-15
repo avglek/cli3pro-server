@@ -42,9 +42,13 @@ export class TabDataService {
     if (this.tabs.length > 0) {
       const index = this.tabs.findIndex((i) => i.uid === tab.uid);
       if (index >= 0) {
-        const item = { ...tab };
+        const item = { ...this.tabs[index], ...tab };
         this.tabs.splice(index, 1, item);
       }
     }
+  }
+
+  getTab(uid: string): ITabData | undefined {
+    return this.tabs.find((tab) => tab.uid === uid);
   }
 }
