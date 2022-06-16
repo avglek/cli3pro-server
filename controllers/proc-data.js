@@ -53,7 +53,7 @@ module.exports.get = async function (req, res) {
       data,
     });
   } catch (e) {
-    console.error(e, res);
+    console.error(e);
     errorHandler(res, e);
   } finally {
     if (connection) {

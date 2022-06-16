@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { TreeService } from '../../shared/services/tree.service';
 import { ITreeNode } from '../../shared/interfaces';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tree',
@@ -18,12 +19,13 @@ export class TreeComponent implements OnInit, OnDestroy {
 
   subMenuIcon = 'folder';
 
-  constructor(private treeService: TreeService) {}
+  constructor(private treeService: TreeService, private router: Router) {}
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
-    this.treeService.getLeftTree().subscribe((data) => {
+    this.treeService.getLeftTree().subscribe(async (data) => {
       this.tree = data.sort((a, b) => a.ordering - b.ordering);
+      await this.router.navigate([`/home/${this.tree[0].docId}`]);
     });
   }
 

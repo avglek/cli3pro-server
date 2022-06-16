@@ -9,6 +9,7 @@ import { PlainTextComponent } from '../../../components/reports/plain-text/plain
 import { ReportComponent } from '../../../components/reports/report.component';
 import { TableComponent } from '../../../components/reports/table/table.component';
 import { AgGridModule } from 'ag-grid-angular';
+import { UiDataPickerComponent, UiSelectComponent } from '../../UI-controls';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,8 @@ import { AgGridModule } from 'ag-grid-angular';
     FormComponent,
     PlainTextComponent,
     ReportComponent,
+    UiSelectComponent,
+    UiDataPickerComponent,
   ],
   imports: [CommonModule, NzTabsModule, NzIconModule, AgGridModule],
 })

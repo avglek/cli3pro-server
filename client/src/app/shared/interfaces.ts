@@ -1,3 +1,5 @@
+import { SortModelItem } from 'ag-grid-community';
+
 export interface User {
   user: string;
   password: string;
@@ -190,7 +192,7 @@ export interface IProcParam {
   value?: any;
   start?: number;
   end?: number;
-  sort?: any;
+  sorting?: SortModelItem[];
   filter?: any;
 }
 

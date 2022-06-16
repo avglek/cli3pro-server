@@ -61,11 +61,16 @@ export class GridDataComponent implements OnInit {
         return;
       }
       console.log('get rows:', params);
+      if (params.sortModel) {
+      }
       this.tabData.isLoading = true;
       this.procParams.forEach((param) => {
         if (param.inOut === TypeOut.Out && param.type === TypeData.Cursor) {
           param.start = params.startRow;
           param.end = params.endRow;
+          if (params.sortModel) {
+            param.sorting = params.sortModel;
+          }
         }
       });
       console.log('params:', this.procParams);
