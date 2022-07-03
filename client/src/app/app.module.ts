@@ -19,12 +19,14 @@ import { NzNotificationServiceModule } from 'ng-zorro-antd/notification';
 import { MainLayoutModule } from './shared/layouts/main-layout/main-layout.module';
 import { RouterModule } from '@angular/router';
 import { DocsLayoutModule } from './shared/layouts/docs-layout/docs-layout.module';
+import { ClipboardModule } from 'ngx-clipboard';
 
 registerLocaleData(ru);
 
 @NgModule({
   declarations: [AppComponent, AuthLayoutsComponent],
   imports: [
+    ClipboardModule,
     DocsLayoutModule,
     LoginPageModule,
     BrowserModule,

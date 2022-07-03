@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
-import { IDesc, ITabData, ITreeDocs } from '../../shared/interfaces';
+import { ITabData, ITreeDocs } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { DataServerService } from '../../shared/services/data-server.service';
 import { Common } from '../../shared/classes/common';
@@ -52,7 +52,7 @@ export class HomePageComponent implements OnInit {
 
     this.server.getDesc(this.owner, docId).subscribe({
       next: (data) => {
-        console.log('data:', data);
+        //console.log('data:', data);
         const newTab: ITabData = {
           uid,
           docId: tab.docId,
@@ -62,9 +62,23 @@ export class HomePageComponent implements OnInit {
           params: data.params,
           isForm: data.form === 'Y',
           reportType: data.description.docClass,
+          isSuccess: true,
           isLoading: false,
         };
-        console.log('tabs:', newTab);
+        //console.log('tabs:', newTab);
+        this.tabService.update(newTab);
+      },
+      error: (err) => {
+        console.log(err.error);
+        const newTab: ITabData = {
+          uid,
+          docId: tab.docId,
+          title: 'Ошибка запроса',
+          isSuccess: false,
+          isLoading: false,
+          errorMessage: err.error.message,
+        };
+        //console.log('tabs:', newTab);
         this.tabService.update(newTab);
       },
     });

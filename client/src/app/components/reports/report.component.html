@@ -1,6 +1,19 @@
 <div class="root" [ngSwitch]="reportType">
-  <app-grid-data
-    *ngSwitchCase="types.Table"
-    [tabData]="tabData"
-  ></app-grid-data>
+  <div *ngIf="tabData.isSuccess; else ErrorBlock">
+    <app-grid-data
+      *ngSwitchCase="types.Table"
+      [tabData]="tabData"
+    ></app-grid-data>
+    <app-plain-text
+      *ngSwitchCase="types.Text"
+      [tabData]="tabData"
+    ></app-plain-text>
+    <app-two-data-grid
+      *ngSwitchCase="types.TwoTables"
+      [tabData]="tabData"
+    ></app-two-data-grid>
+  </div>
+  <ng-template #ErrorBlock>
+    <app-error-tab [tabData]="tabData"> </app-error-tab>
+  </ng-template>
 </div>

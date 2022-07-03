@@ -29,11 +29,12 @@ export class TreeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onOpenChange($event: boolean) {
+  async onOpenChange($event: boolean, docId: number) {
     if ($event) {
       this.subMenuIcon = 'folder-open';
     } else {
       this.subMenuIcon = 'folder';
     }
+    await this.router.navigate([`/home/${docId}`]);
   }
 }

@@ -1,7 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { UiBaseControlComponent } from '../ui-base-control.component';
 
 @Component({
   selector: 'app-ui-data-picker',
-  template: `<p>data picker component is work</p>`,
+  template: `<div [formGroup]="formGroup">
+    <nz-date-picker
+      [id]="name"
+      [formControlName]="name"
+      [nzFormat]="format"
+    ></nz-date-picker>
+  </div>`,
+  styles: [
+    `
+      .ant-picker {
+        width: 100%;
+      }
+    `,
+  ],
 })
-export class UiDataPickerComponent {}
+//      [nzSize]="'large'"
+export class UiDataPickerComponent extends UiBaseControlComponent {
+  @Input() format: string = 'dd-MM-YYYY';
+}

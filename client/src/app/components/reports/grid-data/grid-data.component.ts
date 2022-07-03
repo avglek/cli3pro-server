@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  CellContextMenuEvent,
   ColDef,
   GridApi,
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
-  IServerSideRowModel,
 } from 'ag-grid-community';
 import {
   IProcParam,
@@ -15,6 +15,10 @@ import {
   ICursorData,
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
+import {
+  NzContextMenuService,
+  NzDropdownMenuComponent,
+} from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-grid-data',
@@ -31,16 +35,20 @@ export class GridDataComponent implements OnInit {
   cacheBlockSize = 50;
   cacheOverflowSize = 3;
 
+  clipboardContext!: any;
+
   defaultColDef = {
     resizable: true,
     cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
   };
 
-  constructor(private dataService: DataServerService) {}
+  constructor(
+    private dataService: DataServerService,
+    private nzContextMenuService: NzContextMenuService
+  ) {}
 
   ngOnInit(): void {
-    console.log('tabs loading:', this.tabData.isLoading);
     if (!this.tabData.isLoading) {
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
@@ -60,7 +68,6 @@ export class GridDataComponent implements OnInit {
       if (this.tabData.isLoading) {
         return;
       }
-      console.log('get rows:', params);
       if (params.sortModel) {
       }
       this.tabData.isLoading = true;
@@ -70,6 +77,15 @@ export class GridDataComponent implements OnInit {
           param.end = params.endRow;
           if (params.sortModel) {
             param.sorting = params.sortModel;
+          }
+        }
+        if (param.inOut === TypeOut.In) {
+          const tabParams = this.tabData.params?.find((p) => {
+            console.log(p.argumentName, param.name);
+            return p.argumentName === param.name;
+          });
+          if (tabParams) {
+            param.value = tabParams.value;
           }
         }
       });
@@ -83,7 +99,6 @@ export class GridDataComponent implements OnInit {
         )
         .subscribe((data) => {
           this.tabData.isLoading = false;
-          console.log('data:', data.data);
           if (data.data) {
             const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[keys[0]];
@@ -110,8 +125,18 @@ export class GridDataComponent implements OnInit {
   };
 
   onGridReady(params: GridReadyEvent) {
-    console.log('grid ready:', params);
     params.api.setDatasource(this.dataSource);
     this.girdApi = params.api;
+  }
+
+  changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
+    console.log('event:', $event);
+    $event.preventDefault();
+    this.nzContextMenuService.create($event, menu);
+  }
+
+  contextMenu($event: CellContextMenuEvent) {
+    console.log('cell:', $event.value);
+    this.clipboardContext = $event.value;
   }
 }

@@ -64,6 +64,8 @@ module.exports.get = async function (req, res) {
       const outParams = paramsResult.filter((i) => i.inOut === 'OUT');
 
       doc.params = [...params, ...outParams];
+    } else {
+      throw new Error(`Procedure for doc ID:${docId} is not found`);
     }
     //console.log(result);
 

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { IData, IDesc, IProcParam } from '../interfaces';
 import { Observable } from 'rxjs';
 import { Common } from '../classes/common';
-import { SortModelItem } from 'ag-grid-community';
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +15,7 @@ export class DataServerService {
     return this.http.get<IDesc>(url);
   }
 
-  /*******
-   * /api/proc/:name?params=[{"name":"P_NV","type":"VARCHAR2","position":2,"inOut":"IN","value":"29215332"},{"name":"P_TEXT","type":"CLOB","position":1,"inOut":"OUT"}]
-   * &start=0&end=100
-   * @param procName
-   * @param params
-   * @param uid
-   * @param docId
-   */
+
   procExecute(
     procName: string,
     params: IProcParam[],
@@ -33,6 +25,22 @@ export class DataServerService {
     const url = `/api/proc/${
       this.common.owner
     }/${procName}?params=${JSON.stringify(params)}&uid=${uid}&docId=${docId}`;
+    console.log('execute:', procName, params);
     return this.http.get<IData>(url);
+  }
+
+  getLookTable(
+    table: string,
+    order: string = 'asc',
+    startRow: number = 0,
+    countRows: number = 0,
+    searchField: string = '',
+    searchValue: string = ''
+  ): Observable<any> {
+    //{{baseUrl}}/api/look-table/:schema/:table?order=kd&start=0&count=10&searchField=nd&searchValue=ГР
+
+    const url = `/api/look-table/${this.common.owner}/${table}?order=${order}&start=${startRow}&count=${countRows}&searchField=${searchField}&searchValue=${searchValue}`;
+
+    return this.http.get(url);
   }
 }

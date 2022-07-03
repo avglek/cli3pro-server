@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormComponent } from './form.component';
+import { TwoDataGridComponent } from './two-data-grid.component';
 
-describe('FormComponent', () => {
-  let component: FormComponent;
-  let fixture: ComponentFixture<FormComponent>;
+describe('TwoDataGridComponent', () => {
+  let component: TwoDataGridComponent;
+  let fixture: ComponentFixture<TwoDataGridComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FormComponent ]
+      declarations: [ TwoDataGridComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormComponent);
+    fixture = TestBed.createComponent(TwoDataGridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

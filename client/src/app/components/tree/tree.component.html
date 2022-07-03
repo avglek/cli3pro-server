@@ -27,7 +27,7 @@
           [nzTitle]="node.docName!"
           [nzDisabled]="false"
           [nzIcon]="subMenuIcon"
-          (nzOpenChange)="onOpenChange($event)"
+          (nzOpenChange)="onOpenChange($event, node.docId)"
         >
           <ul>
             <ng-container

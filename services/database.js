@@ -13,6 +13,32 @@ async function close() {
 
 module.exports.close = close;
 
+async function getTableRowCount(table) {
+  const sql = `select count(*) from ${table}`;
+
+  let connection;
+
+  try {
+    connection = await oracledb.getConnection();
+
+    const result = await connection.execute(sql);
+
+    return result.rows[0][0];
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+}
+
+module.exports.getTableRowCount = getTableRowCount;
+
 async function procedureExecute(proc, binds = [], opts = {}) {
   let conn;
   let resultSet;
@@ -118,8 +144,7 @@ async function getUser(user) {
     pUser: user,
   };
 
-  const result = await procedureExecute(sql, bind);
-  return result;
+  return await procedureExecute(sql, bind);
 }
 
 module.exports.getUser = getUser;

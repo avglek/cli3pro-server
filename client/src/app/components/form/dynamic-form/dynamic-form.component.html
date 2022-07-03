@@ -1,0 +1,28 @@
+<div class="root">
+  <form nz-form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="form-body">
+      <ul>
+        <div *ngFor="let control of controls" class="form-row">
+          <li>
+            <app-dynamic-control
+              class="dynamic-control"
+              [control]="control"
+              [form]="form"
+            ></app-dynamic-control>
+          </li>
+        </div>
+      </ul>
+    </div>
+    <div class="form-action">
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        type="submit"
+        [disabled]="!form.valid"
+      >
+        Отправить
+      </button>
+    </div>
+  </form>
+</div>

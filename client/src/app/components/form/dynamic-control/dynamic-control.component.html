@@ -1,0 +1,38 @@
+<nz-form-item [formGroup]="form" class="root">
+  <nz-form-label [nzSpan]="6" [attr.for]="control.key">{{
+    control.label
+  }}</nz-form-label>
+
+  <nz-form-control [ngSwitch]="control.controlType">
+    <app-ui-text-input
+      *ngSwitchCase="'textBox'"
+      [name]="control.key"
+      [formGroup]="form"
+      [defaultValue]="'test'"
+    ></app-ui-text-input>
+    <app-ui-data-picker
+      *ngSwitchCase="'dateBox'"
+      [name]="control.key"
+      [formGroup]="form"
+    ></app-ui-data-picker>
+    <app-ui-select
+      *ngSwitchCase="'selectBox'"
+      [name]="control.key"
+      [formGroup]="form"
+      [options]="control.options"
+    ></app-ui-select>
+    <app-ui-text-area
+      *ngSwitchCase="'areaBox'"
+      [name]="control.key"
+      [formGroup]="form"
+    >
+    </app-ui-text-area>
+    <h3 *ngSwitchDefault style="color: tomato">
+      No control for № {{ control.controlNumber }}
+    </h3>
+  </nz-form-control>
+
+  <div class="errorMessage" *ngIf="!isValid">
+    {{ control.label }} is required
+  </div>
+</nz-form-item>

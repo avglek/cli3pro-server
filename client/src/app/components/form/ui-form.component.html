@@ -1,0 +1,11 @@
+<div class="root">
+  <div class="card-wrapper">
+    <div class="card-header">{{ title }}</div>
+    <div class="card-body">
+      <app-dynamic-form
+        [controls]="data"
+        (Submit)="onSubmit($event)"
+      ></app-dynamic-form>
+    </div>
+  </div>
+</div>
