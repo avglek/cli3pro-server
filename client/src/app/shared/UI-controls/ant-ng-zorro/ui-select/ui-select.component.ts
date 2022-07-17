@@ -18,7 +18,7 @@ export interface Options {
       nzServerSearch
       nzPlaceHolder="input search text"
       [formControlName]="name"
-      (nzScrollToBottom)="loadMore($event)"
+      (nzScrollToBottom)="loadMore()"
       [nzDropdownRender]="renderTemplate"
       [nzOptionOverflowSize]="5"
       (nzOnSearch)="search($event)"
@@ -56,8 +56,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   override ngOnInit() {
-    console.log('select:', this.options);
-
     if (this.options) {
       this.table = this.options.lookupTable;
       this.order = this.options.lookupTableorder
@@ -75,8 +73,7 @@ export class UiSelectComponent extends UiBaseControlComponent {
     super.ngOnInit();
   }
 
-  loadMore($event: any) {
-    console.log('load more:', $event);
+  loadMore() {
     this.getOptions();
   }
 
@@ -96,7 +93,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
         )
         .subscribe({
           next: (data: any) => {
-            console.log('data:', data);
             this.allRows = data.count;
             this.rowPoint += this.countRow;
 
@@ -116,8 +112,8 @@ export class UiSelectComponent extends UiBaseControlComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            return [];
             console.log('Error:', err);
+            return [];
           },
         });
     }

@@ -15,17 +15,28 @@ export class DataServerService {
     return this.http.get<IDesc>(url);
   }
 
-
   procExecute(
     procName: string,
     params: IProcParam[],
     uid: string,
     docId: number
   ): Observable<IData> {
+    const outParams = params.map((param) => {
+      if (param.type === 'DATE') {
+        return {
+          ...param,
+          value: param.value.toString(),
+        };
+      } else {
+        return param;
+      }
+    });
     const url = `/api/proc/${
       this.common.owner
-    }/${procName}?params=${JSON.stringify(params)}&uid=${uid}&docId=${docId}`;
-    console.log('execute:', procName, params);
+    }/${procName}?params=${JSON.stringify(
+      outParams
+    )}&uid=${uid}&docId=${docId}`;
+
     return this.http.get<IData>(url);
   }
 

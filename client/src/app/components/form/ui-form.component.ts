@@ -15,7 +15,6 @@ export class UiFormComponent implements OnInit, OnDestroy {
   title!: string;
 
   ngOnInit(): void {
-    console.log('tab data:', this.tabData);
     this.title = this.tabData.title ? this.tabData.title : '';
     const params = this.tabData.params?.filter((param) => param.inOut === 'IN');
     if (params) {
@@ -39,7 +38,6 @@ export class UiFormComponent implements OnInit, OnDestroy {
         }
       });
       this.data = result;
-      console.log('out data:', this.data);
     }
   }
 
@@ -47,17 +45,10 @@ export class UiFormComponent implements OnInit, OnDestroy {
 
   onSubmit($event: any): void {
     console.log('submit:', $event);
-    console.log('tab data:', this.tabData);
 
     this.tabData.params?.map((param) => {
       if (param.inOut === 'IN') {
         if (param.argumentName) {
-          console.log(
-            'p:',
-            param.argumentName,
-            ' v:',
-            $event[param.argumentName]
-          );
           param.value = $event[param.argumentName];
         }
       }

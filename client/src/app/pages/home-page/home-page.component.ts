@@ -52,7 +52,6 @@ export class HomePageComponent implements OnInit {
 
     this.server.getDesc(this.owner, docId).subscribe({
       next: (data) => {
-        //console.log('data:', data);
         const newTab: ITabData = {
           uid,
           docId: tab.docId,
@@ -78,7 +77,6 @@ export class HomePageComponent implements OnInit {
           isLoading: false,
           errorMessage: err.error.message,
         };
-        //console.log('tabs:', newTab);
         this.tabService.update(newTab);
       },
     });

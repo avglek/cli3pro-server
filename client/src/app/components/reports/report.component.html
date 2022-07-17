@@ -1,9 +1,9 @@
 <div class="root" [ngSwitch]="reportType">
   <div *ngIf="tabData.isSuccess; else ErrorBlock">
-    <app-grid-data
+    <app-one-data-grid
       *ngSwitchCase="types.Table"
       [tabData]="tabData"
-    ></app-grid-data>
+    ></app-one-data-grid>
     <app-plain-text
       *ngSwitchCase="types.Text"
       [tabData]="tabData"

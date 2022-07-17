@@ -1,6 +1,6 @@
 module.exports.type = {
   DATA_TYPE: 'DB_TYPE_DATE',
-  DATE: 'DB_TYPE_DATE',
+  DATE: 'DATE',
   CLOB: 'DB_TYPE_NCLOB',
   REF_CURSOR: 'DB_TYPE_CURSOR',
   OBJECT: 'DB_TYPE_OBJECT',

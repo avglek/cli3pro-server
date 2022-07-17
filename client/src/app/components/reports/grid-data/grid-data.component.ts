@@ -6,11 +6,11 @@ import {
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
+  ValueFormatterParams,
 } from 'ag-grid-community';
 import {
   IProcParam,
   ITabData,
-  TypeData,
   TypeOut,
   ICursorData,
 } from '../../../shared/interfaces';
@@ -19,6 +19,8 @@ import {
   NzContextMenuService,
   NzDropdownMenuComponent,
 } from 'ng-zorro-antd/dropdown';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 @Component({
   selector: 'app-grid-data',
@@ -27,6 +29,7 @@ import {
 })
 export class GridDataComponent implements OnInit {
   @Input() tabData!: ITabData;
+  @Input() cursorName!: string;
 
   girdApi!: GridApi;
   procParams: IProcParam[] = [];
@@ -34,6 +37,7 @@ export class GridDataComponent implements OnInit {
   rowModelType: any = 'infinite';
   cacheBlockSize = 50;
   cacheOverflowSize = 3;
+  isLoading = false;
 
   clipboardContext!: any;
 
@@ -46,9 +50,14 @@ export class GridDataComponent implements OnInit {
   constructor(
     private dataService: DataServerService,
     private nzContextMenuService: NzContextMenuService
-  ) {}
+  ) {
+    dayjs.extend(customParseFormat);
+  }
 
   ngOnInit(): void {
+    console.log('tabData:', this.tabData);
+    console.log('cursor name', this.cursorName);
+
     if (!this.tabData.isLoading) {
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
@@ -65,14 +74,18 @@ export class GridDataComponent implements OnInit {
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
+      console.log('get rows:', this.cursorName, this.tabData);
       if (this.tabData.isLoading) {
         return;
       }
+      console.log('1:', this.cursorName);
+
       if (params.sortModel) {
       }
-      this.tabData.isLoading = true;
+      this.isLoading = true;
+      console.log('2:', this.cursorName);
       this.procParams.forEach((param) => {
-        if (param.inOut === TypeOut.Out && param.type === TypeData.Cursor) {
+        if (param.name === this.cursorName) {
           param.start = params.startRow;
           param.end = params.endRow;
           if (params.sortModel) {
@@ -81,7 +94,6 @@ export class GridDataComponent implements OnInit {
         }
         if (param.inOut === TypeOut.In) {
           const tabParams = this.tabData.params?.find((p) => {
-            console.log(p.argumentName, param.name);
             return p.argumentName === param.name;
           });
           if (tabParams) {
@@ -89,7 +101,7 @@ export class GridDataComponent implements OnInit {
           }
         }
       });
-      console.log('params:', this.procParams);
+      console.log('send:', this.tabData.procName, this.procParams);
       this.dataService
         .procExecute(
           this.tabData.procName!,
@@ -98,23 +110,28 @@ export class GridDataComponent implements OnInit {
           this.tabData.docId!
         )
         .subscribe((data) => {
-          this.tabData.isLoading = false;
+          this.isLoading = false;
           if (data.data) {
+            console.log('data:', this.cursorName, data);
             const keys = Object.keys(data.data);
-            const docData = <ICursorData>data.data[keys[0]];
+            console.log('keys:', this.cursorName, keys);
+            const docData = <ICursorData>data.data[this.cursorName];
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
               const columns = <ColDef[]>docData.fields
                 .sort((a, b) => a.order - b.order)
                 .filter((col) => col.visible === 'T')
-                .map((col) => ({
-                  field: col.fieldName,
-                  headerName: col.displayLabel,
-                  width: col.displaySize
-                    ? col.displaySize * 10 + 20
-                    : undefined,
-                }));
-
+                .map((col) => {
+                  return {
+                    field: col.fieldName,
+                    headerName: col.displayLabel,
+                    width: col.displaySize
+                      ? col.displaySize * 10 + 20
+                      : undefined,
+                    valueFormatter: (params) =>
+                      dataFormatter(params, col.displayFormat),
+                  };
+                });
               if (this.girdApi) {
                 this.girdApi.setColumnDefs(columns);
               }
@@ -139,4 +156,21 @@ export class GridDataComponent implements OnInit {
     console.log('cell:', $event.value);
     this.clipboardContext = $event.value;
   }
+}
+
+function dataFormatter(
+  params: ValueFormatterParams,
+  format: string | null | undefined
+): string {
+  let value = params.value;
+
+  if (dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid()) {
+    if (format) {
+      format = format.toUpperCase().replace('YY', 'YYYY').replace('NN', 'mm');
+      value = dayjs(value).format(format);
+    } else {
+      value = dayjs(value).format('DD.MM.YYYY');
+    }
+  }
+  return value;
 }

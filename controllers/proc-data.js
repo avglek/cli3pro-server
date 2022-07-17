@@ -20,7 +20,9 @@ module.exports.get = async function (req, res) {
 
     connection = await oracledb.getConnection();
     oracledb.fetchAsString = [oracledb.CLOB];
-    const result = await connection.execute(stm, bind);
+    const result = await connection.execute(stm, bind, {
+      extendedMetaData: true,
+    });
     const outParams = docParams.filter((item) => item.inOut === 'OUT');
     const data = await outParams.reduce(async (acc, param) => {
       let collection = await acc;
@@ -76,7 +78,7 @@ function prepareSql(name, params) {
       dir: oracledb[oraTypes.dir[curr.inOut]],
     };
     if (curr.value) {
-      acc[curr.name].val = curr.value;
+      acc[curr.name].val = formatValue(curr.type, curr.value);
     }
     return acc;
   }, {});
@@ -144,6 +146,8 @@ async function getFields(schema, meta, docId) {
       ...i,
       order,
       fieldName: toCamelCase(i.fieldName),
+      dbTypeName: meta[order].dbTypeName,
+      meta: meta[order],
     };
   });
 }
@@ -152,4 +156,15 @@ function toCamelCase(str) {
   return str
     .toLowerCase()
     .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+}
+
+function formatValue(type, value) {
+  switch (type) {
+    case 'DATE':
+      return new Date(value);
+    case 'NUMBER':
+      return Number(value).valueOf();
+    default:
+      return value;
+  }
 }

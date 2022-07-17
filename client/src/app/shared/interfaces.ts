@@ -199,15 +199,53 @@ export interface IProcParam {
 }
 
 export interface IField {
-  displayLabel: string;
+  displayLabel?: string;
   displaySize?: number;
-  docId: number;
-  fieldName: string;
-  keyField: string | null;
-  lookupKeyfields: string | null;
-  nciTable: string | null;
-  visible: 'F' | 'T';
+  docId?: number;
+  fieldName?: string;
+  keyField?: string | null;
+  lookupKeyfields?: string | null;
+  nciTable?: string | null;
+  visible?: 'F' | 'T';
   order: number;
+  calcClass?: string | null;
+  controlType?: number;
+  defaultValue?: string | null;
+  disableSort?: 'F' | 'T';
+  displayFormat?: string | null;
+  dlgClass?: string | null;
+  editMask?: string | null;
+  fieldKind?: number;
+  footerFunc?: string | null;
+  frozeColumn?: 'F' | 'T';
+  funcClass?: string | null;
+  groupedFields?: string | null;
+  itemList?: string | null;
+  lookupDisplayfields?: string | null;
+  lookupMasterfield?: string | null;
+  lookupResultfield?: string | null;
+  lookupTable?: string | null;
+  lookupTableorder?: string | null;
+  moveDlg?: 'F' | 'T';
+  options?: string | null;
+  paramVisible?: 'F' | 'T';
+  readonly?: 'F' | 'T';
+  required?: 'F' | 'T';
+  titleHint?: string | null;
+  validClass?: string | null;
+  meta?: IMeta;
+  dbTypeName?: string;
+}
+
+export interface IMeta {
+  dbType: number;
+  dbTypeName: string;
+  fetchType: number;
+  name: string;
+  nullable: boolean;
+  precision?: number;
+  scale?: number;
+  byteSize?: number;
 }
 
 export interface IControlBase {

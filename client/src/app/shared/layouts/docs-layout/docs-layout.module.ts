@@ -14,9 +14,13 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { ContextMenuComponent } from '../../../components/reports/context-menu/context-menu.component';
 import { TwoDataGridComponent } from '../../../components/reports/two-data-grid/two-data-grid.component';
 import { ErrorTabComponent } from '../../../components/reports/error-tab/error-tab.component';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
+import { OneDataGridComponent } from '../../../components/reports/one-data-grid/one-data-grid.component';
 
 @NgModule({
   declarations: [
+    OneDataGridComponent,
     ErrorTabComponent,
     TwoDataGridComponent,
     ContextMenuComponent,
@@ -34,6 +38,8 @@ import { ErrorTabComponent } from '../../../components/reports/error-tab/error-t
     AgGridModule,
     UiFormModule,
     NzDropDownModule,
+    NzLayoutModule,
+    NzResizableModule,
   ],
 })
 export class DocsLayoutModule {}

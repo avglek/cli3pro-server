@@ -2,7 +2,6 @@ module.exports = (req, res, next) => {
   const paramsQuery = JSON.parse(req.query.params);
   if (paramsQuery) {
     paramsQuery.forEach((param) => {
-      console.log('p:', param.type);
       if (param.type === 'REF_CURSOR') {
         if (param.start !== undefined) {
           range(res, param, param.start, param.end);

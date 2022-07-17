@@ -1,1 +1,40 @@
-<p>two-data-grid works!</p>
+<nz-content [ngClass]="[isVertical ? 'nz-content-height' : 'nz-content-width']">
+  <!--    (nzResize)="onContentResize($event)"-->
+  <!--  [style.height.px]="contentHeight"-->
+  <!--  [style.width.px]="contentWidth"-->
+  <div
+    nz-resizable
+    class="resizable-box"
+    [nzMinHeight]="50"
+    (nzResize)="
+      isVertical ? onContentResizeWidth($event) : onContentResizeHeight($event)
+    "
+  >
+    <nz-resize-handle [nzDirection]="isVertical ? 'right' : 'bottom'">
+      <div
+        [ngClass]="[
+          isVertical
+            ? 'content-resize-line-height'
+            : 'content-resize-line-width'
+        ]"
+      ></div>
+    </nz-resize-handle>
+    <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
+      <app-grid-data
+        [tabData]="tabData"
+        [cursorName]="docCursorName"
+      ></app-grid-data>
+    </div>
+  </div>
+  <div>
+    <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
+      <app-grid-data
+        [tabData]="tabData"
+        [cursorName]="detailCursorName"
+      ></app-grid-data>
+    </div>
+  </div>
+</nz-content>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <app-context-menu [contextValue]="clipboardContext"></app-context-menu>
+</nz-dropdown-menu>

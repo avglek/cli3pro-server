@@ -8,6 +8,9 @@ import { UiBaseControlComponent } from '../ui-base-control.component';
       [id]="name"
       [formControlName]="name"
       [nzFormat]="format"
+      [nzMode]="'date'"
+      [(ngModel)]="currentDate"
+      (ngModelChange)="onChange($event)"
     ></nz-date-picker>
   </div>`,
   styles: [
@@ -21,4 +24,12 @@ import { UiBaseControlComponent } from '../ui-base-control.component';
 //      [nzSize]="'large'"
 export class UiDataPickerComponent extends UiBaseControlComponent {
   @Input() format: string = 'dd-MM-YYYY';
+  currentDate!: Date;
+
+  onChange($event: Date) {
+    if ($event) {
+      //$event.setHours(0, 0, 0, 0);
+      this.currentDate = new Date($event.toDateString()); //.getTime());
+    }
+  }
 }
