@@ -12,6 +12,14 @@
           nz-button
           nzType="primary"
           nzSize="large"
+          (click)="onChangeOrient()"
+        >
+          <mat-icon svgIcon="viewAgenda"></mat-icon>
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
           (click)="menuToggle()"
         >
           {{ menuTitle }}

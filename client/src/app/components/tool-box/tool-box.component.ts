@@ -53,4 +53,6 @@ export class ToolBoxComponent implements OnInit {
       this.location.back();
     }
   }
+
+  onChangeOrient() {}
 }

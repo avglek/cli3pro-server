@@ -304,3 +304,7 @@ export enum ContextMenuAction {
   'History',
   'ExportExel',
 }
+
+export const Icons: { [keys: string]: string } = {
+  viewAgenda: 'view_agenda',
+};
