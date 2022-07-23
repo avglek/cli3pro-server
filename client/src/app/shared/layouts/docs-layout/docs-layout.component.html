@@ -3,6 +3,7 @@
   (nzClose)="closeTab($event)"
   [(nzSelectedIndex)]="selectedIndex"
   [nzHideAdd]="true"
+  (nzSelectedIndexChange)="onChangeIndex($event)"
 >
   <nz-tab *ngFor="let tab of tabs" nzClosable [nzTitle]="titleTemplate">
     <ng-template #titleTemplate>

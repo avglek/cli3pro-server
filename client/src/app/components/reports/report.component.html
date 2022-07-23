@@ -11,6 +11,7 @@
     <app-two-data-grid
       *ngSwitchCase="types.TwoTables"
       [tabData]="tabData"
+      [isVertical]="tabData.isVerticalOrient || false"
     ></app-two-data-grid>
   </div>
   <ng-template #ErrorBlock>

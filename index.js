@@ -40,15 +40,27 @@ function close() {
 
 async function startup() {
   try {
-    console.log('Initializing database module');
-    await database.initialize();
-
     console.log('Initialization web server');
     await init();
+    let wait = true;
+    while (wait) {
+      try {
+        console.log('Initializing database module');
+        await database.initialize();
+        wait = false;
+      } catch (e) {
+        console.log('db error:', e);
+        await delay(5000);
+      }
+    }
   } catch (e) {
-    console.error(e);
+    console.error('error', e);
     process.exit(1);
   }
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function shutdown(e) {
@@ -59,7 +71,7 @@ async function shutdown(e) {
   try {
     console.log('Closing database module');
 
-    await database.close();
+    //    await database.close();
     console.log('Closing web server module');
 
     await close();

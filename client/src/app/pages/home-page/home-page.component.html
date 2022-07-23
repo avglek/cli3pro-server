@@ -1,5 +1,5 @@
 <div class="root">
-  <ul nz-menu nzMode="inline">
+  <ul nz-menu nzMode="inline" *ngIf="!isLoading; else loaderBlock">
     <ng-container *ngFor="let doc of docs">
       <li nz-menu-item class="menu-row">
         <i nz-icon nzType="file-text" nzTheme="outline"></i>
@@ -11,4 +11,9 @@
       </li>
     </ng-container>
   </ul>
+  <ng-template #loaderBlock>
+    <div class="loading">
+      <nz-spin [nzSize]="'large'" nzTip="Loading..."></nz-spin>
+    </div>
+  </ng-template>
 </div>

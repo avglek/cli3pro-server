@@ -5,7 +5,8 @@
   <div
     nz-resizable
     class="resizable-box"
-    [nzMinHeight]="50"
+    [style.height.px]="contentHeight"
+    [style.width.px]="contentWidth"
     (nzResize)="
       isVertical ? onContentResizeWidth($event) : onContentResizeHeight($event)
     "
@@ -23,6 +24,7 @@
       <app-grid-data
         [tabData]="tabData"
         [cursorName]="docCursorName"
+        (docLink)="getDocLick($event)"
       ></app-grid-data>
     </div>
   </div>

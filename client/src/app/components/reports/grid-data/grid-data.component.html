@@ -10,6 +10,7 @@
       [cacheBlockSize]="cacheBlockSize"
       [cacheOverflowSize]="cacheOverflowSize"
       (cellContextMenu)="contextMenu($event)"
+      (rowClicked)="onRowClick($event)"
     ></ag-grid-angular>
   </div>
   <nz-dropdown-menu #menu="nzDropdownMenu">

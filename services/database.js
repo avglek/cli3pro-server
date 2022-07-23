@@ -2,13 +2,14 @@ const oracledb = require('oracledb');
 const serverConfig = require('../config/server');
 
 async function initialize() {
-  const pull = await oracledb.createPool(serverConfig.dbPool);
+  const pool = await oracledb.createPool(serverConfig.dbPool);
+  console.log(`Connection pool ${pool.poolAlias} is created`);
 }
 
 module.exports.initialize = initialize;
 
 async function close() {
-  await oracledb.getPool().close();
+  await oracledb.getPool().close(10);
 }
 
 module.exports.close = close;
@@ -19,7 +20,7 @@ async function getTableRowCount(table) {
   let connection;
 
   try {
-    connection = await oracledb.getConnection();
+    connection = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
 
     const result = await connection.execute(sql);
 
@@ -52,7 +53,7 @@ async function procedureExecute(proc, binds = [], opts = {}) {
 
   const arr = [];
   try {
-    conn = await oracledb.getConnection();
+    conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
     const result = await conn.execute(sql, binds, opts);
 
     resultSet = result.outBinds[params[0]];
@@ -96,7 +97,7 @@ async function procedureExecute(proc, binds = [], opts = {}) {
       try {
         await conn.close();
       } catch (err) {
-        console.log(err);
+        console.log('conn close:', err);
         throw new Error(err.message);
       }
     }
@@ -114,7 +115,7 @@ function simpleExecute(statement, binds = [], opts = {}) {
     opts.autoCommit = true;
 
     try {
-      conn = await oracledb.getConnection();
+      conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
 
       const result = await conn.execute(statement, binds, opts);
 

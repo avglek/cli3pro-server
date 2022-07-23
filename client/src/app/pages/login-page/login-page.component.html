@@ -44,7 +44,14 @@
           ></i>
         </ng-template>
       </div>
-      <button type="submit" class="field-submit">Вход</button>
+      <button
+        nz-button
+        type="submit"
+        class="field-submit"
+        [nzLoading]="isLoading"
+      >
+        Вход
+      </button>
     </div>
   </form>
 </div>

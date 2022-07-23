@@ -9,12 +9,20 @@
     <div class="right-box">
       <nz-space nzAlign="center">
         <button
+          *ngIf="isTwoTables"
           nz-button
           nzType="primary"
           nzSize="large"
           (click)="onChangeOrient()"
         >
-          <mat-icon svgIcon="viewAgenda"></mat-icon>
+          <mat-icon
+            svgIcon="viewAgenda"
+            [ngClass]="[
+              isVertical
+                ? 'mat-icon-orient-vertical'
+                : 'mat-icon-orient-horizontal'
+            ]"
+          ></mat-icon>
         </button>
         <button
           nz-button

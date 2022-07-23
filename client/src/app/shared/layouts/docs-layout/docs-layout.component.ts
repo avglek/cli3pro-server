@@ -13,19 +13,23 @@ export class DocsLayoutComponent implements OnInit {
   selectedIndex = 0;
 
   constructor(
-    private dataService: TabDataService,
+    private tabDataService: TabDataService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.tabs = this.dataService.getAll();
+    this.tabs = this.tabDataService.getAll();
     this.selectedIndex = this.tabs.length;
   }
 
   closeTab(event: { index: number }) {
-    this.dataService.removeByIndex(event.index);
+    this.tabDataService.removeByIndex(event.index);
     if (this.tabs.length === 0) {
       this.location.back();
     }
+  }
+
+  onChangeIndex($event: number) {
+    this.tabDataService.setCurrentIndex($event);
   }
 }

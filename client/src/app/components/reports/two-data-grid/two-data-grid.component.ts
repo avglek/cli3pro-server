@@ -37,6 +37,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   onContentResizeHeight({ height }: NzResizeEvent) {
+    console.log(height);
     cancelAnimationFrame(this.id);
     this.id = requestAnimationFrame(() => {
       this.contentHeight = height!;
@@ -44,6 +45,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   }
 
   onContentResizeWidth({ width }: NzResizeEvent) {
+    console.log(width);
     cancelAnimationFrame(this.id);
     this.id = requestAnimationFrame(() => {
       this.contentWidth = width!;
@@ -51,15 +53,10 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   }
 
   changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
-    console.log('event:', $event);
+    //console.log('event:', $event);
     $event.preventDefault();
     this.nzContextMenuService.create($event, menu);
   }
-
-  // contextMenu($event: CellContextMenuEvent) {
-  //   console.log('cell:', $event.value);
-  //   this.clipboardContext = $event.value;
-  // }
 
   ngAfterViewInit(): void {
     console.log(
@@ -67,5 +64,9 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
       this.el.nativeElement,
       this.el.nativeElement.offsetWidth
     );
+  }
+
+  getDocLick($event: string) {
+    console.log('link:', $event);
   }
 }

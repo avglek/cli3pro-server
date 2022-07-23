@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   CellContextMenuEvent,
   ColDef,
@@ -6,6 +6,7 @@ import {
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
+  RowClickedEvent,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
@@ -13,6 +14,7 @@ import {
   ITabData,
   TypeOut,
   ICursorData,
+  IStringData,
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
 import {
@@ -30,6 +32,8 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 export class GridDataComponent implements OnInit {
   @Input() tabData!: ITabData;
   @Input() cursorName!: string;
+  @Input() filter!: string;
+  @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
 
   girdApi!: GridApi;
   procParams: IProcParam[] = [];
@@ -56,7 +60,6 @@ export class GridDataComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('tabData:', this.tabData);
-    console.log('cursor name', this.cursorName);
 
     if (!this.tabData.isLoading) {
       if (this.tabData.params) {
@@ -74,16 +77,11 @@ export class GridDataComponent implements OnInit {
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
-      console.log('get rows:', this.cursorName, this.tabData);
       if (this.tabData.isLoading) {
         return;
       }
-      console.log('1:', this.cursorName);
 
-      if (params.sortModel) {
-      }
       this.isLoading = true;
-      console.log('2:', this.cursorName);
       this.procParams.forEach((param) => {
         if (param.name === this.cursorName) {
           param.start = params.startRow;
@@ -101,7 +99,6 @@ export class GridDataComponent implements OnInit {
           }
         }
       });
-      console.log('send:', this.tabData.procName, this.procParams);
       this.dataService
         .procExecute(
           this.tabData.procName!,
@@ -111,10 +108,14 @@ export class GridDataComponent implements OnInit {
         )
         .subscribe((data) => {
           this.isLoading = false;
+          console.log('data:', data);
+          console.log('data:', data.data['P_LINKS']);
+          const link = <IStringData>data.data['P_LINKS'];
+          if (link) {
+            this.docLink.emit(link.data);
+          }
           if (data.data) {
-            console.log('data:', this.cursorName, data);
-            const keys = Object.keys(data.data);
-            console.log('keys:', this.cursorName, keys);
+            //     const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[this.cursorName];
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
@@ -147,14 +148,16 @@ export class GridDataComponent implements OnInit {
   }
 
   changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
-    console.log('event:', $event);
     $event.preventDefault();
     this.nzContextMenuService.create($event, menu);
   }
 
   contextMenu($event: CellContextMenuEvent) {
-    console.log('cell:', $event.value);
     this.clipboardContext = $event.value;
+  }
+
+  onRowClick($event: RowClickedEvent) {
+    console.log('row click:', $event);
   }
 }
 

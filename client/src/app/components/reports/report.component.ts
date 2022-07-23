@@ -13,7 +13,7 @@ export class ReportComponent implements OnInit {
   types = TypeReport;
 
   ngOnInit(): void {
-    console.log('report:', this.tabData.reportType);
+    //console.log('report:', this.tabData.reportType);
 
     if (!this.tabData.isLoading) {
       this.reportType = this.tabData.reportType || TypeReport.Table;

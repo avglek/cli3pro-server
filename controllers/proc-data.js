@@ -1,4 +1,5 @@
 const oracledb = require('oracledb');
+const serverConfig = require('../config/server');
 const oraTypes = require('../common/ora-types');
 const database = require('../services/database');
 const errorHandler = require('../utils/errorHandler');
@@ -18,7 +19,7 @@ module.exports.get = async function (req, res) {
 
     const bind = query.bind;
 
-    connection = await oracledb.getConnection();
+    connection = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
     oracledb.fetchAsString = [oracledb.CLOB];
     const result = await connection.execute(stm, bind, {
       extendedMetaData: true,

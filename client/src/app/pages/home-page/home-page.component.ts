@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
 import { ITabData, ITreeDocs } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
@@ -15,6 +15,7 @@ import { Common } from '../../shared/classes/common';
 export class HomePageComponent implements OnInit {
   docs!: ITreeDocs[];
   owner!: string;
+  isLoading: boolean = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -28,15 +29,26 @@ export class HomePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.activateRoute.params
       .pipe(
+        tap(() => {
+          this.isLoading = true;
+        }),
         switchMap((params) => {
           return this.treeService.getDocs(params['id']);
         })
       )
 
-      .subscribe((data) => {
-        this.docs = data;
+      .subscribe({
+        next: (data) => {
+          this.isLoading = false;
+          this.docs = data;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.log('error:', err);
+        },
       });
   }
 

@@ -15,6 +15,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   validateForm!: FormGroup;
   authSub!: Subscription;
   passwordVisible!: boolean;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +54,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   }
 
   submitForm(): void {
+    this.isLoading = true;
     if (this.validateForm.valid) {
       const user: User = {
         user: this.validateForm.value.userName,
@@ -62,10 +64,12 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
       this.authSub = this.auth.login(user).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/home']);
         },
         error: (error) => {
           console.warn(error, 'test:');
+          this.isLoading = false;
           this.msg.error('Ошибка авторизации', error.error.message);
           this.validateForm.enable();
         },

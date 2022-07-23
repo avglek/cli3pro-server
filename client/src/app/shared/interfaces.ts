@@ -41,6 +41,7 @@ export interface ITabData {
   isSuccess?: boolean;
   errorMessage?: string;
   data?: any;
+  isVerticalOrient?: boolean;
 }
 
 export enum TypeReport {

@@ -1,5 +1,10 @@
 <div class="tree">
-  <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+  <ul
+    nz-menu
+    nzMode="inline"
+    [nzInlineCollapsed]="isCollapsed"
+    *ngIf="!isLoading; else loaderBlock"
+  >
     <ng-container
       *ngTemplateOutlet="menuTpl; context: { $implicit: tree }"
     ></ng-container>
@@ -38,4 +43,9 @@
       </ng-container>
     </ng-template>
   </ul>
+  <ng-template #loaderBlock>
+    <div class="loading">
+      <nz-spin [nzSize]="'large'" nzTip="Loading..."></nz-spin>
+    </div>
+  </ng-template>
 </div>

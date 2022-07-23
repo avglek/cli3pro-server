@@ -11,6 +11,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AppRoutingModule } from '../../../app-routing.module';
 import { HomePageComponent } from '../../../pages/home-page/home-page.component';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { HomePageComponent } from '../../../pages/home-page/home-page.component'
     NzToolTipModule,
     NzIconModule,
     AppRoutingModule,
+    NzSpinModule,
   ],
   exports: [],
 })
