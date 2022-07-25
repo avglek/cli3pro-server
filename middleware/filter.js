@@ -56,7 +56,6 @@ function sorting(sortParam, rows) {
 }
 
 function filter(filterParam, rows) {
-  console.log(filterParam);
 
   return rows.filter((row) => row[filterParam.colId] === filterParam.value);
 }

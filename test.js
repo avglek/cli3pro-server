@@ -58,7 +58,6 @@ async function run() {
     const resultSet = result.outBinds['P_DOC'];
     let row;
     const rowArray = [];
-    console.log(new Date());
     const meta = resultSet.metaData;
 
     while ((row = await resultSet.getRow())) {

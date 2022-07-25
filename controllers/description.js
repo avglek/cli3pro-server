@@ -67,7 +67,6 @@ module.exports.get = async function (req, res) {
     } else {
       throw new Error(`Procedure for doc ID:${docId} is not found`);
     }
-    //console.log(result);
 
     res.status(200).json(doc);
   } catch (e) {

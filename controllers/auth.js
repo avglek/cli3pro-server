@@ -45,7 +45,6 @@ module.exports.login = async function (req, res) {
       });
     }
   } catch (e) {
-    console.log('send message:', e);
     errorHandler(res, e);
   }
 };

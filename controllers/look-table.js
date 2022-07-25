@@ -22,8 +22,6 @@ module.exports.get = async function (req, res) {
   const schema = req.params['schema'];
   const params = req.query;
 
-  console.log('look req', params);
-
   const sql = 'docs_utils.get_look_table';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },

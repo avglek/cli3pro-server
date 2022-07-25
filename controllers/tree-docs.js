@@ -10,8 +10,6 @@ module.exports.get = async function (req, res) {
     pParent: req.params['parent'],
   };
 
-  console.log(req.params);
-
   try {
     const result = await database.procedureExecute(sql, bind);
 
