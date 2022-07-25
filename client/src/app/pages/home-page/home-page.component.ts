@@ -76,7 +76,6 @@ export class HomePageComponent implements OnInit {
           isSuccess: true,
           isLoading: false,
         };
-        //console.log('tabs:', newTab);
         this.tabService.update(newTab);
       },
       error: (err) => {

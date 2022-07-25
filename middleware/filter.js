@@ -24,6 +24,12 @@ function range(res, param, start, end) {
           resJson.data[param.name].rows
         );
       }
+      if (param['filter'] && param['filter'].length > 0) {
+        resJson.data[param.name].rows = filter(
+          param['filter'][0],
+          resJson.data[param.name].rows
+        );
+      }
       resJson.data[param.name].rows = end
         ? resJson.data[param.name].rows.slice(start, end)
         : resJson.data[param.name].rows.slice(start);
@@ -47,4 +53,10 @@ function sorting(sortParam, rows) {
 
     return sortParam['sort'] === 'asc' ? result : -result;
   });
+}
+
+function filter(filterParam, rows) {
+  console.log(filterParam);
+
+  return rows.filter((row) => row[filterParam.colId] === filterParam.value);
 }

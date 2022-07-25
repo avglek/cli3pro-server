@@ -196,7 +196,17 @@ export interface IProcParam {
   start?: number;
   end?: number;
   sorting?: SortModelItem[];
-  filter?: any;
+  filter?: FilterModelItem[];
+}
+export interface FilterModelItem {
+  colId: string;
+  value: string;
+  type: FilterProcType;
+}
+
+export enum FilterProcType {
+  equals,
+  includes,
 }
 
 export interface IField {

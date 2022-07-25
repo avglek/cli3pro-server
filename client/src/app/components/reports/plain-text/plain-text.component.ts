@@ -20,7 +20,6 @@ export class PlainTextComponent implements OnInit {
   constructor(private dataService: DataServerService) {}
 
   ngOnInit(): void {
-    console.log('text tab data:', this.tabData);
     this.tabData.isLoading = true;
     if (this.tabData.procName && this.tabData.uid && this.tabData.docId) {
       this.tabData.params?.forEach((param) => {
@@ -53,8 +52,6 @@ export class PlainTextComponent implements OnInit {
                     data.data[key.argumentName]
                   );
                   this.text = clob.data.split('\r');
-
-                  console.log(clob.data);
                 }
               });
             }

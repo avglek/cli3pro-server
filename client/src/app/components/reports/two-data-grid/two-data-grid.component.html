@@ -25,6 +25,7 @@
         [tabData]="tabData"
         [cursorName]="docCursorName"
         (docLink)="getDocLick($event)"
+        (rowClick)="docRowClick($event)"
       ></app-grid-data>
     </div>
   </div>
@@ -33,6 +34,7 @@
       <app-grid-data
         [tabData]="tabData"
         [cursorName]="detailCursorName"
+        [filter]="linkFilter"
       ></app-grid-data>
     </div>
   </div>

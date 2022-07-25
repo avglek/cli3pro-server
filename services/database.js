@@ -50,6 +50,7 @@ async function procedureExecute(proc, binds = [], opts = {}) {
   }, '');
 
   const sql = `begin ${proc}(${paramString.slice(0, -1)});end;`;
+  console.log('SQL:', sql);
 
   const arr = [];
   try {

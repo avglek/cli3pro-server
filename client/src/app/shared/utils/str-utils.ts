@@ -11,3 +11,14 @@ export function toCamelCase(str: string): string {
   }
   return result;
 }
+
+// const getSearchParams = (str: string): any => {
+//   if (!str) return [];
+//   const rex = /\.([a-z-_1-9;]+)/gim;
+//   const newStr = str.split(rex)[1];
+//   if (newStr) {
+//     return newStr.toUpperCase().split(';');
+//   } else {
+//     return [];
+//   }
+// };

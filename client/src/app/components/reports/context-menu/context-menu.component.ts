@@ -14,10 +14,8 @@ export class ContextMenuComponent {
   constructor(private clipboardService: ClipboardService) {}
 
   clickContext(action: ContextMenuAction) {
-    console.log(action);
     switch (action) {
       case ContextMenuAction.Copy:
-        console.log('copy:', this.contextValue);
         this.clipboardService.copy(this.contextValue);
         break;
     }

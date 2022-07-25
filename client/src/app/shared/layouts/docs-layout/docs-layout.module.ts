@@ -17,9 +17,15 @@ import { ErrorTabComponent } from '../../../components/reports/error-tab/error-t
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { OneDataGridComponent } from '../../../components/reports/one-data-grid/one-data-grid.component';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { GridLoadingComponent } from '../../../components/reports/grid-data/grid-loading.component';
+import { GridNoRowsComponent } from '../../../components/reports/grid-data/grid-no-rows.component';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @NgModule({
   declarations: [
+    GridNoRowsComponent,
+    GridLoadingComponent,
     OneDataGridComponent,
     ErrorTabComponent,
     TwoDataGridComponent,
@@ -40,6 +46,8 @@ import { OneDataGridComponent } from '../../../components/reports/one-data-grid/
     NzDropDownModule,
     NzLayoutModule,
     NzResizableModule,
+    NzSpinModule,
+    NzEmptyModule,
   ],
 })
 export class DocsLayoutModule {}

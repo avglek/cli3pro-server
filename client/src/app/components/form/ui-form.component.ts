@@ -44,8 +44,6 @@ export class UiFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   onSubmit($event: any): void {
-    console.log('submit:', $event);
-
     this.tabData.params?.map((param) => {
       if (param.inOut === 'IN') {
         if (param.argumentName) {

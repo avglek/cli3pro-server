@@ -67,7 +67,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
         : toCamelCase(this.options.lookupKeyfields!);
       this.getOptions();
     } else {
-      console.log('options:', this.options);
     }
 
     super.ngOnInit();
@@ -120,8 +119,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   search($event: string) {
-    //{{baseUrl}}/api/look-table/:schema/:table?order=kd&start=0&count=10&searchField=nd&searchValue=ГР
-    console.log($event);
     this.rowPoint = 0;
     this.searchValue = $event;
     this.controlOptions = [];

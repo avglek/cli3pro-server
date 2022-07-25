@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import {
   CellContextMenuEvent,
   ColDef,
@@ -15,6 +23,7 @@ import {
   TypeOut,
   ICursorData,
   IStringData,
+  FilterModelItem,
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
 import {
@@ -23,17 +32,21 @@ import {
 } from 'ng-zorro-antd/dropdown';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { GridLoadingComponent } from './grid-loading.component';
+import { GridNoRowsComponent } from './grid-no-rows.component';
 
 @Component({
   selector: 'app-grid-data',
   templateUrl: './grid-data.component.html',
   styleUrls: ['./grid-data.component.less'],
 })
-export class GridDataComponent implements OnInit {
+export class GridDataComponent implements OnInit, OnChanges {
   @Input() tabData!: ITabData;
   @Input() cursorName!: string;
-  @Input() filter!: string;
+  @Input() filter!: FilterModelItem[];
   @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
+  @Output() rowClick: EventEmitter<RowClickedEvent> =
+    new EventEmitter<RowClickedEvent>();
 
   girdApi!: GridApi;
   procParams: IProcParam[] = [];
@@ -59,8 +72,6 @@ export class GridDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('tabData:', this.tabData);
-
     if (!this.tabData.isLoading) {
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
@@ -82,12 +93,16 @@ export class GridDataComponent implements OnInit {
       }
 
       this.isLoading = true;
+      this.girdApi.showLoadingOverlay();
       this.procParams.forEach((param) => {
         if (param.name === this.cursorName) {
           param.start = params.startRow;
           param.end = params.endRow;
           if (params.sortModel) {
             param.sorting = params.sortModel;
+          }
+          if (this.filter && this.filter.length > 0) {
+            param.filter = this.filter;
           }
         }
         if (param.inOut === TypeOut.In) {
@@ -108,8 +123,7 @@ export class GridDataComponent implements OnInit {
         )
         .subscribe((data) => {
           this.isLoading = false;
-          console.log('data:', data);
-          console.log('data:', data.data['P_LINKS']);
+          this.girdApi.hideOverlay();
           const link = <IStringData>data.data['P_LINKS'];
           if (link) {
             this.docLink.emit(link.data);
@@ -117,6 +131,9 @@ export class GridDataComponent implements OnInit {
           if (data.data) {
             //     const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[this.cursorName];
+            if (docData.rows.length === 0) {
+              this.girdApi.showNoRowsOverlay();
+            }
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
               const columns = <ColDef[]>docData.fields
@@ -141,6 +158,14 @@ export class GridDataComponent implements OnInit {
         });
     },
   };
+  loadingOverlayComponent: any = GridLoadingComponent;
+  loadingOverlayComponentParams: any = {
+    loadingMessage: 'One moment please...',
+  };
+  noRowsOverlayComponent: any = GridNoRowsComponent;
+  noRowsOverlayComponentParams: any = {
+    noRowsMessageFunc: () => 'Sorry - no rows! at: ' + new Date(),
+  };
 
   onGridReady(params: GridReadyEvent) {
     params.api.setDatasource(this.dataSource);
@@ -157,7 +182,15 @@ export class GridDataComponent implements OnInit {
   }
 
   onRowClick($event: RowClickedEvent) {
-    console.log('row click:', $event);
+    this.rowClick.emit($event);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['filter'] && !this.tabData.isLoading) {
+      if (this.girdApi) {
+        this.girdApi.setDatasource(this.dataSource);
+      }
+    }
   }
 }
 

@@ -14,7 +14,5 @@ export class OneDataGridComponent implements OnInit {
     this.cursorName = 'P_DOC';
   }
 
-  ngOnInit(): void {
-    console.log('tabData:', this.tabData);
-  }
+  ngOnInit(): void {}
 }
