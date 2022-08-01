@@ -37,6 +37,7 @@ export class ToolBoxComponent implements OnInit {
   ngOnInit(): void {
     this.navEnd.subscribe((nav) => {
       this.menuTitle = nav.url.includes('home') ? 'Запросы' : 'Меню';
+      this.isTwoTables = nav.url.includes('doc');
       this.prevUrl = nav.url;
     });
 
@@ -76,5 +77,9 @@ export class ToolBoxComponent implements OnInit {
   onChangeOrient() {
     this.isVertical = !this.isVertical;
     this.currentTab.isVerticalOrient = this.isVertical;
+  }
+
+  onClickPersonalArea() {
+    this.router.navigate(['person']);
   }
 }

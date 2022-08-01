@@ -21,7 +21,12 @@ export class PlainTextComponent implements OnInit {
 
   ngOnInit(): void {
     this.tabData.isLoading = true;
-    if (this.tabData.procName && this.tabData.uid && this.tabData.docId) {
+    if (
+      this.tabData.procName &&
+      this.tabData.uid &&
+      this.tabData.docId &&
+      this.tabData.owner
+    ) {
       this.tabData.params?.forEach((param) => {
         const procParam: IProcParam = {
           name: param.argumentName,
@@ -34,6 +39,7 @@ export class PlainTextComponent implements OnInit {
       });
       this.dataService
         .procExecute(
+          this.tabData.owner,
           this.tabData.procName,
           this.procParams,
           this.tabData.uid,

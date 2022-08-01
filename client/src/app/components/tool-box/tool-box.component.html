@@ -28,6 +28,14 @@
           nz-button
           nzType="primary"
           nzSize="large"
+          (click)="onClickPersonalArea()"
+        >
+          <mat-icon svgIcon="userPersonArea"></mat-icon>
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
           (click)="menuToggle()"
         >
           {{ menuTitle }}

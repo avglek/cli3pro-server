@@ -1,6 +1,26 @@
-.root{
+@import 'current';
+
+.root {
   height: 36px;
-  border-top: 1px solid #7f7f7f;
-  background-color: #ebebeb;
+  border-top: 1px solid @app-border-color-base;
+  //  background-color: whitesmoke;
   display: flex;
+}
+
+.divider {
+  width: 1px;
+  border-left: 1px solid @app-border-color-base;
+  margin: 0.4rem 1rem;
+}
+
+.logo {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.root div {
+  padding: 5px;
+  color: @app-border-color-base;
 }

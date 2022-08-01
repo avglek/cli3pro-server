@@ -88,7 +88,11 @@ export class GridDataComponent implements OnInit, OnChanges {
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
+      console.log('grid get rows:', this.tabData);
       if (this.tabData.isLoading) {
+        return;
+      }
+      if (!this.tabData.owner) {
         return;
       }
 
@@ -116,6 +120,7 @@ export class GridDataComponent implements OnInit, OnChanges {
       });
       this.dataService
         .procExecute(
+          this.tabData.owner!,
           this.tabData.procName!,
           this.procParams,
           this.tabData.uid!,

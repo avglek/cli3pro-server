@@ -77,12 +77,13 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   getOptions() {
-    if (this.table && this.order) {
+    if (this.table && this.order && this.options && this.options.objectOwner) {
       this.isLoading = true;
       const arrayValues = this.valueName.split(';');
 
       this.dataService
         .getLookTable(
+          this.options.objectOwner,
           this.table,
           this.order,
           this.rowPoint,

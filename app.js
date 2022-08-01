@@ -7,6 +7,7 @@ const treeDocsRoutes = require('./routes/tree-docs');
 const descriptionRoutes = require('./routes/description');
 const procDataRoutes = require('./routes/proc-data');
 const lookTableRoutes = require('./routes/look-table');
+const ownersRoutes = require('./routes/owners');
 
 const database = require('./services/database');
 
@@ -28,6 +29,7 @@ app.use('/api/tree-docs', treeDocsRoutes);
 app.use('/api/desc', descriptionRoutes);
 app.use('/api/proc', procDataRoutes);
 app.use('/api/look-table', lookTableRoutes);
+app.use('/api/owners', ownersRoutes);
 
 app.get('/test', async (req, res) => {
   const result = await database.simpleExecute(

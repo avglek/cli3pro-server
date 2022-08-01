@@ -1,13 +1,12 @@
-const database = require('../services/database');
 const oracledb = require('oracledb');
+const database = require('../services/database');
 const errorHandler = require('../utils/errorHandler');
 
-module.exports.get = async function (req, res) {
-  const sql = 'docs_utils.get_tree_doc';
+module.exports.getList = async function (req, res) {
+  const sql = 'docs_utils.get_owners';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    pOwn: req.params['schema'],
-    pParent: req.params['parent'],
+    pUser: req.params['user'],
   };
 
   try {

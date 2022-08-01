@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IData, IDesc, IProcParam } from '../interfaces';
 import { Observable } from 'rxjs';
-import { Common } from '../classes/common';
+import { map } from 'rxjs/operators';
+
+interface OwnerListItem {
+  owner: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataServerService {
-  constructor(private http: HttpClient, private common: Common) {}
+  constructor(private http: HttpClient) {}
 
   getDesc(owner: string, id: number): Observable<IDesc> {
     const url = `/api/desc/${owner}/${id}`;
@@ -16,6 +20,7 @@ export class DataServerService {
   }
 
   procExecute(
+    owner: string,
     procName: string,
     params: IProcParam[],
     uid: string,
@@ -31,9 +36,7 @@ export class DataServerService {
         return param;
       }
     });
-    const url = `/api/proc/${
-      this.common.owner
-    }/${procName}?params=${JSON.stringify(
+    const url = `/api/proc/${owner}/${procName}?params=${JSON.stringify(
       outParams
     )}&uid=${uid}&docId=${docId}`;
 
@@ -41,6 +44,7 @@ export class DataServerService {
   }
 
   getLookTable(
+    owner: string,
     table: string,
     order: string = 'asc',
     startRow: number = 0,
@@ -50,8 +54,16 @@ export class DataServerService {
   ): Observable<any> {
     //{{baseUrl}}/api/look-table/:schema/:table?order=kd&start=0&count=10&searchField=nd&searchValue=ГР
 
-    const url = `/api/look-table/${this.common.owner}/${table}?order=${order}&start=${startRow}&count=${countRows}&searchField=${searchField}&searchValue=${searchValue}`;
+    const url = `/api/look-table/${owner}/${table}?order=${order}&start=${startRow}&count=${countRows}&searchField=${searchField}&searchValue=${searchValue}`;
 
     return this.http.get(url);
+  }
+
+  getOwners(user: string): Observable<string[]> {
+    return this.http.get<OwnerListItem[]>(`/api/owners/get-list/${user}`).pipe(
+      map((item) => {
+        return item.map((i) => i.owner);
+      })
+    );
   }
 }

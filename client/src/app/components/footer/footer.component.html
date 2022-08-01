@@ -1,3 +1,12 @@
 <div class="root">
-  <p>footer works!</p>
+  <div class="logo">
+    <mat-icon svgIcon="iconCopyright" style="margin-right: 1rem"></mat-icon>
+    Copyright ООО "ИЦС-УК"
+  </div>
+  <div class="divider" *ngIf="currentOwner"></div>
+  <div *ngIf="currentOwner">Текущая схема: {{ currentOwner }}</div>
+  <div class="divider" *ngIf="procedure"></div>
+  <div *ngIf="procedure">Процедура: {{ procedure }}</div>
+  <div class="divider" *ngIf="rowCount"></div>
+  <div *ngIf="rowCount">Количество строк: {{ rowCount }}</div>
 </div>

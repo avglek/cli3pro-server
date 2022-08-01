@@ -3,10 +3,11 @@ const oracledb = require('oracledb');
 const errorHandler = require('../utils/errorHandler');
 
 module.exports.get = async function (req, res) {
-  const sql = 'get_left_tree';
+  const schema = req.params['schema'];
+  const sql = 'docs_utils.get_left_tree';
   const bind = {
     pTree: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    pOwn: req.params['schema'],
+    pOwn: schema,
   };
 
   try {
@@ -31,6 +32,8 @@ module.exports.get = async function (req, res) {
 
     res.status(200).json(tree);
   } catch (e) {
-    errorHandler(res, e);
+    errorHandler(res, `Схема "${schema}" сейчас недоступна`);
+
+    //errorHandler(res, e);
   }
 };

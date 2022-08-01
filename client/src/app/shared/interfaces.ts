@@ -42,6 +42,7 @@ export interface ITabData {
   errorMessage?: string;
   data?: any;
   isVerticalOrient?: boolean;
+  owner?: string;
 }
 
 export enum TypeReport {
@@ -261,6 +262,7 @@ export interface IMeta {
 
 export interface IControlBase {
   value?: any;
+  defaultValue?: any;
   key: string;
   label?: string;
   required?: boolean;
@@ -315,7 +317,3 @@ export enum ContextMenuAction {
   'History',
   'ExportExel',
 }
-
-export const Icons: { [keys: string]: string } = {
-  viewAgenda: 'view_agenda',
-};
