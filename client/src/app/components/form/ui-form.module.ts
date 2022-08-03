@@ -5,6 +5,7 @@ import {
   UiTextAreaComponent,
   UiInputTextComponent,
   UiBaseControlComponent,
+  UiNumberInputComponent,
 } from '../../shared/UI-controls';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -17,6 +18,7 @@ import { UiFormComponent } from './ui-form.component';
 import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
 import { DynamicControlComponent } from './dynamic-control/dynamic-control.component';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     UiFormComponent,
     UiTextAreaComponent,
     UiBaseControlComponent,
+    UiNumberInputComponent,
   ],
   imports: [
     NzButtonModule,
@@ -38,6 +41,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     ReactiveFormsModule,
     CommonModule,
     NzSpinModule,
+    NzInputNumberModule,
   ],
   exports: [UiFormComponent],
 })

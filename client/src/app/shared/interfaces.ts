@@ -16,6 +16,7 @@ export interface ITreeNode {
   open?: boolean;
   selected?: boolean;
   disabled?: boolean;
+  roleName?: string;
   children?: ITreeNode[];
 }
 
@@ -25,6 +26,7 @@ export interface ITreeDocs {
   imgIndex: number;
   ordering: number;
   parentId: number;
+  roleName?: string;
   prognoz: number | null;
 }
 
@@ -309,6 +311,7 @@ export enum ControlType {
   'dateBox' = 1,
   'selectBox' = 3,
   'areaBox' = 13,
+  'numberBox' = 6,
   'undefBox' = -1,
 }
 
@@ -316,4 +319,11 @@ export enum ContextMenuAction {
   'Copy',
   'History',
   'ExportExel',
+}
+
+export interface JWTPayload {
+  iat: number;
+  owner: string;
+  roles: string[];
+  user: string;
 }

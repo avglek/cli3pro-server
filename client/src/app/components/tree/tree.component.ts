@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { CommonService } from '../../shared/services/common.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-tree',
@@ -27,7 +28,8 @@ export class TreeComponent implements OnInit, OnDestroy {
     private treeService: TreeService,
     private router: Router,
     private commonService: CommonService,
-    private msg: NzNotificationService
+    private msg: NzNotificationService,
+    private authService: AuthService
   ) {}
   ngOnDestroy(): void {}
 
@@ -47,7 +49,12 @@ export class TreeComponent implements OnInit, OnDestroy {
         this.treeService.getLeftTree(owner).subscribe({
           next: async (data) => {
             this.isLoading = false;
-            this.tree = data.sort((a, b) => a.ordering - b.ordering);
+
+            const roles = this.authService.getCurrentRoles();
+
+            this.tree = data
+              .filter((node) => roles?.includes(node.roleName!))
+              .sort((a, b) => a.ordering - b.ordering);
             await this.router.navigate([`/home/${this.tree[0].docId}`]);
           },
           error: (err) => {

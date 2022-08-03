@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
-import { User } from '../interfaces';
+import { JWTPayload, User } from '../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import jwtDecode from 'jwt-decode';
-
-interface jwtPayload {
-  iat: number;
-  owner: string;
-  roles: string[];
-  user: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +16,7 @@ export class AuthService {
   login(user: User): Observable<{ token: string }> {
     return this.http.post<{ token: string }>('/api/auth/login', user).pipe(
       tap(({ token }) => {
-        const decode = <jwtPayload>jwtDecode(token);
+        const decode = <JWTPayload>jwtDecode(token);
         localStorage.setItem('auth-token', token);
         if (decode) {
           localStorage.setItem('owner', decode.owner);
@@ -41,10 +34,26 @@ export class AuthService {
     return this.token;
   }
 
-  getCurrentUser() {
-    const decode = jwtDecode<jwtPayload>(this.token);
-    if (decode) {
-      return decode.user;
+  getTokenInfo(): JWTPayload | null {
+    const currToken = localStorage.getItem('auth-token');
+    if (currToken) {
+      return <JWTPayload>jwtDecode(this.token);
+    }
+    return null;
+  }
+
+  getCurrentUser(): string | null {
+    const info = this.getTokenInfo();
+    if (info) {
+      return info.user;
+    }
+    return null;
+  }
+
+  getCurrentRoles(): string[] | null {
+    const info = this.getTokenInfo();
+    if (info) {
+      return info.roles;
     }
     return null;
   }

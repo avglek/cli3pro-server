@@ -6,6 +6,7 @@ import { ITabData, ITreeDocs } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { DataServerService } from '../../shared/services/data-server.service';
 import { CommonService } from '../../shared/services/common.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-home-page',
@@ -23,12 +24,12 @@ export class HomePageComponent implements OnInit {
     private router: Router,
     private tabService: TabDataService,
     private server: DataServerService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.owner = this.commonService.getCurrentOwner() || '';
-    console.log('DOC TREE: init, owner:', this.owner);
 
     this.isLoading = true;
     this.activateRoute.params
@@ -40,8 +41,15 @@ export class HomePageComponent implements OnInit {
 
       .subscribe({
         next: (data) => {
+          const roles = this.authService.getCurrentRoles();
           this.isLoading = false;
-          this.docs = data;
+          this.docs = data
+            .filter((doc) => roles?.includes(doc.roleName!))
+            .map((doc) => ({
+              ...doc,
+              ordering: doc.ordering ? doc.ordering : 0,
+            }))
+            .sort((a, b) => a.ordering - b.ordering);
         },
         error: (err) => {
           this.isLoading = false;

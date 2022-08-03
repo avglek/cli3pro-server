@@ -9,24 +9,6 @@ import { ITreeDocs, ITreeNode } from '../interfaces';
 export class TreeService {
   constructor(private http: HttpClient) {}
 
-  // getLeftTree(): Observable<ITreeNode[]> {
-  //   console.log('get left tree');
-  //
-  //   return this.common.owner.pipe(
-  //     tap((owner) => console.log('tree owner:', owner)),
-  //     switchMap((owner) => this.http.get<ITreeNode[]>(`/api/tree/${owner}`))
-  //   );
-  // }
-  //
-  // getDocs(id: string): Observable<ITreeDocs[]> {
-  //   return this.common.owner.pipe(
-  //     tap((owner) => console.log('tree doc owner:', owner)),
-  //     switchMap((owner) =>
-  //       this.http.get<ITreeDocs[]>(`api/tree-docs/${owner}/${id}`)
-  //     )
-  //   );
-  // }
-
   getLeftTree(owner: string): Observable<ITreeNode[]> {
     return this.http.get<ITreeNode[]>(`/api/tree/${owner}`);
   }

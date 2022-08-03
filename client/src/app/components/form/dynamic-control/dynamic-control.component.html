@@ -28,6 +28,12 @@
       [formGroup]="form"
     >
     </app-ui-text-area>
+    <app-ui-number-input
+      *ngSwitchCase="'numberBox'"
+      [name]="control.key"
+      [formGroup]="form"
+      [defaultValue]="'50'"
+    ></app-ui-number-input>
     <h3 *ngSwitchDefault style="color: tomato">
       No control for № {{ control.controlNumber }}
     </h3>
