@@ -17,6 +17,7 @@ module.exports.get = async function (req, res) {
     const query = prepareSql(docName, docParams);
     const stm = query.stm;
     const bind = query.bind;
+    //todo сделать смену пула
     connection = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
     oracledb.fetchAsString = [oracledb.CLOB];
     const result = await connection.execute(stm, bind, {

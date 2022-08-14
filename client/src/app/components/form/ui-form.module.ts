@@ -6,6 +6,8 @@ import {
   UiInputTextComponent,
   UiBaseControlComponent,
   UiNumberInputComponent,
+  UiSimpleSelectComponent,
+  UiRadioGroupComponent,
 } from '../../shared/UI-controls';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -19,9 +21,12 @@ import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
 import { DynamicControlComponent } from './dynamic-control/dynamic-control.component';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 @NgModule({
   declarations: [
+    UiRadioGroupComponent,
+    UiSimpleSelectComponent,
     DynamicFormComponent,
     DynamicControlComponent,
     UiSelectComponent,
@@ -42,6 +47,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     CommonModule,
     NzSpinModule,
     NzInputNumberModule,
+    NzRadioModule,
   ],
   exports: [UiFormComponent],
 })

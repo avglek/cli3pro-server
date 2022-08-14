@@ -313,6 +313,8 @@ export enum ControlType {
   'areaBox' = 13,
   'numberBox' = 6,
   'undefBox' = -1,
+  'simpleSelectBox' = 2,
+  'radioGroup' = 7,
 }
 
 export enum ContextMenuAction {

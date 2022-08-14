@@ -22,6 +22,13 @@
       [options]="control.options"
       [defaultValue]="control.defaultValue"
     ></app-ui-select>
+    <app-ui-select
+      *ngSwitchCase="'simpleSelectBox'"
+      [name]="control.key"
+      [formGroup]="form"
+      [options]="control.options"
+      [defaultValue]="control.defaultValue"
+    ></app-ui-select>
     <app-ui-text-area
       *ngSwitchCase="'areaBox'"
       [name]="control.key"
@@ -34,6 +41,12 @@
       [formGroup]="form"
       [defaultValue]="'50'"
     ></app-ui-number-input>
+    <app-ui-radio-group
+      *ngSwitchCase="'radioGroup'"
+      [name]="control.key"
+      [formGroup]="form"
+    >
+    </app-ui-radio-group>
     <h3 *ngSwitchDefault style="color: tomato">
       No control for № {{ control.controlNumber }}
     </h3>

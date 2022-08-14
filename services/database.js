@@ -20,7 +20,7 @@ async function getTableRowCount(table) {
   let connection;
 
   try {
-    connection = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+    connection = await oracledb.getConnection(serverConfig.poolAlias);
 
     const result = await connection.execute(sql);
 
@@ -149,3 +149,29 @@ async function getUser(user) {
 }
 
 module.exports.getUser = getUser;
+
+module.exports.setOwner = async function (owner, connstr, pass) {
+  const sql = 'begin docs_utils.set_owner_user(:owner,:connstr,:pass);end;';
+  const bind = { owner, connstr, pass };
+  let conn;
+
+  try {
+    conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+
+    return await conn.execute(sql, bind);
+
+  } catch (err) {
+    console.error('own error:', err);
+    throw new Error(err.message);
+  } finally {
+    if (conn) {
+      // conn assignment worked, need to close
+      try {
+        await conn.close();
+        console.log('finally conn close');
+      } catch (err) {
+        console.log('own conn close:', err);
+      }
+    }
+  }
+};
