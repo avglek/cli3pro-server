@@ -1,15 +1,21 @@
 const oracledb = require('oracledb');
-const serverConfig = require('../config/server');
+const config = require('config');
+
+//let rootPool, userPool;
 
 async function initialize() {
-  const pool = await oracledb.createPool(serverConfig.dbPool);
-  console.log(`Connection pool ${pool.poolAlias} is created`);
+  const rootPool = await oracledb.createPool(config.get('dbRootPool'));
+  const userPool = await oracledb.createPool(config.get('dbUserPool'));
+  console.log(
+    `Connection pool ${rootPool.poolAlias} and ${userPool.poolAlias} is created`
+  );
 }
 
 module.exports.initialize = initialize;
 
 async function close() {
-  await oracledb.getPool().close(10);
+  await oracledb.getPool(config.get('dbRootPool.poolAlias')).close(10);
+  await oracledb.getPool(config.get('dbUserPool.poolAlias')).close(10);
 }
 
 module.exports.close = close;
@@ -20,7 +26,9 @@ async function getTableRowCount(table) {
   let connection;
 
   try {
-    connection = await oracledb.getConnection(serverConfig.poolAlias);
+    connection = await oracledb.getConnection(
+      config.get('dbRootPool.poolAlias')
+    );
 
     const result = await connection.execute(sql);
 
@@ -40,9 +48,10 @@ async function getTableRowCount(table) {
 
 module.exports.getTableRowCount = getTableRowCount;
 
-async function procedureExecute(proc, binds = [], opts = {}) {
+async function procedureExecute(proc, binds = [], opts = {}, owner = {}) {
   let conn;
   let resultSet;
+  let pool;
 
   const params = Object.keys(binds);
   const paramString = params.reduce((acc, param) => {
@@ -53,7 +62,14 @@ async function procedureExecute(proc, binds = [], opts = {}) {
 
   const arr = [];
   try {
-    conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+    if (owner.user && owner.pass) {
+      pool = oracledb.getPool(config.get('dbUserPool.poolAlias'));
+      conn = await pool.getConnection(owner.user, owner.pass);
+    } else {
+      pool = oracledb.getPool(config.get('dbRootPool.poolAlias'));
+      conn = await pool.getConnection();
+    }
+
     const result = await conn.execute(sql, binds, opts);
 
     resultSet = result.outBinds[params[0]];
@@ -115,7 +131,7 @@ function simpleExecute(statement, binds = [], opts = {}) {
     opts.autoCommit = true;
 
     try {
-      conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+      conn = await oracledb.getConnection(config.get('dbRootPool.poolAlias'));
 
       const result = await conn.execute(statement, binds, opts);
 
@@ -156,10 +172,9 @@ module.exports.setOwner = async function (owner, connstr, pass) {
   let conn;
 
   try {
-    conn = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+    conn = await oracledb.getConnection(config.get('dbRootPool.poolAlias'));
 
     return await conn.execute(sql, bind);
-
   } catch (err) {
     console.error('own error:', err);
     throw new Error(err.message);

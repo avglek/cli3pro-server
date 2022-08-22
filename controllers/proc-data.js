@@ -1,14 +1,16 @@
 const oracledb = require('oracledb');
-const serverConfig = require('../config/server');
+const config = require('config');
 const oraTypes = require('../common/ora-types');
 const database = require('../services/database');
 const errorHandler = require('../utils/errorHandler');
+const owner = require('./owner');
 
 module.exports.get = async function (req, res) {
   const docName = req.params['name'];
   const schema = req.params['schema'];
 
   let connection = undefined;
+  let pool = undefined;
   try {
     const docParams = JSON.parse(req.query.params);
     const uid = req.query.uid;
@@ -17,8 +19,19 @@ module.exports.get = async function (req, res) {
     const query = prepareSql(docName, docParams);
     const stm = query.stm;
     const bind = query.bind;
-    //todo сделать смену пула
-    connection = await oracledb.getConnection(serverConfig.dbPool.poolAlias);
+
+    const userObject = await owner.getUserObj(schema);
+
+    if (userObject.status === 'success') {
+      pool = await oracledb.getPool(config.get('dbUserPool.poolAlias'));
+      connection = await pool.getConnection({
+        user: userObject.user,
+        password: userObject.pass,
+      });
+    } else {
+      pool = await oracledb.getPool(config.get('dbRootPool.poolAlias'));
+      connection = await pool.getConnection();
+    }
     oracledb.fetchAsString = [oracledb.CLOB];
     const result = await connection.execute(stm, bind, {
       extendedMetaData: true,

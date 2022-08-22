@@ -1,22 +1,22 @@
 const app = require('./app');
 const http = require('http');
-const serverConfig = require('./config/server');
+const config = require('config');
 const database = require('./services/database');
 
 const defaultThreadPoolSize = 4;
 
 // Increase thread pool size by poolMax
 process.env.UV_THREADPOOL_SIZE =
-  serverConfig.dbPool.poolMax + defaultThreadPoolSize;
+  config.get('dbRootPool.poolMax') + defaultThreadPoolSize;
 
 const httpServer = http.createServer(app);
 
 function init() {
   return new Promise((resolve, reject) => {
     httpServer
-      .listen(serverConfig.port)
+      .listen(config.get('port'))
       .on('listening', () => {
-        console.log(`Web server listening on localhost:${serverConfig.port}`);
+        console.log(`Web server listening on localhost:${config.get('port')}`);
         resolve();
       })
       .on('error', (err) => {

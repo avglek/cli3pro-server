@@ -7,7 +7,7 @@ module.exports.getList = async function (req, res) {
   const sql = 'docs_utils.get_owners';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    pUser: req.params['user'],
+    pUser: req.params['owner'],
   };
 
   try {
@@ -23,9 +23,14 @@ module.exports.setOwner = async function (req, res) {
   const codePass = crypto.encrypt(req.body.pass);
 
   try {
-    await database.setOwner(req.body.owner, req.body.connstr, codePass);
+    const owner = req.body.owner;
+    if (owner) {
+      await database.setOwner(owner.toUpperCase(), req.body.connstr, codePass);
 
-    res.status(200).json({ message: 'OK' });
+      res.status(200).json({ message: 'OK' });
+    } else {
+      errorHandler(res, { message: 'no owner' });
+    }
   } catch (e) {
     console.log('owner error:', e);
     errorHandler(res, e);

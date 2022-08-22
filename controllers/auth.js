@@ -1,7 +1,7 @@
 const database = require('../services/database');
 const oracledb = require('oracledb');
 const jwt = require('jsonwebtoken');
-const config = require('../config/server');
+const config = require('config');
 const errorHandler = require('../utils/errorHandler');
 
 module.exports.login = async function (req, res) {
@@ -28,7 +28,7 @@ module.exports.login = async function (req, res) {
             roles: roles.map((i) => i['roleName']),
             owner,
           },
-          config.jwt
+          config.get('jwt')
           //{ expiresIn: 60 * 60 }
         );
         res.status(200).json({

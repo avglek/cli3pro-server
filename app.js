@@ -7,7 +7,7 @@ const treeDocsRoutes = require('./routes/tree-docs');
 const descriptionRoutes = require('./routes/description');
 const procDataRoutes = require('./routes/proc-data');
 const lookTableRoutes = require('./routes/look-table');
-const ownersRoutes = require('./routes/owners');
+const ownersRoutes = require('./routes/owner');
 
 const database = require('./services/database');
 

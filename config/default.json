@@ -1,0 +1,23 @@
+{
+  "port": 5050,
+  "dbRootPool": {
+    "user": "cli3prof",
+    "password": "twister",
+    "connectString": "eva",
+    "poolMin": 10,
+    "poolMax": 10,
+    "poolIncrement": 0,
+    "poolAlias": "root",
+    "poolPingInterval": 0
+  },
+  "dbUserPool": {
+    "connectString": "eva",
+    "poolMin": 10,
+    "poolMax": 10,
+    "poolIncrement": 0,
+    "poolAlias": "user",
+    "poolPingInterval": 0,
+    "homogeneous": false
+  },
+  "jwt": "dev-jwt"
+}
