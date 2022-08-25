@@ -88,7 +88,6 @@ export class GridDataComponent implements OnInit, OnChanges {
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
-      console.log('grid get rows:', this.tabData);
       if (this.tabData.isLoading) {
         return;
       }
@@ -152,7 +151,7 @@ export class GridDataComponent implements OnInit, OnChanges {
                       ? col.displaySize * 10 + 20
                       : undefined,
                     valueFormatter: (params) =>
-                      dataFormatter(params, col.displayFormat),
+                      dataFormatter(params, col.displayFormat, col.dbTypeName),
                   };
                 });
               if (this.girdApi) {
@@ -201,17 +200,52 @@ export class GridDataComponent implements OnInit, OnChanges {
 
 function dataFormatter(
   params: ValueFormatterParams,
-  format: string | null | undefined
+  format: string | null | undefined,
+  type: string | undefined
 ): string {
   let value = params.value;
 
-  if (dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid()) {
-    if (format) {
-      format = format.toUpperCase().replace('YY', 'YYYY').replace('NN', 'mm');
-      value = dayjs(value).format(format);
-    } else {
-      value = dayjs(value).format('DD.MM.YYYY');
-    }
+  if (!type) {
+    return value;
   }
+
+  switch (type) {
+    case 'NUMBER':
+      if (!value) return '0';
+      if (format) {
+        return formatStringToFixFloat(value.toString(), format).toString();
+      }
+      return Number.parseInt(value.toString()).toString();
+    case 'DATE':
+      if (dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid()) {
+        const currYear = value.slice(0, value.indexOf('-'));
+        const nowYear = dayjs().year();
+        if (currYear === '0000') {
+          value = nowYear + '-' + value.slice(value.indexOf('-') + 1);
+        }
+        if (format) {
+          format = format
+            .toUpperCase()
+            .replace('YY', 'YYYY')
+            .replace('NN', 'mm');
+          return dayjs(value).format(format);
+        } else {
+          return dayjs(value).format('DD.MM.YYYY');
+        }
+      }
+      return value;
+  }
+
   return value;
+}
+
+function formatStringToFixFloat(value: string, format: string): number {
+  const a = format;
+  const b = value;
+  const f =
+    b.indexOf('.') + 1 === 0
+      ? b
+      : b.slice(0, b.indexOf('.') + 1 + a.slice(a.indexOf('.') + 1).length);
+
+  return Number.parseFloat(f);
 }
