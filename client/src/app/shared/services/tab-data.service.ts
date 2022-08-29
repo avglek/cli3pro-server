@@ -15,7 +15,6 @@ export class TabDataService {
   subject = new BehaviorSubject(0);
 
   add(tab: ITabData): string {
-    console.log('add tabs:', tab);
     tab.uid = nanoid();
     this.tabs.push(tab);
     this.currentIndex++;
@@ -24,7 +23,6 @@ export class TabDataService {
   }
 
   getAll(): ITabData[] {
-    console.log('all tabs:', this.tabs);
     return this.tabs;
   }
 
@@ -40,7 +38,6 @@ export class TabDataService {
   }
 
   update(tab: ITabData) {
-    console.log('update tabs:', tab);
     if (this.tabs.length > 0) {
       const index = this.tabs.findIndex((i) => i.uid === tab.uid);
       if (index >= 0) {
@@ -67,6 +64,14 @@ export class TabDataService {
         },
       });
     });
+  }
+
+  setDisplayRowCount(rowCount: string, uid: string) {
+    const tab = this.tabs.find((tab) => tab.uid === uid);
+    if (tab) {
+      tab.statusRowCount = rowCount;
+      this.refresh();
+    }
   }
 
   refresh() {

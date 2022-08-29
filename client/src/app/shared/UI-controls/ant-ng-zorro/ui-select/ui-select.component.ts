@@ -16,7 +16,7 @@ export interface Options {
       nzAllowClear
       nzShowSearch
       nzServerSearch
-      nzPlaceHolder="input search text"
+      nzPlaceHolder="Выберите значение"
       [formControlName]="name"
       (nzScrollToBottom)="loadMore()"
       [nzDropdownRender]="renderTemplate"

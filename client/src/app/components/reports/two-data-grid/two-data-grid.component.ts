@@ -1,9 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import {
   FilterModelItem,
   FilterProcType,
@@ -16,6 +11,7 @@ import {
   NzDropdownMenuComponent,
 } from 'ng-zorro-antd/dropdown';
 import { RowClickedEvent } from 'ag-grid-community';
+import { TabDataService } from '../../../shared/services/tab-data.service';
 
 @Component({
   selector: 'app-two-data-grid',
@@ -37,8 +33,12 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   private docLinkKey!: string;
   private detailLinkKey!: string;
 
+  private masterRowCount: number = 0;
+  private slaveRowCount: number = 0;
+
   constructor(
     private nzContextMenuService: NzContextMenuService,
+    private tabService: TabDataService
   ) {}
 
   ngOnInit(): void {}
@@ -99,5 +99,20 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
         this.linkFilter = [docFilter];
       }
     }
+  }
+
+  onMasterRowCount($event: number) {
+    this.masterRowCount = $event;
+    const displayCount = `${this.masterRowCount}/${this.slaveRowCount}`;
+    if (this.tabData.uid)
+      this.tabService.setDisplayRowCount(displayCount, this.tabData.uid);
+  }
+
+  onSlaveRowCount($event: number) {
+    this.slaveRowCount = $event;
+    const displayCount = `${this.masterRowCount}/${this.slaveRowCount}`;
+
+    if (this.tabData.uid)
+      this.tabService.setDisplayRowCount(displayCount, this.tabData.uid);
   }
 }

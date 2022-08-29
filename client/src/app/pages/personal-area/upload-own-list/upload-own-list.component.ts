@@ -42,7 +42,6 @@ export class UploadOwnListComponent {
         next: () => {
           this.uploading = false;
           this.fileList = [];
-          console.log('upload successfully.');
         },
         error: (err) => {
           this.uploading = false;

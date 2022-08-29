@@ -26,6 +26,7 @@
         [cursorName]="docCursorName"
         (docLink)="getDocLick($event)"
         (rowClick)="docRowClick($event)"
+        (rowCount)="onMasterRowCount($event)"
       ></app-grid-data>
     </div>
   </div>
@@ -35,6 +36,7 @@
         [tabData]="tabData"
         [cursorName]="detailCursorName"
         [filter]="linkFilter"
+        (rowCount)="onSlaveRowCount($event)"
       ></app-grid-data>
     </div>
   </div>

@@ -29,6 +29,7 @@ function range(res, param, start, end) {
           param['filter'][0],
           resJson.data[param.name].rows
         );
+        resJson.data[param.name].count = resJson.data[param.name].rows.length;
       }
       resJson.data[param.name].rows = end
         ? resJson.data[param.name].rows.slice(start, end)
@@ -56,6 +57,5 @@ function sorting(sortParam, rows) {
 }
 
 function filter(filterParam, rows) {
-
   return rows.filter((row) => row[filterParam.colId] === filterParam.value);
 }

@@ -40,7 +40,6 @@ export class SelectSchemaComponent implements OnInit {
 
     if (user) {
       this.dataService.getOwners(user).subscribe((data) => {
-        console.log(user, ':', data);
         this.listOfOption = data;
         if (data.length > 0) {
           this.selectedValue = owner || data[0];

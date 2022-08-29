@@ -12,8 +12,7 @@ export class UiBaseControlComponent implements OnInit {
   @Input() defaultValue = '';
 
   ngOnInit(): void {
-    const formControl = new FormControl();
-    formControl.defaultValue(this);
+    const formControl = new FormControl(this.defaultValue);
     if (this.formGroup) {
       this.formGroup.addControl(this.name, formControl);
     }

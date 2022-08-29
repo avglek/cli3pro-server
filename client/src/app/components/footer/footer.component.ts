@@ -31,7 +31,6 @@ export class FooterComponent implements OnInit {
 
   ngOnInit(): void {
     this.navEnd.subscribe((nav) => {
-      console.log('nav:', nav.url);
       if (nav.url.includes('person')) {
         this.currentOwner = this.common.getCurrentOwner() || undefined;
         this.procedure = undefined;
@@ -52,6 +51,7 @@ export class FooterComponent implements OnInit {
           this.currentTab = tab;
           this.currentOwner = tab.owner;
           this.procedure = tab.procName;
+          this.rowCount = tab.statusRowCount;
         }
       }
     });

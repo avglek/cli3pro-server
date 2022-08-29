@@ -45,6 +45,7 @@ export interface ITabData {
   data?: any;
   isVerticalOrient?: boolean;
   owner?: string;
+  statusRowCount?: string;
 }
 
 export enum TypeReport {

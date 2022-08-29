@@ -45,6 +45,7 @@ export class GridDataComponent implements OnInit, OnChanges {
   @Input() cursorName!: string;
   @Input() filter!: FilterModelItem[];
   @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
+  @Output() rowCount: EventEmitter<number> = new EventEmitter<number>();
   @Output() rowClick: EventEmitter<RowClickedEvent> =
     new EventEmitter<RowClickedEvent>();
 
@@ -135,6 +136,7 @@ export class GridDataComponent implements OnInit, OnChanges {
           if (data.data) {
             //     const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[this.cursorName];
+            this.rowCount.emit(docData.count);
             if (docData.rows.length === 0) {
               this.girdApi.showNoRowsOverlay();
             }

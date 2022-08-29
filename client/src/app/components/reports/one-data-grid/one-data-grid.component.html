@@ -1,3 +1,7 @@
 <div class="root">
-  <app-grid-data [tabData]="tabData" [cursorName]="cursorName"></app-grid-data>
+  <app-grid-data
+    [tabData]="tabData"
+    [cursorName]="cursorName"
+    (rowCount)="onRowCount($event)"
+  ></app-grid-data>
 </div>
