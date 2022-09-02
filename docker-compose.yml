@@ -1,0 +1,12 @@
+version: "3.8"
+networks:
+  proxy_net:
+    external: true
+services:
+  cli3-server:
+    build: .
+    ports:
+      - "5050:5050"
+    container_name: cli3-server
+    networks:
+      - proxy_net

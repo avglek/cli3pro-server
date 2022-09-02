@@ -14,7 +14,7 @@ const database = require('./services/database');
 const app = express();
 
 //app.set('query parser', 'simple');
-
+app.use(express.static('public'));
 app.use(require('morgan')('dev'));
 app.use(require('cors')());
 app.use(passport.initialize());

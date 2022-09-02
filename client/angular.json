@@ -35,7 +35,11 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/custom-theme.scss", "src/google-fonts.css", "src/styles.less"],
+            "styles": [
+              "src/custom-theme.scss",
+              "src/google-fonts.css",
+              "src/styles.less"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles/themes"]
             },
@@ -47,7 +51,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",

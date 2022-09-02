@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import {
   CellContextMenuEvent,
@@ -34,13 +35,14 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { GridLoadingComponent } from './grid-loading.component';
 import { GridNoRowsComponent } from './grid-no-rows.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-grid-data',
   templateUrl: './grid-data.component.html',
   styleUrls: ['./grid-data.component.less'],
 })
-export class GridDataComponent implements OnInit, OnChanges {
+export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tabData!: ITabData;
   @Input() cursorName!: string;
   @Input() filter!: FilterModelItem[];
@@ -56,6 +58,7 @@ export class GridDataComponent implements OnInit, OnChanges {
   cacheBlockSize = 50;
   cacheOverflowSize = 3;
   isLoading = false;
+  docSub: Subscription | undefined;
 
   clipboardContext!: any;
 
@@ -72,7 +75,16 @@ export class GridDataComponent implements OnInit, OnChanges {
     dayjs.extend(customParseFormat);
   }
 
+  ngOnDestroy(): void {
+    console.log('destroy');
+    if (this.docSub) {
+      this.docSub.unsubscribe();
+      this.docSub = undefined;
+    }
+  }
+
   ngOnInit(): void {
+    console.log('init');
     if (!this.tabData.isLoading) {
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
@@ -95,7 +107,6 @@ export class GridDataComponent implements OnInit, OnChanges {
       if (!this.tabData.owner) {
         return;
       }
-
       this.isLoading = true;
       this.girdApi.showLoadingOverlay();
       this.procParams.forEach((param) => {
@@ -118,7 +129,7 @@ export class GridDataComponent implements OnInit, OnChanges {
           }
         }
       });
-      this.dataService
+      this.docSub = this.dataService
         .procExecute(
           this.tabData.owner!,
           this.tabData.procName!,
