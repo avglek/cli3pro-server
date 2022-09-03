@@ -1,0 +1,16 @@
+stages:
+  - deploy
+
+deploy_production:
+  stage: deploy
+  when: manual
+  tags:
+    - shell
+  script:
+    - echo "Remove old container"
+    - docker-compose down
+    - echo "Deploying to server"
+    - docker-compose up -d --build --force-recreate
+    - echo "Deployed"
+  only:
+    - master
