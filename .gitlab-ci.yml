@@ -13,4 +13,4 @@ deploy_production:
     - docker-compose up -d --build --force-recreate
     - echo "Deployed"
   only:
-    - master
+    - main
