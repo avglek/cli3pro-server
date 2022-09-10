@@ -22,6 +22,6 @@ COPY . .
 ENV TNS_ADMIN=/usr/src/app/config
 ENV NLS_LANG=AMERICAN_AMERICA.UTF8
 
-EXPOSE 5050
+EXPOSE 5000
 CMD [ "node", "index.js" ]
 
