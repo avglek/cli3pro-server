@@ -16,7 +16,6 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '/login', pathMatch: 'full' },
       { path: 'login', component: LoginPageComponent },
-      { path: '**', redirectTo: '/' },
     ],
   },
   {
@@ -28,7 +27,6 @@ const routes: Routes = [
       { path: 'home/:id', component: HomePageComponent },
       { path: 'doc', component: DocsLayoutComponent },
       { path: 'person', component: PersonalAreaComponent },
-      { path: '**', redirectTo: '/' },
     ],
   },
 ];
