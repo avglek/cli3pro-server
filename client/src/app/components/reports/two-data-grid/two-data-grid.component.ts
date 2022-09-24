@@ -10,7 +10,7 @@ import {
   NzContextMenuService,
   NzDropdownMenuComponent,
 } from 'ng-zorro-antd/dropdown';
-import { RowClickedEvent } from 'ag-grid-community';
+import { CellContextMenuEvent, RowClickedEvent } from 'ag-grid-community';
 import { TabDataService } from '../../../shared/services/tab-data.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   id = -1;
 
   clipboardContext!: any;
+  contextEvent: CellContextMenuEvent | undefined;
   docCursorName: string = 'P_DOC';
   detailCursorName: string = 'P_DETAIL';
   linkFilter: FilterModelItem[] = [];

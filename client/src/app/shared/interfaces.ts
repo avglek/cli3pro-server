@@ -205,7 +205,8 @@ export interface IProcParam {
 export interface FilterModelItem {
   colId: string;
   value: string;
-  type: FilterProcType;
+  type?: FilterProcType;
+  filterType?: string;
 }
 
 export enum FilterProcType {
@@ -322,6 +323,7 @@ export enum ContextMenuAction {
   'Copy',
   'History',
   'ExportExel',
+  'Filter',
 }
 
 export interface JWTPayload {

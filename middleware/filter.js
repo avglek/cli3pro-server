@@ -26,7 +26,7 @@ function range(res, param, start, end) {
       }
       if (param['filter'] && param['filter'].length > 0) {
         resJson.data[param.name].rows = filter(
-          param['filter'][0],
+          param['filter'],
           resJson.data[param.name].rows
         );
         resJson.data[param.name].count = resJson.data[param.name].rows.length;
@@ -57,5 +57,24 @@ function sorting(sortParam, rows) {
 }
 
 function filter(filterParam, rows) {
-  return rows.filter((row) => row[filterParam.colId] === filterParam.value);
+  console.log('filter:', filterParam);
+
+  return filterParam.reduce((acc, filterElement) => {
+    acc = acc.filter((row) => {
+      let res;
+      if (filterElement.type === 0) {
+        res = row[filterElement.colId] === filterElement.value;
+      } else if (filterElement.type === 1) {
+        let temp = row[filterElement.colId];
+        let value = filterElement.value;
+        if (typeof temp === 'string') temp = temp.toUpperCase();
+        if (typeof value === 'string') value = value.toUpperCase();
+
+        res = temp.includes(value);
+      }
+      return res;
+    });
+    return acc;
+  }, rows);
+
 }

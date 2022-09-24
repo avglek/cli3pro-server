@@ -8,22 +8,59 @@
   <div class="main-box">
     <div class="right-box">
       <nz-space nzAlign="center">
-        <button
-          *ngIf="isTwoTables"
-          nz-button
-          nzType="primary"
-          nzSize="large"
-          (click)="onChangeOrient()"
-        >
-          <mat-icon
-            svgIcon="viewAgenda"
-            [ngClass]="[
-              isVertical
-                ? 'mat-icon-orient-vertical'
-                : 'mat-icon-orient-horizontal'
-            ]"
-          ></mat-icon>
-        </button>
+        <div *ngIf="isDocTools">
+          <button
+            *ngIf="isTwoTables"
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="onChangeOrient()"
+          >
+            <mat-icon
+              svgIcon="viewAgenda"
+              [ngClass]="[
+                isVertical
+                  ? 'mat-icon-orient-vertical'
+                  : 'mat-icon-orient-horizontal'
+              ]"
+            ></mat-icon>
+          </button>
+
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="onClickFilter()"
+          >
+            <mat-icon
+              *ngIf="!isOnFilter; else filterOn"
+              svgIcon="filterAdd"
+            ></mat-icon>
+            <ng-template #filterOn>
+              <mat-icon
+                svgIcon="filterRemove"
+                [ngClass]="'button-invert'"
+              ></mat-icon>
+            </ng-template>
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="onClickMarker()"
+          >
+            <mat-icon
+              *ngIf="!isOnMarker; else markerOn"
+              svgIcon="markerColor"
+            ></mat-icon>
+            <ng-template #markerOn>
+              <mat-icon
+                svgIcon="markerColor"
+                [ngClass]="'button-invert'"
+              ></mat-icon>
+            </ng-template>
+          </button>
+        </div>
         <button
           nz-button
           nzType="primary"
@@ -42,6 +79,7 @@
         </button>
         <button nz-button nzType="primary" nzSize="large">О нас</button>
         <nz-divider nzType="vertical"></nz-divider>
+        <div>test</div>
         <i
           nz-icon
           nzType="logout"

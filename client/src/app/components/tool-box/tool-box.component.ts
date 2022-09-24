@@ -22,6 +22,9 @@ export class ToolBoxComponent implements OnInit {
   isVertical: boolean = false;
   currentTab!: ITabData;
   isTwoTables: boolean = false;
+  isOnFilter: boolean = false;
+  isOnMarker: boolean = false;
+  isDocTools: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -38,7 +41,9 @@ export class ToolBoxComponent implements OnInit {
     this.navEnd.subscribe((nav) => {
       this.menuTitle = nav.url.includes('home') ? 'Запросы' : 'Меню';
       this.isTwoTables = nav.url.includes('doc');
+      this.isDocTools = nav.url.includes('doc');
       this.prevUrl = nav.url;
+      console.log('nav:', nav.url, nav.url.includes('doc'), this.isDocTools);
     });
 
     this.tabDataService.getCurrentTab().subscribe({
@@ -81,5 +86,13 @@ export class ToolBoxComponent implements OnInit {
 
   onClickPersonalArea() {
     this.router.navigate(['person']);
+  }
+
+  onClickFilter() {
+    this.isOnFilter = !this.isOnFilter;
+  }
+
+  onClickMarker() {
+    this.isOnMarker = !this.isOnMarker;
   }
 }

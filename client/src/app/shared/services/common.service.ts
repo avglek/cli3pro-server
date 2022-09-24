@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { FilterModelItem } from '../interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
   currentOwner: string = '';
   owner = new BehaviorSubject<string>('');
+  contextFilter = new Subject<FilterModelItem>();
 
   getCurrentOwnerFromStorage(): string | null {
     return localStorage.getItem('owner');
@@ -25,5 +27,13 @@ export class CommonService {
     if (owner) {
       this.changeOwner(owner);
     }
+  }
+
+  setContextFilter(value: FilterModelItem) {
+    this.contextFilter.next(value);
+  }
+
+  getContextFilter() {
+    return this.contextFilter;
   }
 }

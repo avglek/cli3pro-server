@@ -3,10 +3,10 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
-  OnDestroy,
 } from '@angular/core';
 import {
   CellContextMenuEvent,
@@ -19,12 +19,13 @@ import {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
+  FilterModelItem,
+  FilterProcType,
+  ICursorData,
   IProcParam,
+  IStringData,
   ITabData,
   TypeOut,
-  ICursorData,
-  IStringData,
-  FilterModelItem,
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
 import {
@@ -36,6 +37,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { GridLoadingComponent } from './grid-loading.component';
 import { GridNoRowsComponent } from './grid-no-rows.component';
 import { Subscription } from 'rxjs';
+import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-grid-data',
@@ -45,7 +47,7 @@ import { Subscription } from 'rxjs';
 export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tabData!: ITabData;
   @Input() cursorName!: string;
-  @Input() filter!: FilterModelItem[];
+  @Input() filter: FilterModelItem[] = [];
   @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
   @Output() rowCount: EventEmitter<number> = new EventEmitter<number>();
   @Output() rowClick: EventEmitter<RowClickedEvent> =
@@ -61,16 +63,19 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   docSub: Subscription | undefined;
 
   clipboardContext!: any;
+  contextEvent: CellContextMenuEvent | undefined = undefined;
 
   defaultColDef = {
     resizable: true,
     cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
+    floatingFilter: true,
   };
 
   constructor(
     private dataService: DataServerService,
-    private nzContextMenuService: NzContextMenuService
+    private nzContextMenuService: NzContextMenuService,
+    private commonService: CommonService
   ) {
     dayjs.extend(customParseFormat);
   }
@@ -84,8 +89,9 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('init');
     if (!this.tabData.isLoading) {
+      console.log('init:', this.tabData);
+
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
           return {
@@ -97,10 +103,20 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     }
+
+    this.commonService.getContextFilter().subscribe((filter) => {
+      console.log('set filter:', filter);
+      this.filter.push(filter);
+    });
   }
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
+      console.log('ds params:', params);
+      if (Object.keys(params.filterModel).length > 0) {
+        this.filter = prepareFilter(params.filterModel);
+        console.log('filter model:', this.filter);
+      }
       if (this.tabData.isLoading) {
         return;
       }
@@ -116,6 +132,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           if (params.sortModel) {
             param.sorting = params.sortModel;
           }
+          console.log('this filter:', this.filter);
           if (this.filter && this.filter.length > 0) {
             param.filter = this.filter;
           }
@@ -129,6 +146,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       });
+      console.log('proc params:', this.procParams);
       this.docSub = this.dataService
         .procExecute(
           this.tabData.owner!,
@@ -165,6 +183,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
                       : undefined,
                     valueFormatter: (params) =>
                       dataFormatter(params, col.displayFormat, col.dbTypeName),
+                    filter: getFilterType(col.dbTypeName),
                   };
                 });
               if (this.girdApi) {
@@ -196,6 +215,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   contextMenu($event: CellContextMenuEvent) {
     this.clipboardContext = $event.value;
+    this.contextEvent = $event;
   }
 
   onRowClick($event: RowClickedEvent) {
@@ -208,6 +228,30 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         this.girdApi.setDatasource(this.dataSource);
       }
     }
+  }
+}
+
+function prepareFilter(params: any): FilterModelItem[] {
+  const keys = Object.keys(params);
+  return keys.map((key) => {
+    return {
+      colId: key,
+      value: params[key].filter,
+      type: FilterProcType.includes,
+      filterType: params[key].filterType,
+    };
+  });
+}
+
+function getFilterType(dbType: string | undefined): string {
+  if (!dbType) {
+    return '';
+  }
+  switch (dbType.toUpperCase()) {
+    case 'DATE':
+      return 'agDateColumnFilter';
+    default:
+      return 'agTextColumnFilter';
   }
 }
 
