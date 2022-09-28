@@ -1,0 +1,10 @@
+<div class="wrapper">
+  <nz-range-picker
+    [nzShowTime]="{ nzFormat: 'HH:mm' }"
+    nzFormat="yyyy-MM-dd HH:mm"
+    ngModel
+    (ngModelChange)="onChange($event)"
+    (nzOnCalendarChange)="onCalendarChange($event)"
+    (nzOnOk)="onOk($event)"
+  ></nz-range-picker>
+</div>

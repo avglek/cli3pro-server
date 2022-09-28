@@ -22,6 +22,7 @@ import {
   FilterModelItem,
   FilterProcType,
   ICursorData,
+  IField,
   IProcParam,
   IStringData,
   ITabData,
@@ -38,6 +39,7 @@ import { GridLoadingComponent } from './grid-loading.component';
 import { GridNoRowsComponent } from './grid-no-rows.component';
 import { Subscription } from 'rxjs';
 import { CommonService } from '../../../shared/services/common.service';
+import {TransferService} from "../../../shared/services/transfer.service";
 
 @Component({
   selector: 'app-grid-data',
@@ -53,7 +55,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Output() rowClick: EventEmitter<RowClickedEvent> =
     new EventEmitter<RowClickedEvent>();
 
-  girdApi!: GridApi;
+  gridApi!: GridApi;
   procParams: IProcParam[] = [];
   rowSelection = 'single';
   rowModelType: any = 'infinite';
@@ -69,13 +71,14 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     resizable: true,
     cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
-    floatingFilter: true,
+    floatingFilter: false,
   };
 
   constructor(
     private dataService: DataServerService,
     private nzContextMenuService: NzContextMenuService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private transferService: TransferService
   ) {
     dayjs.extend(customParseFormat);
   }
@@ -101,21 +104,52 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             inOut: param.inOut,
           };
         });
+        if (this.tabData.isOnFilter) {
+          this.defaultColDef.floatingFilter = this.tabData.isOnFilter;
+        }
       }
+
+      this.transferService.btnFilter.subscribe((onFilter) => {
+        if (this.gridApi) {
+          this.defaultColDef.floatingFilter = onFilter;
+          this.gridApi.setDefaultColDef(this.defaultColDef);
+          if (onFilter) {
+          }
+        }
+      });
     }
 
     this.commonService.getContextFilter().subscribe((filter) => {
       console.log('set filter:', filter);
-      this.filter.push(filter);
+      if (this.gridApi) {
+        if (filter) {
+          const filterInstance = this.gridApi.getFilterInstance(filter.colId);
+          if (filterInstance) {
+            if (filter.value === '') {
+              console.log('reset');
+              filterInstance.setModel(null);
+            } else {
+              filterInstance.setModel({
+                filterType: 'text',
+                type: FilterProcType.equals,
+                filter: filter.value,
+              });
+            }
+
+            this.gridApi.onFilterChanged();
+          }
+        } else {
+        }
+      }
     });
   }
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
-      console.log('ds params:', params);
       if (Object.keys(params.filterModel).length > 0) {
         this.filter = prepareFilter(params.filterModel);
-        console.log('filter model:', this.filter);
+      } else {
+        this.filter = [];
       }
       if (this.tabData.isLoading) {
         return;
@@ -123,8 +157,9 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.tabData.owner) {
         return;
       }
+
       this.isLoading = true;
-      this.girdApi.showLoadingOverlay();
+      this.gridApi.showLoadingOverlay();
       this.procParams.forEach((param) => {
         if (param.name === this.cursorName) {
           param.start = params.startRow;
@@ -132,10 +167,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           if (params.sortModel) {
             param.sorting = params.sortModel;
           }
-          console.log('this filter:', this.filter);
-          if (this.filter && this.filter.length > 0) {
-            param.filter = this.filter;
-          }
+
+          param.filter = this.filter;
         }
         if (param.inOut === TypeOut.In) {
           const tabParams = this.tabData.params?.find((p) => {
@@ -157,7 +190,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         )
         .subscribe((data) => {
           this.isLoading = false;
-          this.girdApi.hideOverlay();
+          this.gridApi.hideOverlay();
           const link = <IStringData>data.data['P_LINKS'];
           if (link) {
             this.docLink.emit(link.data);
@@ -167,7 +200,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             const docData = <ICursorData>data.data[this.cursorName];
             this.rowCount.emit(docData.count);
             if (docData.rows.length === 0) {
-              this.girdApi.showNoRowsOverlay();
+              this.gridApi.showNoRowsOverlay();
             }
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
@@ -175,25 +208,28 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
                 .sort((a, b) => a.order - b.order)
                 .filter((col) => col.visible === 'T')
                 .map((col) => {
-                  return {
+                  const refColumnDef = {
                     field: col.fieldName,
                     headerName: col.displayLabel,
                     width: col.displaySize
                       ? col.displaySize * 10 + 20
                       : undefined,
-                    valueFormatter: (params) =>
+                    valueFormatter: (params: any) =>
                       dataFormatter(params, col.displayFormat, col.dbTypeName),
-                    filter: getFilterType(col.dbTypeName),
                   };
+                  this.setColumFilter(refColumnDef, col);
+
+                  return refColumnDef;
                 });
-              if (this.girdApi) {
-                this.girdApi.setColumnDefs(columns);
+              if (this.gridApi) {
+                this.gridApi.setColumnDefs(columns);
               }
             }
           }
         });
     },
   };
+
   loadingOverlayComponent: any = GridLoadingComponent;
   loadingOverlayComponentParams: any = {
     loadingMessage: 'One moment please...',
@@ -205,7 +241,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     params.api.setDatasource(this.dataSource);
-    this.girdApi = params.api;
+    this.gridApi = params.api;
   }
 
   changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
@@ -224,36 +260,63 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['filter'] && !this.tabData.isLoading) {
-      if (this.girdApi) {
-        this.girdApi.setDatasource(this.dataSource);
+      if (this.gridApi) {
+        this.gridApi.setDatasource(this.dataSource);
       }
     }
+  }
+
+  private setColumFilter(def: ColDef, col: IField) {
+    if (!col.dbTypeName) return;
+
+    switch (col.dbTypeName.toUpperCase()) {
+      case 'DATE':
+        Object.assign(def, {
+          //floatingFilterComponent: DateFloatingFilterComponent,
+          filter: 'agDateColumnFilter',
+        });
+        break;
+      default:
+        Object.assign(def, { filter: 'agTextColumnFilter' });
+        break;
+    }
+
+    Object.assign(def, {
+      floatingFilterComponentParams: {
+        suppressFilterButton: true,
+      },
+    });
   }
 }
 
 function prepareFilter(params: any): FilterModelItem[] {
+  console.log('prepare filter:', params);
   const keys = Object.keys(params);
-  return keys.map((key) => {
+  const result = keys.map((key) => {
     return {
       colId: key,
       value: params[key].filter,
       type: FilterProcType.includes,
       filterType: params[key].filterType,
+      dateFrom: params[key].dateFrom,
+      dateTo: params[key].dateTo,
     };
   });
+  console.log('send filter:', result);
+  return result;
 }
 
-function getFilterType(dbType: string | undefined): string {
-  if (!dbType) {
-    return '';
-  }
-  switch (dbType.toUpperCase()) {
-    case 'DATE':
-      return 'agDateColumnFilter';
-    default:
-      return 'agTextColumnFilter';
-  }
-}
+// function getFilterType(dbType: string | undefined): any {
+//   if (!dbType) {
+//     return '';
+//   }
+//   switch (dbType.toUpperCase()) {
+//     case 'DATE':
+//       return DateFilterComponent;
+//     default:
+//       return 'agTextColumnFilter';
+//   }
+// }
 
 function dataFormatter(
   params: ValueFormatterParams,

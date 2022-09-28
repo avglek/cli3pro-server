@@ -21,6 +21,11 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { GridLoadingComponent } from '../../../components/reports/grid-data/grid-loading.component';
 import { GridNoRowsComponent } from '../../../components/reports/grid-data/grid-no-rows.component';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { DateFilterComponent } from '../../../components/reports/filters';
+import { FormsModule } from '@angular/forms';
+import { DateFloatingFilterComponent } from '../../../components/reports/filters';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @NgModule({
   declarations: [
@@ -36,6 +41,8 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     PlainTextComponent,
     ReportComponent,
     ReplaceSpacePipe,
+    DateFilterComponent,
+    DateFloatingFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -48,6 +55,9 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     NzResizableModule,
     NzSpinModule,
     NzEmptyModule,
+    NzRadioModule,
+    FormsModule,
+    NzDatePickerModule,
   ],
 })
 export class DocsLayoutModule {}

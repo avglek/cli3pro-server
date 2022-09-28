@@ -14,6 +14,7 @@ export class ContextMenuComponent {
   @Input() contextEvent: CellContextMenuEvent | undefined;
 
   actionType = ContextMenuAction;
+  isFilterOn: boolean = false;
 
   constructor(
     private clipboardService: ClipboardService,
@@ -26,13 +27,23 @@ export class ContextMenuComponent {
         this.clipboardService.copy(this.contextValue);
         break;
       case ContextMenuAction.Filter:
-        console.log('filter on: ', this.contextEvent);
         if (this.contextEvent) {
           const filter: FilterModelItem = {
             colId: this.contextEvent.column.getColId(),
             value: this.contextEvent.value,
           };
           this.commonService.setContextFilter(filter);
+          this.isFilterOn = true;
+        }
+        break;
+      case ContextMenuAction.FilterOff:
+        if (this.contextEvent) {
+          const filter: FilterModelItem = {
+            colId: this.contextEvent.column.getColId(),
+            value: '',
+          };
+          this.commonService.setContextFilter(filter);
+          this.isFilterOn = false;
         }
         break;
     }

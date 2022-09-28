@@ -36,6 +36,7 @@ export interface ITabData {
   title?: string;
   isLoading?: boolean;
   isForm?: boolean;
+  isOnFilter?: boolean;
   reportType?: TypeReport;
   params?: IDescParam[];
   description?: IDescDescription;
@@ -207,6 +208,8 @@ export interface FilterModelItem {
   value: string;
   type?: FilterProcType;
   filterType?: string;
+  dateFrom?: string; //always YYYY-MM-DD hh:mm:ss e.g. 2019-05-24 00:00:00
+  dateTo?: string;
 }
 
 export enum FilterProcType {
@@ -324,6 +327,7 @@ export enum ContextMenuAction {
   'History',
   'ExportExel',
   'Filter',
+  'FilterOff',
 }
 
 export interface JWTPayload {
