@@ -6,6 +6,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { MatIconModule } from '@angular/material/icon';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 @NgModule({
   declarations: [ToolBoxComponent],
@@ -17,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
     NzDividerModule,
     NzSpaceModule,
     MatIconModule,
+    NzDropDownModule,
   ],
 })
 export class ToolBoxModule {}

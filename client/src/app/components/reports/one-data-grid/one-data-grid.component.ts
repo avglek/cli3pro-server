@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ITabData } from '../../../shared/interfaces';
 import { TabDataService } from '../../../shared/services/tab-data.service';
+import {
+  NzContextMenuService,
+  NzDropdownMenuComponent,
+} from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-one-data-grid',
@@ -12,7 +16,10 @@ export class OneDataGridComponent implements OnInit {
 
   cursorName!: string;
 
-  constructor(private tabService: TabDataService) {
+  constructor(
+    private tabService: TabDataService,
+    private nzContextMenuService: NzContextMenuService
+  ) {
     this.cursorName = 'P_DOC';
   }
 
@@ -21,5 +28,10 @@ export class OneDataGridComponent implements OnInit {
   onRowCount($event: number) {
     if (this.tabData.uid)
       this.tabService.setDisplayRowCount(`${$event}`, this.tabData.uid);
+  }
+
+  changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
+    $event.preventDefault();
+    this.nzContextMenuService.create($event, menu);
   }
 }

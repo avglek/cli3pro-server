@@ -24,7 +24,7 @@
       <app-grid-data
         [tabData]="tabData"
         [cursorName]="docCursorName"
-        (docLink)="getDocLick($event)"
+        (docLink)="getDocLink($event)"
         (rowClick)="docRowClick($event)"
         (rowCount)="onMasterRowCount($event)"
       ></app-grid-data>
@@ -42,8 +42,5 @@
   </div>
 </nz-content>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <app-context-menu
-    [contextValue]="clipboardContext"
-    [contextEvent]="contextEvent"
-  ></app-context-menu>
+  <app-context-menu></app-context-menu>
 </nz-dropdown-menu>

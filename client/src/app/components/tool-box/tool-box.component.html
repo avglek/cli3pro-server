@@ -25,40 +25,48 @@
               ]"
             ></mat-icon>
           </button>
-
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            nz-dropdown
+            [nzDropdownMenu]="menu"
+            [nzPlacement]="'bottomLeft'"
+          >
+            <mat-icon svgIcon="export"></mat-icon>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="toExcel()">Выгрузить в Excel</li>
+              <li nz-menu-item (click)="toCSV()">Выгрузить в CSV</li>
+              <li nz-menu-item (click)="toPDF()">Выгрузить в PDF</li>
+            </ul>
+          </nz-dropdown-menu>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="onClickPrint()"
+          >
+            <mat-icon svgIcon="print"></mat-icon>
+          </button>
           <button
             nz-button
             nzType="primary"
             nzSize="large"
             (click)="onClickFilter()"
+            [ngClass]="isOnFilter ? 'button-invert' : ''"
           >
-            <mat-icon
-              *ngIf="!isOnFilter; else filterOn"
-              svgIcon="filterAdd"
-            ></mat-icon>
-            <ng-template #filterOn>
-              <mat-icon
-                svgIcon="filterRemove"
-                [ngClass]="'button-invert'"
-              ></mat-icon>
-            </ng-template>
+            <mat-icon svgIcon="filterAdd"></mat-icon>
           </button>
           <button
             nz-button
             nzType="primary"
             nzSize="large"
             (click)="onClickMarker()"
+            [ngClass]="isOnMarker ? 'button-invert' : ''"
           >
-            <mat-icon
-              *ngIf="!isOnMarker; else markerOn"
-              svgIcon="markerColor"
-            ></mat-icon>
-            <ng-template #markerOn>
-              <mat-icon
-                svgIcon="markerColor"
-                [ngClass]="'button-invert'"
-              ></mat-icon>
-            </ng-template>
+            <mat-icon svgIcon="markerColor"></mat-icon>
           </button>
         </div>
         <button

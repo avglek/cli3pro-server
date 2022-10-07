@@ -57,22 +57,31 @@ function sorting(sortParam, rows) {
 }
 
 function filter(filterParam, rows) {
-  console.log('filter:', filterParam);
+  //console.log('filter:', filterParam);
 
   return filterParam.reduce((acc, filterElement) => {
     acc = acc.filter((row) => {
-      let res;
-      if (filterElement.type === 0) {
-        res = row[filterElement.colId] === filterElement.value;
-      } else if (filterElement.type === 1) {
-        let temp = row[filterElement.colId];
-        let value = filterElement.value;
-        if (typeof temp === 'string') temp = temp.toUpperCase();
-        if (typeof value === 'string') value = value.toUpperCase();
+      switch (filterElement.filterType) {
+        case 'number':
+          return row[filterElement.colId] === filterElement.value;
+          break;
+        case 'date':
+          break;
+        default:
+          let res;
+          if (filterElement.type === 0) {
+            res = row[filterElement.colId] === filterElement.value;
+          } else if (filterElement.type === 1) {
+            let temp = row[filterElement.colId];
+            let value = filterElement.value;
+            if (typeof temp === 'string') temp = temp.toUpperCase();
+            if (typeof value === 'string') value = value.toUpperCase();
 
-        res = temp.includes(value);
+            res = temp.includes(value);
+          }
+
+          return res;
       }
-      return res;
     });
     return acc;
   }, rows);

@@ -39,7 +39,8 @@ import { GridLoadingComponent } from './grid-loading.component';
 import { GridNoRowsComponent } from './grid-no-rows.component';
 import { Subscription } from 'rxjs';
 import { CommonService } from '../../../shared/services/common.service';
-import {TransferService} from "../../../shared/services/transfer.service";
+import { TransferService } from '../../../shared/services/transfer.service';
+import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
 
 @Component({
   selector: 'app-grid-data',
@@ -63,6 +64,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   cacheOverflowSize = 3;
   isLoading = false;
   docSub: Subscription | undefined;
+  locale = AG_GRID_LOCALE_RU;
 
   clipboardContext!: any;
   contextEvent: CellContextMenuEvent | undefined = undefined;
@@ -146,11 +148,17 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
+      const allFilter: FilterModelItem[] = [];
+      console.log('ds params:', params, this.filter);
       if (Object.keys(params.filterModel).length > 0) {
-        this.filter = prepareFilter(params.filterModel);
-      } else {
-        this.filter = [];
+        allFilter.push(...prepareFilter(params.filterModel));
       }
+      if (this.filter.length > 0) {
+        allFilter.push(...this.filter);
+      }
+      // } else {
+      //   this.filter = [];
+      // }
       if (this.tabData.isLoading) {
         return;
       }
@@ -168,7 +176,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             param.sorting = params.sortModel;
           }
 
-          param.filter = this.filter;
+          param.filter = allFilter;
         }
         if (param.inOut === TypeOut.In) {
           const tabParams = this.tabData.params?.find((p) => {
@@ -179,7 +187,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       });
-      console.log('proc params:', this.procParams);
       this.docSub = this.dataService
         .procExecute(
           this.tabData.owner!,
@@ -252,6 +259,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   contextMenu($event: CellContextMenuEvent) {
     this.clipboardContext = $event.value;
     this.contextEvent = $event;
+    this.commonService.setContextMenuEvent($event);
   }
 
   onRowClick($event: RowClickedEvent) {
@@ -274,6 +282,18 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         Object.assign(def, {
           //floatingFilterComponent: DateFloatingFilterComponent,
           filter: 'agDateColumnFilter',
+          filterParams: {
+            buttons: ['apply', 'clear', 'reset', 'cancel'],
+            closeOnApply: true,
+            inRangeFloatingFilterDateFormat: 'DD.MM.YYYY',
+            filterOptions: ['contains', 'startsWith', 'endsWith'],
+            defaultOption: 'startsWith',
+          },
+        });
+        break;
+      case 'NUMBER':
+        Object.assign(def, {
+          filter: 'agNumberColumnFilter',
         });
         break;
       default:
@@ -290,7 +310,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 }
 
 function prepareFilter(params: any): FilterModelItem[] {
-  console.log('prepare filter:', params);
   const keys = Object.keys(params);
   const result = keys.map((key) => {
     return {
@@ -300,23 +319,11 @@ function prepareFilter(params: any): FilterModelItem[] {
       filterType: params[key].filterType,
       dateFrom: params[key].dateFrom,
       dateTo: params[key].dateTo,
+      optionType: params[key].type,
     };
   });
-  console.log('send filter:', result);
   return result;
 }
-
-// function getFilterType(dbType: string | undefined): any {
-//   if (!dbType) {
-//     return '';
-//   }
-//   switch (dbType.toUpperCase()) {
-//     case 'DATE':
-//       return DateFilterComponent;
-//     default:
-//       return 'agTextColumnFilter';
-//   }
-// }
 
 function dataFormatter(
   params: ValueFormatterParams,

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ContextMenuAction, FilterModelItem } from '../../../shared/interfaces';
 import { ClipboardService } from 'ngx-clipboard';
 import { CellContextMenuEvent } from 'ag-grid-community';
@@ -9,9 +9,9 @@ import { CommonService } from '../../../shared/services/common.service';
   templateUrl: 'context-menu.component.html',
   styleUrls: ['context-menu.component.less'],
 })
-export class ContextMenuComponent {
-  @Input() contextValue: any;
-  @Input() contextEvent: CellContextMenuEvent | undefined;
+export class ContextMenuComponent implements OnInit {
+  contextValue: any;
+  contextEvent: CellContextMenuEvent | undefined;
 
   actionType = ContextMenuAction;
   isFilterOn: boolean = false;
@@ -21,12 +21,22 @@ export class ContextMenuComponent {
     private commonService: CommonService
   ) {}
 
+  ngOnInit() {
+    this.commonService.getContextMenuEvent().subscribe((event) => {
+      this.contextEvent = event;
+      this.contextValue = event.value;
+      console.log('context subject:', event);
+    });
+  }
+
   clickContext(action: ContextMenuAction) {
     switch (action) {
       case ContextMenuAction.Copy:
         this.clipboardService.copy(this.contextValue);
         break;
       case ContextMenuAction.Filter:
+        console.log('click context:', this.contextEvent);
+
         if (this.contextEvent) {
           const filter: FilterModelItem = {
             colId: this.contextEvent.column.getColId(),

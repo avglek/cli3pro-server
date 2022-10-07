@@ -1,4 +1,5 @@
 import { SortModelItem } from 'ag-grid-community';
+import { ISimpleFilterModelType } from 'ag-grid-community/dist/lib/filter/provided/simpleFilter';
 
 export interface User {
   user: string;
@@ -210,6 +211,7 @@ export interface FilterModelItem {
   filterType?: string;
   dateFrom?: string; //always YYYY-MM-DD hh:mm:ss e.g. 2019-05-24 00:00:00
   dateTo?: string;
+  optionType?: ISimpleFilterModelType;
 }
 
 export enum FilterProcType {

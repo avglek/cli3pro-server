@@ -1,26 +1,19 @@
 <div class="root">
-  <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
-    <ag-grid-angular
-      style="width: 100%; height: 100%"
-      class="ag-theme-balham"
-      (gridReady)="onGridReady($event)"
-      [defaultColDef]="defaultColDef"
-      [rowSelection]="rowSelection"
-      [rowModelType]="rowModelType"
-      [cacheBlockSize]="cacheBlockSize"
-      [cacheOverflowSize]="cacheOverflowSize"
-      (cellContextMenu)="contextMenu($event)"
-      (rowClicked)="onRowClick($event)"
-      [loadingOverlayComponent]="loadingOverlayComponent"
-      [loadingOverlayComponentParams]="loadingOverlayComponentParams"
-      [noRowsOverlayComponent]="noRowsOverlayComponent"
-      [noRowsOverlayComponentParams]="noRowsOverlayComponentParams"
-    ></ag-grid-angular>
-  </div>
-  <nz-dropdown-menu #menu="nzDropdownMenu">
-    <app-context-menu
-      [contextValue]="clipboardContext"
-      [contextEvent]="contextEvent"
-    ></app-context-menu>
-  </nz-dropdown-menu>
+  <ag-grid-angular
+    style="width: 100%; height: 100%"
+    class="ag-theme-balham"
+    (gridReady)="onGridReady($event)"
+    [defaultColDef]="defaultColDef"
+    [rowSelection]="rowSelection"
+    [rowModelType]="rowModelType"
+    [cacheBlockSize]="cacheBlockSize"
+    [cacheOverflowSize]="cacheOverflowSize"
+    (cellContextMenu)="contextMenu($event)"
+    (rowClicked)="onRowClick($event)"
+    [loadingOverlayComponent]="loadingOverlayComponent"
+    [loadingOverlayComponentParams]="loadingOverlayComponentParams"
+    [noRowsOverlayComponent]="noRowsOverlayComponent"
+    [noRowsOverlayComponentParams]="noRowsOverlayComponentParams"
+    [localeText]="locale"
+  ></ag-grid-angular>
 </div>

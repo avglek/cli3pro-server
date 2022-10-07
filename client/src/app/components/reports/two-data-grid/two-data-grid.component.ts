@@ -12,6 +12,7 @@ import {
 } from 'ng-zorro-antd/dropdown';
 import { CellContextMenuEvent, RowClickedEvent } from 'ag-grid-community';
 import { TabDataService } from '../../../shared/services/tab-data.service';
+import { toCamelCase } from '../../../shared/utils/str-utils';
 
 @Component({
   selector: 'app-two-data-grid',
@@ -66,7 +67,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {}
 
   //Doc.Code=Detail.Code
-  getDocLick($event: string) {
+  getDocLink($event: string) {
     const a1 = $event.split('=');
     this.docLinkKey = a1[0].trim().slice(a1[0].indexOf('.') + 1, a1[0].length);
     this.detailLinkKey = a1[1]
@@ -88,17 +89,22 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
   docRowClick($event: RowClickedEvent) {
     if ($event.data) {
       const keys = Object.keys($event.data);
-      const searchField = keys.find(
-        (f) => f.toUpperCase() === this.docLinkKey.toUpperCase()
-      );
-      if (searchField) {
-        const docFilter: FilterModelItem = {
-          colId: searchField,
-          value: $event.data[searchField],
+
+      const detailKeys = this.detailLinkKey
+        .split(';')
+        .map((key) => toCamelCase(key));
+
+      const searchFields = keys.filter((key) => detailKeys.includes(key));
+
+      const filter = searchFields.map((col) => {
+        return {
+          colId: col.trim(),
+          value: $event.data[col],
           type: FilterProcType.equals,
         };
-        this.linkFilter = [docFilter];
-      }
+      });
+
+      this.linkFilter = filter;
     }
   }
 

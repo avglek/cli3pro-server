@@ -6,4 +6,6 @@ export const Icons: { [keys: string]: string } = {
   filterAdd: 'filter-add-svgrepo-com-2',
   filterRemove: 'filter-remove-svgrepo-com',
   markerColor: 'marker-color-colour-svgrepo-com-2',
+  export: 'export-svgrepo-com',
+  print: 'printer-print-svgrepo-com',
 };

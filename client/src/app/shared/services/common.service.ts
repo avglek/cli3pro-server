@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FilterModelItem } from '../interfaces';
+import { CellContextMenuEvent } from 'ag-grid-community';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
   currentOwner: string = '';
   owner = new BehaviorSubject<string>('');
   contextFilter = new Subject<FilterModelItem>();
+  contextMenuEvent = new Subject<CellContextMenuEvent>();
 
   getCurrentOwnerFromStorage(): string | null {
     return localStorage.getItem('owner');
@@ -35,5 +37,13 @@ export class CommonService {
 
   getContextFilter() {
     return this.contextFilter;
+  }
+
+  setContextMenuEvent(event: CellContextMenuEvent) {
+    this.contextMenuEvent.next(event);
+  }
+
+  getContextMenuEvent() {
+    return this.contextMenuEvent;
   }
 }

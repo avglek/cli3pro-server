@@ -1,6 +1,7 @@
 const oracledb = require('oracledb');
 const oraTypes = require('./common/ora-types');
 const { BIND_OUT } = require('oracledb');
+const de = require('./utils/data-excel');
 
 const proc = 'COMMON.HIPPO_2730';
 const params = [
@@ -139,6 +140,7 @@ function camalize(str) {
 console.log('start test');
 //prepareSql(params);
 //run();
-const str = JSON.stringify(params); //camalize('KOL_ST_P');
-console.log(str);
+//const str = JSON.stringify(params); //camalize('KOL_ST_P');
+const ws = de.getExcel('data from de');
+console.log(ws);
 console.log('end test');

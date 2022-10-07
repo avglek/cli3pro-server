@@ -98,4 +98,20 @@ export class ToolBoxComponent implements OnInit {
   onClickMarker() {
     this.isOnMarker = !this.isOnMarker;
   }
+
+  onClickExport() {}
+
+  onClickPrint() {}
+
+  toExcel() {
+    console.log('to excel');
+  }
+
+  toCSV() {
+    console.log('to csv');
+  }
+
+  toPDF() {
+    console.log('to pdf');
+  }
 }

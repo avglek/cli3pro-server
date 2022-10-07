@@ -4,7 +4,7 @@ export function toCamelCase(str: string): string {
   if (inx > 0) {
     result =
       str.slice(0, inx).toLowerCase() +
-      str.slice(inx + 1, inx + 2) +
+      str.slice(inx + 1, inx + 2).toUpperCase() +
       str.slice(inx + 2).toLowerCase();
   } else {
     result = str.toLowerCase();
