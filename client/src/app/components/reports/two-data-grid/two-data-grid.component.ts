@@ -1,9 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import {
-  FilterModelItem,
-  FilterProcType,
-  ITabData,
-} from '../../../shared/interfaces';
+import { FilterModelItem, ITabData } from '../../../shared/interfaces';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import {
   NzContextMenuService,
@@ -76,7 +72,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
 
     const key = 'code';
     const value = '0040';
-    const type = FilterProcType.equals;
+    const type = 'equals';
     const testFilter: FilterModelItem = {
       colId: key,
       value,
@@ -100,7 +96,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
         return {
           colId: col.trim(),
           value: $event.data[col],
-          type: FilterProcType.equals,
+          type: 'equals',
         };
       });
     }
