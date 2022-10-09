@@ -35,8 +35,6 @@ export class ContextMenuComponent implements OnInit {
         this.clipboardService.copy(this.contextValue);
         break;
       case ContextMenuAction.Filter:
-        console.log('click context:', this.contextEvent);
-
         if (this.contextEvent) {
           const filter: FilterModelItem = {
             colId: this.contextEvent.column.getColId(),

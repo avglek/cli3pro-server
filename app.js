@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const compression = require('compression');
 const authRoutes = require('./routes/auth');
 const treeRoutes = require('./routes/tree');
 const treeDocsRoutes = require('./routes/tree-docs');
@@ -15,6 +16,7 @@ const database = require('./services/database');
 const app = express();
 
 //app.set('query parser', 'simple');
+app.use(compression());
 app.use(express.static('public'));
 app.use(require('morgan')('dev'));
 app.use(require('cors')());

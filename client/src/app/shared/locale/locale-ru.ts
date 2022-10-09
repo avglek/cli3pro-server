@@ -10,10 +10,20 @@ export const AG_GRID_LOCALE_RU = {
   previous: 'Предыдущая',
   loadingOoo: 'Загрузка...',
 
-  // for set filter
+  // Set Filter
   selectAll: 'Выделить всё',
   searchOoo: 'Поиск...',
   blanks: 'Ничего не найдено',
+  selectAllSearchResults: '(Выберите все результаты поиска)',
+  noMatches: 'Нет совпадений',
+
+  // Number Filter & Text Filter
+  filterOoo: 'Фильтр...',
+  equals: 'Равно',
+  notEqual: 'Не равно',
+  blank: 'Пустой',
+  notBlank: 'Не пустой',
+  empty: 'Выбери один',
 
   // Number Filter
 

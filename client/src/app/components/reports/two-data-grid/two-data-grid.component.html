@@ -1,24 +1,15 @@
-<nz-content [ngClass]="[isVertical ? 'nz-content-height' : 'nz-content-width']">
+<nz-content class="nz-content-height" *ngIf="isVertical; else horizontalBlock">
   <!--    (nzResize)="onContentResize($event)"-->
   <!--  [style.height.px]="contentHeight"-->
   <!--  [style.width.px]="contentWidth"-->
   <div
     nz-resizable
     class="resizable-box"
-    [style.height.px]="contentHeight"
     [style.width.px]="contentWidth"
-    (nzResize)="
-      isVertical ? onContentResizeWidth($event) : onContentResizeHeight($event)
-    "
+    (nzResize)="onContentResizeWidth($event)"
   >
-    <nz-resize-handle [nzDirection]="isVertical ? 'right' : 'bottom'">
-      <div
-        [ngClass]="[
-          isVertical
-            ? 'content-resize-line-height'
-            : 'content-resize-line-width'
-        ]"
-      ></div>
+    <nz-resize-handle [nzDirection]="'right'">
+      <div class="content-resize-line-height"></div>
     </nz-resize-handle>
     <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
       <app-grid-data
@@ -41,6 +32,42 @@
     </div>
   </div>
 </nz-content>
+<ng-template #horizontalBlock>
+  <nz-content class="nz-content-width">
+    <!--    (nzResize)="onContentResize($event)"-->
+    <!--  [style.height.px]="contentHeight"-->
+    <!--  [style.width.px]="contentWidth"-->
+    <div
+      nz-resizable
+      class="resizable-box"
+      [style.height.px]="contentHeight"
+      (nzResize)="onContentResizeHeight($event)"
+    >
+      <nz-resize-handle [nzDirection]="'bottom'">
+        <div class="content-resize-line-width"></div>
+      </nz-resize-handle>
+      <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
+        <app-grid-data
+          [tabData]="tabData"
+          [cursorName]="docCursorName"
+          (docLink)="getDocLink($event)"
+          (rowClick)="docRowClick($event)"
+          (rowCount)="onMasterRowCount($event)"
+        ></app-grid-data>
+      </div>
+    </div>
+    <div>
+      <div class="container" (contextmenu)="changeDefaultContext($event, menu)">
+        <app-grid-data
+          [tabData]="tabData"
+          [cursorName]="detailCursorName"
+          [filter]="linkFilter"
+          (rowCount)="onSlaveRowCount($event)"
+        ></app-grid-data>
+      </div>
+    </div>
+  </nz-content>
+</ng-template>
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <app-context-menu></app-context-menu>
 </nz-dropdown-menu>

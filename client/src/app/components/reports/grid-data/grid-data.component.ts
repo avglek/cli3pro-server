@@ -11,16 +11,17 @@ import {
 import {
   CellContextMenuEvent,
   ColDef,
+  DateFilter,
   GridApi,
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
   RowClickedEvent,
+  TextFilter,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
   FilterModelItem,
-  FilterProcType,
   ICursorData,
   IField,
   IProcParam,
@@ -86,7 +87,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('destroy');
     if (this.docSub) {
       this.docSub.unsubscribe();
       this.docSub = undefined;
@@ -95,8 +95,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     if (!this.tabData.isLoading) {
-      console.log('init:', this.tabData);
-
       if (this.tabData.params) {
         this.procParams = this.tabData.params.map((param) => {
           return {
@@ -122,24 +120,34 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.commonService.getContextFilter().subscribe((filter) => {
-      console.log('set filter:', filter);
       if (this.gridApi) {
         if (filter) {
           const filterInstance = this.gridApi.getFilterInstance(filter.colId);
-          if (filterInstance) {
+          if (filterInstance instanceof TextFilter) {
             if (filter.value === '') {
-              console.log('reset');
               filterInstance.setModel(null);
             } else {
               filterInstance.setModel({
                 filterType: 'text',
-                type: FilterProcType.equals,
+                type: 'equals',
                 filter: filter.value,
               });
             }
-
-            this.gridApi.onFilterChanged();
           }
+          if (filterInstance instanceof DateFilter) {
+            console.log(
+              filter.value,
+              dayjs(filter.value).add(1, 'day').format('YYYY-MM-DD')
+            );
+            filterInstance.setModel({
+              filterType: 'date',
+              type: 'inRange',
+              dateFrom: dayjs(filter.value).format('YYYY-MM-DD'),
+              dateTo: dayjs(filter.value).add(1, 'day').format('YYYY-MM-DD'),
+            });
+          }
+
+          this.gridApi.onFilterChanged();
         } else {
         }
       }
@@ -149,7 +157,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   dataSource: IDatasource = {
     getRows: (params: IGetRowsParams) => {
       const allFilter: FilterModelItem[] = [];
-      console.log('ds params:', params, this.filter);
       if (Object.keys(params.filterModel).length > 0) {
         allFilter.push(...prepareFilter(params.filterModel));
       }
@@ -286,7 +293,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             buttons: ['apply', 'clear', 'reset', 'cancel'],
             closeOnApply: true,
             inRangeFloatingFilterDateFormat: 'DD.MM.YYYY',
-            filterOptions: ['contains', 'startsWith', 'endsWith'],
+            filterOptions: ['contains', 'startsWith', 'endsWith', 'inRange'],
             defaultOption: 'startsWith',
           },
         });
@@ -311,18 +318,16 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
 function prepareFilter(params: any): FilterModelItem[] {
   const keys = Object.keys(params);
-  const result = keys.map((key) => {
+  return keys.map((key) => {
     return {
       colId: key,
       value: params[key].filter,
-      type: FilterProcType.includes,
+      type: params[key].type,
       filterType: params[key].filterType,
       dateFrom: params[key].dateFrom,
       dateTo: params[key].dateTo,
-      optionType: params[key].type,
     };
   });
-  return result;
 }
 
 function dataFormatter(

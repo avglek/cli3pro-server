@@ -5,7 +5,6 @@ import {
   ITabData,
 } from '../../../shared/interfaces';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
-//import { CellContextMenuEvent } from 'ag-grid-community';
 import {
   NzContextMenuService,
   NzDropdownMenuComponent,
@@ -22,6 +21,7 @@ import { toCamelCase } from '../../../shared/utils/str-utils';
 export class TwoDataGridComponent implements OnInit, AfterViewInit {
   @Input() tabData!: ITabData;
   @Input() isVertical: boolean = false;
+
   contentHeight = 200;
   contentWidth = 500;
   id = -1;
@@ -59,7 +59,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
     });
   }
 
-  changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
+  changeDefaultContext($event: any, menu: NzDropdownMenuComponent) {
     $event.preventDefault();
     this.nzContextMenuService.create($event, menu);
   }
@@ -96,15 +96,13 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
 
       const searchFields = keys.filter((key) => detailKeys.includes(key));
 
-      const filter = searchFields.map((col) => {
+      this.linkFilter = searchFields.map((col) => {
         return {
           colId: col.trim(),
           value: $event.data[col],
           type: FilterProcType.equals,
         };
       });
-
-      this.linkFilter = filter;
     }
   }
 

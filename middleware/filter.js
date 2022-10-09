@@ -1,3 +1,5 @@
+const dayjs = require('dayjs');
+
 module.exports = (req, res, next) => {
   const paramsQuery = JSON.parse(req.query.params);
   if (paramsQuery) {
@@ -64,20 +66,20 @@ function filter(filterParam, rows) {
       switch (filterElement.filterType) {
         case 'number':
           return row[filterElement.colId] === filterElement.value;
-          break;
         case 'date':
-          break;
+          return dateAdapter(row, filterElement);
         default:
           let res;
-          if (filterElement.type === 0) {
+          if (filterElement.type === 'equals') {
             res = row[filterElement.colId] === filterElement.value;
-          } else if (filterElement.type === 1) {
+          } else if (filterElement.type === 'contains') {
             let temp = row[filterElement.colId];
             let value = filterElement.value;
             if (typeof temp === 'string') temp = temp.toUpperCase();
             if (typeof value === 'string') value = value.toUpperCase();
 
-            res = temp.includes(value);
+            if (temp) res = temp.includes(value);
+            else res = false;
           }
 
           return res;
@@ -85,5 +87,27 @@ function filter(filterParam, rows) {
     });
     return acc;
   }, rows);
+}
 
+function dateAdapter(row, filter) {
+  let rowDate, fromDate, toDate;
+  let result = false;
+  if (dayjs(row[filter.colId]).isValid()) {
+    rowDate = dayjs(row[filter.colId]).toDate();
+  } else {
+    return false;
+  }
+  if (dayjs(filter.dateFrom).isValid()) {
+    fromDate = dayjs(filter.dateFrom).toDate();
+    result = rowDate >= fromDate;
+  } else {
+    return false;
+  }
+
+  if (dayjs(filter.dateTo).isValid()) {
+    toDate = dayjs(filter.dateTo).toDate();
+    result = result && toDate >= rowDate;
+  }
+
+  return result;
 }
