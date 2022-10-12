@@ -130,7 +130,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
               filterInstance.setModel({
                 filterType: 'text',
                 type: 'equals',
-                filter: filter.value,
+                filter: <string>filter.value,
               });
             }
           }
@@ -159,13 +159,12 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       const allFilter: FilterModelItem[] = [];
       if (Object.keys(params.filterModel).length > 0) {
         allFilter.push(...prepareFilter(params.filterModel));
+        //console.log('filter:', params.filterModel, allFilter);
       }
       if (this.filter.length > 0) {
         allFilter.push(...this.filter);
       }
-      // } else {
-      //   this.filter = [];
-      // }
+
       if (this.tabData.isLoading) {
         return;
       }
@@ -293,8 +292,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             buttons: ['apply', 'clear', 'reset', 'cancel'],
             closeOnApply: true,
             inRangeFloatingFilterDateFormat: 'DD.MM.YYYY',
-            filterOptions: ['contains', 'startsWith', 'endsWith', 'inRange'],
-            defaultOption: 'startsWith',
+            //filterOptions: ['contains', 'startsWith', 'endsWith', 'inRange'],
+            //defaultOption: 'startsWith',
           },
         });
         break;
@@ -322,6 +321,7 @@ function prepareFilter(params: any): FilterModelItem[] {
     return {
       colId: key,
       value: params[key].filter,
+      valueTo: params[key].filterTo,
       type: params[key].type,
       filterType: params[key].filterType,
       dateFrom: params[key].dateFrom,

@@ -206,7 +206,8 @@ export interface IProcParam {
 }
 export interface FilterModelItem {
   colId: string;
-  value: string;
+  value: string | number;
+  valueTo?: string | number;
   type?: ISimpleFilterModelType;
   filterType?: string;
   dateFrom?: string; //always YYYY-MM-DD hh:mm:ss e.g. 2019-05-24 00:00:00

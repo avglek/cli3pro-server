@@ -44,6 +44,14 @@ export const AG_GRID_LOCALE_RU = {
   // filter conditions
   andCondition: '"И"',
   orCondition: '"ИЛИ"',
+  // Date Filter
+  dateFormatOoo: 'dd.mm.yyyy',
+
+  // Filter Buttons
+  applyFilter: 'Применить',
+  resetFilter: 'Сбросить',
+  clearFilter: 'Очистить',
+  cancelFilter: 'Отмена',
 
   // the header of the default group column
   group: 'Группа',

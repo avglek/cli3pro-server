@@ -65,49 +65,144 @@ function filter(filterParam, rows) {
     acc = acc.filter((row) => {
       switch (filterElement.filterType) {
         case 'number':
-          return row[filterElement.colId] === filterElement.value;
+          return numberTypeFilter(row[filterElement.colId], filterElement);
         case 'date':
-          return dateAdapter(row, filterElement);
+          return dateTypeFilter(row[filterElement.colId], filterElement);
+        case 'text':
+          return textTypeFilter(row[filterElement.colId], filterElement);
+
         default:
-          let res;
-          if (filterElement.type === 'equals') {
-            res = row[filterElement.colId] === filterElement.value;
-          } else if (filterElement.type === 'contains') {
-            let temp = row[filterElement.colId];
-            let value = filterElement.value;
-            if (typeof temp === 'string') temp = temp.toUpperCase();
-            if (typeof value === 'string') value = value.toUpperCase();
-
-            if (temp) res = temp.includes(value);
-            else res = false;
-          }
-
-          return res;
+          return true;
       }
     });
     return acc;
   }, rows);
 }
 
-function dateAdapter(row, filter) {
-  let rowDate, fromDate, toDate;
-  let result = false;
-  if (dayjs(row[filter.colId]).isValid()) {
-    rowDate = dayjs(row[filter.colId]).toDate();
-  } else {
-    return false;
+/************* Filter type check *******
+ *
+ * 'empty' - Фильтр не определен(используется в настраиваемых фильтрах)
+ * 'equals' - Равно
+ * 'notEqual' - Не равно
+ * 'lessThan' - Меньше чем
+ * 'lessThanOrEqual' - Меньше или равно
+ * 'greaterThan' - Больше чем
+ * 'greaterThanOrEqual' - Больше или равно
+ * 'inRange' - В промежутке
+ * 'contains' - Содержит
+ * 'notContains' - Не содержит
+ * 'startsWith' - Начинается с
+ * 'endsWith' - Заканчивается
+ * 'blank' - Пустой
+ * 'notBlank' - Не пустой
+ */
+
+function textTypeFilter(rowValue, filter) {
+  // делаем регистронезависимым
+  let value,
+    filterValue = '';
+
+  if (rowValue) value = rowValue.toUpperCase();
+  if (filter.value) filterValue = filter.value.toUpperCase();
+
+  switch (filter.type) {
+    case 'equals':
+      return value === filterValue;
+    case 'notEqual':
+      return value !== filterValue;
+    case 'contains':
+      return value.includes(filterValue);
+    case 'notContains':
+      return !value.includes(filterValue);
+    case 'startsWith':
+      return value.startsWith(filterValue);
+    case 'endsWith':
+      return value.endsWith(filterValue);
+    case 'blank':
+      return !value || value.trim() === '';
+    case 'notBlank':
+      return !(!value || value.trim() === '');
+    case 'empty':
+      return true;
+    default:
+      return true;
   }
-  if (dayjs(filter.dateFrom).isValid()) {
-    fromDate = dayjs(filter.dateFrom).toDate();
-    result = rowDate >= fromDate;
+}
+
+function numberTypeFilter(rowValue, filter) {
+  switch (filter.type) {
+    case 'equals':
+      return rowValue === filter.value;
+    case 'notEqual':
+      return rowValue !== filter.value;
+    case 'lessThan':
+      return rowValue < filter.value;
+    case 'lessThanOrEqual':
+      return rowValue <= filter.value;
+    case 'greaterThan':
+      return rowValue > filter.value;
+    case 'greaterThanOrEqual':
+      return rowValue >= filter.value;
+    case 'inRange':
+      return rowValue >= filter.value && rowValue <= filter.valueTo;
+    case 'blank':
+      return rowValue === 0;
+    case 'notBlank':
+      return rowValue !== 0;
+    case 'empty':
+      return true;
+    default:
+      return true;
+  }
+}
+
+function dateTypeFilter(rowValue, filter) {
+  let rowData,
+    fromData,
+    toData = null;
+  let isBlank = false;
+
+  // Проверка валидности даты
+  if (rowValue === '') {
+    isBlank = true;
+  } else if (dayjs(rowValue).isValid()) {
+    rowData = dayjs(rowValue).toDate();
   } else {
-    return false;
+    return true;
+  }
+
+  if (dayjs(filter.dateFrom).isValid()) {
+    fromData = dayjs(filter.dateFrom).toDate();
   }
 
   if (dayjs(filter.dateTo).isValid()) {
-    toDate = dayjs(filter.dateTo).toDate();
-    result = result && toDate >= rowDate;
+    toData = dayjs(filter.dateTo).toDate();
   }
 
-  return result;
+  const equalsData =
+    !isBlank &&
+    rowData.getFullYear() === fromData.getFullYear() &&
+    rowData.getMonth() === fromData.getMonth() &&
+    rowData.getDate() === fromData.getDate();
+
+  switch (filter.type) {
+    case 'equals':
+      return equalsData;
+    case 'notEqual':
+      return !equalsData;
+    case 'lessThan':
+      return rowData < fromData;
+    case 'greaterThan':
+      return rowData > fromData;
+    case 'inRange':
+      return rowData > fromData && rowData < toData;
+    case 'blank':
+      return isBlank;
+    case 'notBlank':
+      return !isBlank;
+    case 'empty':
+      return true;
+    default:
+      return true;
+  }
 }
