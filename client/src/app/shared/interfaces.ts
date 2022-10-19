@@ -48,6 +48,8 @@ export interface ITabData {
   isVerticalOrient?: boolean;
   owner?: string;
   statusRowCount?: string;
+  toExport?: (value: string) => void;
+  toPrint?: () => void;
 }
 
 export enum TypeReport {

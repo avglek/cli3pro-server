@@ -6,7 +6,7 @@ import { filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ITabData, TypeReport } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
-import { TransferService } from '../../shared/services/transfer.service';
+import { ToolbarService } from '../../shared/services/toolbar.service';
 
 @Component({
   selector: 'app-tool-box',
@@ -32,7 +32,7 @@ export class ToolBoxComponent implements OnInit {
     private router: Router,
     private location: Location,
     private tabDataService: TabDataService,
-    private transferService: TransferService
+    private toolBarService: ToolbarService
   ) {
     this.navEnd = router.events.pipe(
       filter((evt) => evt instanceof NavigationEnd)
@@ -92,7 +92,7 @@ export class ToolBoxComponent implements OnInit {
 
   onClickFilter() {
     this.isOnFilter = !this.isOnFilter;
-    this.transferService.btnFilter.next(this.isOnFilter);
+    this.toolBarService.btnFilter.next(this.isOnFilter);
   }
 
   onClickMarker() {
@@ -101,17 +101,19 @@ export class ToolBoxComponent implements OnInit {
 
   onClickExport() {}
 
-  onClickPrint() {}
+  onClickPrint() {
+    this.toolBarService.toPrint();
+  }
 
   toExcel() {
-    console.log('to excel');
+    this.toolBarService.toExport('excel');
   }
 
   toCSV() {
-    console.log('to csv');
+    this.toolBarService.toExport('csv');
   }
 
   toPDF() {
-    console.log('to pdf');
+    this.toolBarService.toExport('pdf');
   }
 }

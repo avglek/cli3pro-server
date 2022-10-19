@@ -40,8 +40,9 @@ import { GridLoadingComponent } from './grid-loading.component';
 import { GridNoRowsComponent } from './grid-no-rows.component';
 import { Subscription } from 'rxjs';
 import { CommonService } from '../../../shared/services/common.service';
-import { TransferService } from '../../../shared/services/transfer.service';
+import { ToolbarService } from '../../../shared/services/toolbar.service';
 import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
+import { PrintService } from '../../../shared/services/print.service';
 
 @Component({
   selector: 'app-grid-data',
@@ -58,6 +59,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     new EventEmitter<RowClickedEvent>();
 
   gridApi!: GridApi;
+  gridId = 'dataGrid';
   procParams: IProcParam[] = [];
   rowSelection = 'single';
   rowModelType: any = 'infinite';
@@ -65,6 +67,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   cacheOverflowSize = 3;
   isLoading = false;
   docSub: Subscription | undefined;
+  onFloatingFilter: Subscription | undefined;
   locale = AG_GRID_LOCALE_RU;
 
   clipboardContext!: any;
@@ -81,7 +84,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     private dataService: DataServerService,
     private nzContextMenuService: NzContextMenuService,
     private commonService: CommonService,
-    private transferService: TransferService
+    private toolBarService: ToolbarService,
+    private printService: PrintService
   ) {
     dayjs.extend(customParseFormat);
   }
@@ -90,6 +94,10 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     if (this.docSub) {
       this.docSub.unsubscribe();
       this.docSub = undefined;
+    }
+    if (this.onFloatingFilter) {
+      this.onFloatingFilter.unsubscribe();
+      this.onFloatingFilter = undefined;
     }
   }
 
@@ -108,15 +116,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultColDef.floatingFilter = this.tabData.isOnFilter;
         }
       }
-
-      this.transferService.btnFilter.subscribe((onFilter) => {
-        if (this.gridApi) {
-          this.defaultColDef.floatingFilter = onFilter;
-          this.gridApi.setDefaultColDef(this.defaultColDef);
-          if (onFilter) {
-          }
-        }
-      });
     }
 
     this.commonService.getContextFilter().subscribe((filter) => {
@@ -152,6 +151,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
+
+    this.initToolbarSubject();
   }
 
   dataSource: IDatasource = {
@@ -273,6 +274,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    //console.log('changes:',changes)
     if (changes['filter'] && !this.tabData.isLoading) {
       if (this.gridApi) {
         this.gridApi.setDatasource(this.dataSource);
@@ -312,6 +314,40 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         suppressFilterButton: true,
       },
     });
+  }
+
+  initToolbarSubject() {
+    this.onFloatingFilter = this.toolBarService.btnFilter.subscribe(
+      (onFilter) => {
+        if (this.gridApi) {
+          this.defaultColDef.floatingFilter = onFilter;
+          this.gridApi.setDefaultColDef(this.defaultColDef);
+          if (onFilter) {
+          }
+        }
+      }
+    );
+
+    this.tabData.toPrint = this.printGridData.bind(this);
+
+    this.tabData.toExport = this.exportGridData.bind(this);
+  }
+
+  private printGridData() {
+    console.log('print data:', this.tabData.title);
+    const gridRef = <HTMLElement>document.getElementById(this.gridId);
+    gridRef.style.width = '';
+    gridRef.style.height = '';
+    this.gridApi.setDomLayout('print');
+    this.printService.printElement(gridRef).subscribe(() => {
+      gridRef.style.width = '100%';
+      gridRef.style.height = '100%';
+      this.gridApi.setDomLayout();
+    });
+  }
+
+  private exportGridData(format: string) {
+    console.log('tabData', format);
   }
 }
 

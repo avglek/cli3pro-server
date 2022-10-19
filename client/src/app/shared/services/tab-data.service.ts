@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ITabData } from '../interfaces';
 import { customAlphabet } from 'nanoid';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 const nanoid = customAlphabet('ABCDEF0987654321', 8);
 
@@ -13,12 +13,14 @@ export class TabDataService {
   currentIndex: number = -1;
 
   subject = new BehaviorSubject(0);
+  currentTabs = new Subject<ITabData>();
 
   add(tab: ITabData): string {
     tab.uid = nanoid();
     this.tabs.push(tab);
     this.currentIndex++;
     this.subject.next(this.currentIndex);
+    this.currentTabs.next(this.tabs[this.currentIndex]);
     return tab.uid;
   }
 
@@ -45,12 +47,18 @@ export class TabDataService {
         this.tabs.splice(index, 1, item);
       }
       this.subject.next(this.currentIndex);
+      this.currentTabs.next(this.tabs[this.currentIndex]);
     }
   }
 
   setCurrentIndex(index: number) {
     this.currentIndex = index;
     this.subject.next(index);
+    this.currentTabs.next(this.tabs[index]);
+  }
+
+  getCurrent() {
+    return this.currentTabs;
   }
 
   getCurrentTab(): Observable<ITabData> {

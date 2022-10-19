@@ -20,6 +20,7 @@ import { MainLayoutModule } from './shared/layouts/main-layout/main-layout.modul
 import { RouterModule } from '@angular/router';
 import { DocsLayoutModule } from './shared/layouts/docs-layout/docs-layout.module';
 import { ClipboardModule } from 'ngx-clipboard';
+import { PortalModule } from '@angular/cdk/portal';
 
 registerLocaleData(ru);
 
@@ -38,11 +39,13 @@ registerLocaleData(ru);
     NzNotificationServiceModule,
     MainLayoutModule,
     RouterModule,
+    PortalModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: ru_RU },
     { provide: HTTP_INTERCEPTORS, multi: true, useClass: TokenInterceptor },
   ],
   bootstrap: [AppComponent],
+  exports: [],
 })
 export class AppModule {}
