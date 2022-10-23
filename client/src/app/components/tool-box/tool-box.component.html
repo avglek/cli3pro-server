@@ -8,23 +8,68 @@
   <div class="main-box">
     <div class="right-box">
       <nz-space nzAlign="center">
-        <div *ngIf="isDocTools">
-          <button
-            *ngIf="isTwoTables"
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="onChangeOrient()"
-          >
-            <mat-icon
-              svgIcon="viewAgenda"
-              [ngClass]="[
-                isVertical
-                  ? 'mat-icon-orient-vertical'
-                  : 'mat-icon-orient-horizontal'
-              ]"
-            ></mat-icon>
-          </button>
+        <ng-template [ngIf]="isDocTools">
+          <ng-template [ngIf]="isTwoTables">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="onChangeOrient()"
+              nz-tooltip
+              [nzTooltipTitle]="'Повернуть'"
+              [nzTooltipPlacement]="'bottom'"
+            >
+              <mat-icon
+                svgIcon="viewAgenda"
+                [ngClass]="[
+                  isVertical
+                    ? 'mat-icon-orient-vertical'
+                    : 'mat-icon-orient-horizontal'
+                ]"
+              ></mat-icon>
+            </button>
+            <app-ui-divider></app-ui-divider>
+          </ng-template>
+          <ng-template [ngIf]="isEdit">
+            <button
+              nz-button
+              nz-tooltip
+              [nzTooltipTitle]="'Добавить строку'"
+              [nzTooltipPlacement]="'bottom'"
+              [nzTooltipOverlayClassName]="'tooltip'"
+              nzType="primary"
+              nzSize="large"
+              (click)="onAddRow()"
+            >
+              <mat-icon svgIcon="addRow"></mat-icon>
+            </button>
+            <button
+              nz-button
+              nz-tooltip
+              [nzTooltipTitle]="'Удалить строку'"
+              [nzTooltipPlacement]="'bottom'"
+              [nzTooltipOverlayClassName]="'tooltip'"
+              nzType="primary"
+              nzSize="large"
+              (click)="onRemoveRow()"
+            >
+              <mat-icon svgIcon="deleteRow"></mat-icon>
+            </button>
+            <button
+              nz-button
+              nz-tooltip
+              nzType="primary"
+              nzSize="large"
+              [disabled]="saveDisabled"
+              (click)="onSaveRows()"
+              [nzTooltipTitle]="'Сохранить изменения'"
+              [nzTooltipPlacement]="'bottom'"
+              [nzTooltipOverlayClassName]="'tooltip'"
+            >
+              <mat-icon svgIcon="save"></mat-icon>
+            </button>
+            <app-ui-divider></app-ui-divider>
+          </ng-template>
           <button
             nz-button
             nzType="primary"
@@ -47,6 +92,9 @@
             nzType="primary"
             nzSize="large"
             (click)="onClickPrint()"
+            nz-tooltip
+            [nzTooltipTitle]="'Печать'"
+            [nzTooltipPlacement]="'bottom'"
           >
             <mat-icon svgIcon="print"></mat-icon>
           </button>
@@ -54,29 +102,48 @@
             nz-button
             nzType="primary"
             nzSize="large"
-            (click)="onClickFilter()"
-            [ngClass]="isOnFilter ? 'button-invert' : ''"
+            (click)="onClickResetFilter()"
+            nz-tooltip
+            [nzTooltipTitle]="'Сбросить все фильтры'"
+            [nzTooltipPlacement]="'bottom'"
           >
-            <mat-icon svgIcon="filterAdd"></mat-icon>
+            <mat-icon svgIcon="filterRemove"></mat-icon>
           </button>
           <button
             nz-button
             nzType="primary"
             nzSize="large"
-            (click)="onClickMarker()"
-            [ngClass]="isOnMarker ? 'button-invert' : ''"
+            (click)="onClickFilter()"
+            [ngClass]="isOnFilter ? 'button-invert' : ''"
+            nz-tooltip
+            [nzTooltipTitle]="'Показать фильтр'"
+            [nzTooltipPlacement]="'bottom'"
           >
-            <mat-icon svgIcon="markerColor"></mat-icon>
+            <mat-icon svgIcon="filterAdd"></mat-icon>
           </button>
-        </div>
+          <!--          <button-->
+          <!--            nz-button-->
+          <!--            nzType="primary"-->
+          <!--            nzSize="large"-->
+          <!--            (click)="onClickMarker()"-->
+          <!--            [ngClass]="isOnMarker ? 'button-invert' : ''"-->
+          <!--          >-->
+          <!--            <mat-icon svgIcon="markerColor"></mat-icon>-->
+          <!--          </button>-->
+        </ng-template>
+        <app-ui-divider></app-ui-divider>
         <button
           nz-button
           nzType="primary"
           nzSize="large"
           (click)="onClickPersonalArea()"
+          nz-tooltip
+          [nzTooltipTitle]="'Личный кабинет'"
+          [nzTooltipPlacement]="'bottom'"
         >
           <mat-icon svgIcon="userPersonArea"></mat-icon>
         </button>
+        <app-ui-divider></app-ui-divider>
         <button
           nz-button
           nzType="primary"
@@ -85,16 +152,20 @@
         >
           {{ menuTitle }}
         </button>
+        <app-ui-divider></app-ui-divider>
         <button nz-button nzType="primary" nzSize="large">О нас</button>
-        <nz-divider nzType="vertical"></nz-divider>
-        <div>test</div>
-        <i
-          nz-icon
-          nzType="logout"
-          nzTheme="outline"
-          class="trigger"
+        <app-ui-divider></app-ui-divider>
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          nz-tooltip
+          [nzTooltipTitle]="'Выйти'"
+          [nzTooltipPlacement]="'bottom'"
           (click)="logout()"
-        ></i>
+        >
+          <mat-icon svgIcon="logout"></mat-icon>
+        </button>
       </nz-space>
     </div>
   </div>

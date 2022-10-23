@@ -13,6 +13,7 @@ import {
 })
 export class OneDataGridComponent implements OnInit {
   @Input() tabData!: ITabData;
+  @Input() isEdit!: boolean;
 
   cursorName!: string;
 

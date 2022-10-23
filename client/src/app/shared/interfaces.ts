@@ -37,6 +37,7 @@ export interface ITabData {
   title?: string;
   isLoading?: boolean;
   isForm?: boolean;
+  isEdit?: boolean;
   isOnFilter?: boolean;
   reportType?: TypeReport;
   params?: IDescParam[];

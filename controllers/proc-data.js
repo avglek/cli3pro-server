@@ -140,7 +140,8 @@ async function getFields(schema, meta, docId) {
     const findIndex = fieldsResult.findIndex(
       (i) => i.fieldName === item.fieldName
     );
-    if (item.docId === docId) {
+
+    if (item.docId == docId) {
       if (findIndex >= 0) {
         fieldsResult[findIndex] = { ...item };
       } else {

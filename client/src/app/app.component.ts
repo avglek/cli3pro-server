@@ -4,8 +4,7 @@ import { IconService } from './shared/services/icon.service';
 
 @Component({
   selector: 'app-root',
-  template:
-    '<router-outlet></router-outlet><iframe id="print-frame" #printFrame></iframe>',
+  template: '<router-outlet></router-outlet>',
   styleUrls: ['./app.component.less'],
 })
 export class AppComponent implements OnInit {

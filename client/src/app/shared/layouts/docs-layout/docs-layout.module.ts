@@ -26,6 +26,10 @@ import { DateFilterComponent } from '../../../components/reports/filters';
 import { FormsModule } from '@angular/forms';
 import { DateFloatingFilterComponent } from '../../../components/reports/filters';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { GridEditDataComponent } from '../../../components/reports/grid-edit-data/grid-edit-data.component';
+import { PortalModule } from '@angular/cdk/portal';
+import { MatIconModule } from '@angular/material/icon';
+import { UiDividerComponent } from '../../UI-controls';
 
 @NgModule({
   declarations: [
@@ -43,6 +47,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     ReplaceSpacePipe,
     DateFilterComponent,
     DateFloatingFilterComponent,
+    GridEditDataComponent,
+    UiDividerComponent,
   ],
   imports: [
     CommonModule,
@@ -58,6 +64,9 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzRadioModule,
     FormsModule,
     NzDatePickerModule,
+    PortalModule,
+    MatIconModule,
   ],
+  exports: [UiDividerComponent],
 })
 export class DocsLayoutModule {}

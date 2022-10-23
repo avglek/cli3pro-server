@@ -8,4 +8,8 @@ export const Icons: { [keys: string]: string } = {
   markerColor: 'marker-color-colour-svgrepo-com-2',
   export: 'export-svgrepo-com',
   print: 'printer-print-svgrepo-com',
+  logout: 'logout-svgrepo-com',
+  addRow: 'add-tool-svgrepo-com',
+  deleteRow: 'round-delete-button-svgrepo-com',
+  save: 'save-svgrepo-com',
 };

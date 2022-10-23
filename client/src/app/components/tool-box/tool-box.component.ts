@@ -26,6 +26,8 @@ export class ToolBoxComponent implements OnInit {
   isOnFilter: boolean = false;
   isOnMarker: boolean = false;
   isDocTools: boolean = false;
+  isEdit: boolean = false;
+  saveDisabled: boolean = true;
 
   constructor(
     private auth: AuthService,
@@ -54,6 +56,7 @@ export class ToolBoxComponent implements OnInit {
           this.currentTab = tab;
           this.isTwoTables = tab.reportType === TypeReport.TwoTables;
           this.isVertical = !!tab.isVerticalOrient;
+          this.isEdit = tab.isEdit || false;
         }
       },
       error: (err) => {
@@ -99,8 +102,6 @@ export class ToolBoxComponent implements OnInit {
     this.isOnMarker = !this.isOnMarker;
   }
 
-  onClickExport() {}
-
   onClickPrint() {
     this.toolBarService.toPrint();
   }
@@ -116,4 +117,12 @@ export class ToolBoxComponent implements OnInit {
   toPDF() {
     this.toolBarService.toExport('pdf');
   }
+
+  onAddRow() {}
+
+  onClickResetFilter() {}
+
+  onRemoveRow() {}
+
+  onSaveRows() {}
 }

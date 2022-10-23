@@ -11,10 +11,13 @@ export class ReportComponent implements OnInit {
 
   reportType: TypeReport = TypeReport.Table;
   types = TypeReport;
+  isEdit: boolean = false;
 
   ngOnInit(): void {
     if (!this.tabData.isLoading) {
+      console.log('report:', this.tabData);
       this.reportType = this.tabData.reportType || TypeReport.Table;
+      this.isEdit = this.tabData.isEdit || false;
     }
   }
 }

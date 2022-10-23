@@ -72,6 +72,9 @@ export class HomePageComponent implements OnInit {
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({
         next: (data) => {
+          const isEdit = !!data.params.find(
+            (param) => param.argumentName === 'P_UPDATE_TABLE'
+          );
           const newTab: ITabData = {
             uid,
             docId: tab.docId,
@@ -84,6 +87,7 @@ export class HomePageComponent implements OnInit {
             isSuccess: true,
             isLoading: false,
             owner: this.owner,
+            isEdit,
           };
           this.tabService.update(newTab);
         },

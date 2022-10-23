@@ -334,7 +334,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private printGridData() {
-    console.log('print data:', this.tabData.title);
     const gridRef = <HTMLElement>document.getElementById(this.gridId);
     gridRef.style.width = '';
     gridRef.style.height = '';
