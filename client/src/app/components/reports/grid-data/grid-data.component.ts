@@ -11,6 +11,7 @@ import {
 import {
   CellContextMenuEvent,
   ColDef,
+  ColGroupDef,
   ColumnApi,
   DateFilter,
   GridApi,
@@ -242,7 +243,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
                   return refColumnDef;
                 });
               if (this.gridApi) {
-                this.gridApi.setColumnDefs(columns);
+                this.gridApi.setColumnDefs(this.groupColumns(columns));
               }
             }
           }
@@ -287,6 +288,44 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         this.gridApi.setDatasource(this.dataSource);
       }
     }
+  }
+
+  private groupColumns(columns: ColDef[]): (ColDef | ColGroupDef)[] {
+    const groupColumns: (ColDef | ColGroupDef)[] = [];
+    columns.forEach((col) => {
+      if (col.headerName) {
+        const indexGroup = col.headerName!.indexOf('|');
+
+        if (indexGroup < 0) {
+          groupColumns.push(col);
+        } else {
+          const nameGroup = col.headerName.slice(0, indexGroup);
+          let findGroup = <ColGroupDef>(
+            groupColumns.find((col) => col.headerName === nameGroup)
+          );
+          const child: ColDef = {
+            ...col,
+            headerName: col.headerName.slice(
+              indexGroup + 1,
+              col.headerName.length
+            ),
+          };
+
+          if (findGroup) {
+            findGroup.children.push(child);
+          } else {
+            findGroup = {
+              headerName: nameGroup,
+              children: [child],
+            };
+            groupColumns.push(findGroup);
+          }
+        }
+      } else {
+        groupColumns.push(col);
+      }
+    });
+    return groupColumns;
   }
 
   private setColumFilter(def: ColDef, col: IField) {
