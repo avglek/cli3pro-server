@@ -51,6 +51,7 @@ export interface ITabData {
   statusRowCount?: string;
   toExport?: (value: string) => void;
   toPrint?: () => void;
+  resetAllFilters?: () => void;
 }
 
 export enum TypeReport {

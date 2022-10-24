@@ -8,6 +8,7 @@
     </app-grid-edit-data>
     <ng-template #notEdit>
       <app-grid-data
+        #gridData
         [tabData]="tabData"
         [cursorName]="cursorName"
         (rowCount)="onRowCount($event)"

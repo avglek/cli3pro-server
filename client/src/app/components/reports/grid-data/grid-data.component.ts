@@ -11,6 +11,7 @@ import {
 import {
   CellContextMenuEvent,
   ColDef,
+  ColumnApi,
   DateFilter,
   GridApi,
   GridReadyEvent,
@@ -59,6 +60,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     new EventEmitter<RowClickedEvent>();
 
   gridApi!: GridApi;
+  gridColumnApi!: ColumnApi;
   gridId = 'dataGrid';
   procParams: IProcParam[] = [];
   rowSelection = 'single';
@@ -78,6 +80,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
     floatingFilter: false,
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
   };
 
   constructor(
@@ -153,6 +157,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.initToolbarSubject();
+    this.toolBarService.btnFilter.next(false);
   }
 
   dataSource: IDatasource = {
@@ -225,6 +230,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
                   const refColumnDef = {
                     field: col.fieldName,
                     headerName: col.displayLabel,
+                    headerTooltip: col.displayLabel,
                     width: col.displaySize
                       ? col.displaySize * 10 + 20
                       : undefined,
@@ -256,6 +262,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   onGridReady(params: GridReadyEvent) {
     params.api.setDatasource(this.dataSource);
     this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
   }
 
   changeDefaultContext($event: MouseEvent, menu: NzDropdownMenuComponent) {
@@ -309,21 +316,22 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         break;
     }
 
-    Object.assign(def, {
-      floatingFilterComponentParams: {
-        suppressFilterButton: true,
-      },
-    });
+    // Object.assign(def, {
+    //   floatingFilterComponentParams: {
+    //     suppressFilterButton: true,
+    //   },
+    // });
   }
 
   initToolbarSubject() {
     this.onFloatingFilter = this.toolBarService.btnFilter.subscribe(
       (onFilter) => {
+        console.log('filter:', onFilter);
         if (this.gridApi) {
           this.defaultColDef.floatingFilter = onFilter;
           this.gridApi.setDefaultColDef(this.defaultColDef);
-          if (onFilter) {
-          }
+
+          this.gridApi.refreshHeader();
         }
       }
     );
@@ -331,6 +339,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     this.tabData.toPrint = this.printGridData.bind(this);
 
     this.tabData.toExport = this.exportGridData.bind(this);
+    this.tabData.resetAllFilters = this.resetAllFilters.bind(this);
   }
 
   private printGridData() {
@@ -347,6 +356,12 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   private exportGridData(format: string) {
     console.log('tabData', format);
+  }
+
+  private resetAllFilters() {
+    if (this.gridApi) {
+      this.gridApi.setFilterModel(null);
+    }
   }
 }
 

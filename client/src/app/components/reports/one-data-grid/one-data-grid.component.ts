@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { ITabData } from '../../../shared/interfaces';
 import { TabDataService } from '../../../shared/services/tab-data.service';
 import {
@@ -11,7 +16,7 @@ import {
   templateUrl: './one-data-grid.component.html',
   styleUrls: ['./one-data-grid.component.less'],
 })
-export class OneDataGridComponent implements OnInit {
+export class OneDataGridComponent implements OnInit, AfterViewInit {
   @Input() tabData!: ITabData;
   @Input() isEdit!: boolean;
 
@@ -35,4 +40,6 @@ export class OneDataGridComponent implements OnInit {
     $event.preventDefault();
     this.nzContextMenuService.create($event, menu);
   }
+
+  ngAfterViewInit(): void {}
 }

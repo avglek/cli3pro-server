@@ -120,7 +120,9 @@ export class ToolBoxComponent implements OnInit {
 
   onAddRow() {}
 
-  onClickResetFilter() {}
+  onClickResetFilter() {
+    this.toolBarService.resetAllFilters();
+  }
 
   onRemoveRow() {}
 

@@ -30,4 +30,10 @@ export class ToolbarService {
       this.currentTabs.toPrint();
     }
   }
+
+  resetAllFilters() {
+    if (this.currentTabs && this.currentTabs.resetAllFilters) {
+      this.currentTabs.resetAllFilters();
+    }
+  }
 }
