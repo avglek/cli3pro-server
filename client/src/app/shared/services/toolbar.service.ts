@@ -14,7 +14,6 @@ export class ToolbarService {
 
   constructor(private tabService: TabDataService) {
     tabService.getCurrent().subscribe((tab) => {
-      console.log('get:', tab);
       this.currentTabs = tab;
     });
   }
@@ -34,6 +33,24 @@ export class ToolbarService {
   resetAllFilters() {
     if (this.currentTabs && this.currentTabs.resetAllFilters) {
       this.currentTabs.resetAllFilters();
+    }
+  }
+
+  onSaveData() {
+    if (this.currentTabs && this.currentTabs.onSaveData) {
+      this.currentTabs.onSaveData();
+    }
+  }
+
+  onAddRow() {
+    if (this.currentTabs && this.currentTabs.onAddRow) {
+      this.currentTabs.onAddRow();
+    }
+  }
+
+  onRemoveRows() {
+    if (this.currentTabs && this.currentTabs.onRemoveRows) {
+      this.currentTabs.onRemoveRows();
     }
   }
 }

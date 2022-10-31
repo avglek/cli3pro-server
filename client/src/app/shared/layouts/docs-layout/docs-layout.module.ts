@@ -30,6 +30,11 @@ import { GridEditDataComponent } from '../../../components/reports/grid-edit-dat
 import { PortalModule } from '@angular/cdk/portal';
 import { MatIconModule } from '@angular/material/icon';
 import { UiDividerComponent } from '../../UI-controls';
+import { UiCellCheckRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell-render';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { UiCellCheckEditComponent } from '../../../components/reports/grid-edit-data/custom-cell-render';
+import { UiCellSelectRender } from '../../../components/reports/grid-edit-data/custom-cell-render/ui-cell-select/ui-cell-select-render';
+import { UiCellSimpleSelectRender } from '../../../components/reports/grid-edit-data/custom-cell-render/ui-cell-simple-select/ui-cell-simple-select-render';
 
 @NgModule({
   declarations: [
@@ -49,11 +54,16 @@ import { UiDividerComponent } from '../../UI-controls';
     DateFloatingFilterComponent,
     GridEditDataComponent,
     UiDividerComponent,
+    UiCellCheckRenderComponent,
+    UiCellCheckEditComponent,
+    UiCellSelectRender,
+    UiCellSimpleSelectRender,
   ],
   imports: [
     CommonModule,
     NzTabsModule,
     NzIconModule,
+    NzCheckboxModule,
     AgGridModule,
     UiFormModule,
     NzDropDownModule,

@@ -6,6 +6,7 @@ import {
   TypeOut,
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
+import { TabDataService } from '../../../shared/services/tab-data.service';
 
 @Component({
   selector: 'app-plain-text',
@@ -37,6 +38,7 @@ export class PlainTextComponent implements OnInit {
         };
         this.procParams.push(procParam);
       });
+
       this.dataService
         .procExecute(
           this.tabData.owner,

@@ -5,7 +5,7 @@
     class="ag-theme-balham"
     (gridReady)="onGridReady($event)"
     [defaultColDef]="defaultColDef"
-    [rowSelection]="'single'"
+    [rowSelection]="'multiple'"
     [rowModelType]="'clientSide'"
     [columnDefs]="columnDefs"
     [rowData]="rowData"
@@ -16,5 +16,8 @@
     [noRowsOverlayComponent]="noRowsOverlayComponent"
     [noRowsOverlayComponentParams]="noRowsOverlayComponentParams"
     [localeText]="locale"
+    [getRowId]="getRowId"
+    [components]="components"
+    [singleClickEdit]="true"
   ></ag-grid-angular>
 </div>

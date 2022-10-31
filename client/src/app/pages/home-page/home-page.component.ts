@@ -62,6 +62,7 @@ export class HomePageComponent implements OnInit {
     await this.router.navigate(['/doc']);
 
     const tab: ITabData = {
+      uid: '',
       docId: docId,
       title: `Документ № ${docId}`,
       isLoading: true,
@@ -72,6 +73,7 @@ export class HomePageComponent implements OnInit {
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({
         next: (data) => {
+          console.log('desc:', data);
           const isEdit = !!data.params.find(
             (param) => param.argumentName === 'P_UPDATE_TABLE'
           );

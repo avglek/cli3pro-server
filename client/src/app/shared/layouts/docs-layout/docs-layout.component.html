@@ -7,7 +7,12 @@
 >
   <nz-tab *ngFor="let tab of tabs" nzClosable [nzTitle]="titleTemplate">
     <ng-template #titleTemplate>
-      <i *ngIf="tab.isLoading" nz-icon nzType="loading" nzTheme="outline"></i>
+      <i
+        *ngIf="tab.isLoading || tab.isDataLoading"
+        nz-icon
+        nzType="loading"
+        nzTheme="outline"
+      ></i>
       {{ tab.title }}
     </ng-template>
     <app-form *ngIf="tab.isForm; else report" [tabData]="tab"> </app-form>

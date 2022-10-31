@@ -5,8 +5,8 @@ networks:
 services:
   cli3-server:
     build: .
-#    ports:
-#      - "5000:5000"
+    ports:
+       - "5000:5000"
     container_name: cli3-server
     networks:
       - cli3-net

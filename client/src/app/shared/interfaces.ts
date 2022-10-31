@@ -32,12 +32,14 @@ export interface ITreeDocs {
 }
 
 export interface ITabData {
-  uid?: string;
+  uid: string;
   docId?: number;
   title?: string;
   isLoading?: boolean;
+  isDataLoading?: boolean;
   isForm?: boolean;
   isEdit?: boolean;
+  isGrid?: boolean;
   isOnFilter?: boolean;
   reportType?: TypeReport;
   params?: IDescParam[];
@@ -52,6 +54,10 @@ export interface ITabData {
   toExport?: (value: string) => void;
   toPrint?: () => void;
   resetAllFilters?: () => void;
+  onSaveData?: () => void;
+  onAddRow?: () => void;
+  onRemoveRows?: () => void;
+  isChangesData?: boolean;
 }
 
 export enum TypeReport {
@@ -60,6 +66,13 @@ export enum TypeReport {
   Text = 'TfrmText',
   XLReport = 'TfrmXLReport',
   Flash = 'TfrmFlash',
+}
+
+export enum TypeUpdateMarker {
+  None,
+  Add,
+  Update,
+  Remove,
 }
 
 export enum TypeData {
@@ -108,6 +121,16 @@ export enum UIControlType {
   UIRadioButton = 10,
   UIMultiEdit = 13,
   UIGroup = 11,
+}
+
+export enum UICellRenderType {
+  'UICellCheckBoxRender' = 9,
+  'UICellSelectRender' = 3,
+  'UICellSimpleSelectRender' = 2,
+}
+
+export enum UICellEditType {
+  'UICellCheckBoxEdit' = 9,
 }
 
 export interface IDescDescription {

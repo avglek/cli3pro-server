@@ -1,4 +1,7 @@
-export function toCamelCase(str: string): string {
+export function toCamelCase(str: string | null | undefined): string {
+  if (!str) {
+    return '';
+  }
   const inx = str.indexOf('_');
   let result;
   if (inx > 0) {
@@ -12,6 +15,14 @@ export function toCamelCase(str: string): string {
   return result;
 }
 
+export function parseAndCamelCase(str: string | null | undefined): string {
+  if (!str) return '';
+
+  const arr = str.split(';');
+  const res = arr.map((s) => toCamelCase(s));
+
+  return res.join(';');
+}
 // const getSearchParams = (str: string): any => {
 //   if (!str) return [];
 //   const rex = /\.([a-z-_1-9;]+)/gim;

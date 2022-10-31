@@ -98,29 +98,32 @@
           >
             <mat-icon svgIcon="print"></mat-icon>
           </button>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="onClickResetFilter()"
-            nz-tooltip
-            [nzTooltipTitle]="'Сбросить все фильтры'"
-            [nzTooltipPlacement]="'bottom'"
-          >
-            <mat-icon svgIcon="filterRemove"></mat-icon>
-          </button>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="onClickFilter()"
-            [ngClass]="isOnFilter ? 'button-invert' : ''"
-            nz-tooltip
-            [nzTooltipTitle]="'Показать фильтр'"
-            [nzTooltipPlacement]="'bottom'"
-          >
-            <mat-icon svgIcon="filterAdd"></mat-icon>
-          </button>
+          <ng-template [ngIf]="isGrid">
+            <app-ui-divider></app-ui-divider>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="onClickResetFilter()"
+              nz-tooltip
+              [nzTooltipTitle]="'Сбросить все фильтры'"
+              [nzTooltipPlacement]="'bottom'"
+            >
+              <mat-icon svgIcon="filterRemove"></mat-icon>
+            </button>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="onClickFilter()"
+              [ngClass]="isOnFilter ? 'button-invert' : ''"
+              nz-tooltip
+              [nzTooltipTitle]="'Показать фильтр'"
+              [nzTooltipPlacement]="'bottom'"
+            >
+              <mat-icon svgIcon="filterAdd"></mat-icon>
+            </button>
+          </ng-template>
           <!--          <button-->
           <!--            nz-button-->
           <!--            nzType="primary"-->

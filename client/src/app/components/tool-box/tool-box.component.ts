@@ -27,6 +27,7 @@ export class ToolBoxComponent implements OnInit {
   isOnMarker: boolean = false;
   isDocTools: boolean = false;
   isEdit: boolean = false;
+  isGrid: boolean = false;
   saveDisabled: boolean = true;
 
   constructor(
@@ -47,7 +48,6 @@ export class ToolBoxComponent implements OnInit {
       this.isTwoTables = nav.url.includes('doc');
       this.isDocTools = nav.url.includes('doc');
       this.prevUrl = nav.url;
-      console.log('nav:', nav.url, nav.url.includes('doc'), this.isDocTools);
     });
 
     this.tabDataService.getCurrentTab().subscribe({
@@ -57,6 +57,10 @@ export class ToolBoxComponent implements OnInit {
           this.isTwoTables = tab.reportType === TypeReport.TwoTables;
           this.isVertical = !!tab.isVerticalOrient;
           this.isEdit = tab.isEdit || false;
+          this.isGrid =
+            tab.reportType === TypeReport.Table ||
+            tab.reportType === TypeReport.TwoTables;
+          this.saveDisabled = !tab.isChangesData;
         }
       },
       error: (err) => {
@@ -118,13 +122,19 @@ export class ToolBoxComponent implements OnInit {
     this.toolBarService.toExport('pdf');
   }
 
-  onAddRow() {}
+  onAddRow() {
+    this.toolBarService.onAddRow();
+  }
 
   onClickResetFilter() {
     this.toolBarService.resetAllFilters();
   }
 
-  onRemoveRow() {}
+  onRemoveRow() {
+    this.toolBarService.onRemoveRows();
+  }
 
-  onSaveRows() {}
+  onSaveRows() {
+    this.toolBarService.onSaveData();
+  }
 }

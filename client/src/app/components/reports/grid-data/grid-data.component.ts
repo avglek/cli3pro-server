@@ -45,6 +45,7 @@ import { CommonService } from '../../../shared/services/common.service';
 import { ToolbarService } from '../../../shared/services/toolbar.service';
 import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
 import { PrintService } from '../../../shared/services/print.service';
+import { TabDataService } from '../../../shared/services/tab-data.service';
 
 @Component({
   selector: 'app-grid-data',
@@ -90,7 +91,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     private nzContextMenuService: NzContextMenuService,
     private commonService: CommonService,
     private toolBarService: ToolbarService,
-    private printService: PrintService
+    private printService: PrintService,
+    private tabService: TabDataService
   ) {
     dayjs.extend(customParseFormat);
   }
@@ -181,6 +183,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
       this.isLoading = true;
       this.gridApi.showLoadingOverlay();
+      this.tabService.setLoadData(this.tabData.uid, true);
       this.procParams.forEach((param) => {
         if (param.name === this.cursorName) {
           param.start = params.startRow;
@@ -211,6 +214,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         .subscribe((data) => {
           this.isLoading = false;
           this.gridApi.hideOverlay();
+          this.tabService.setLoadData(this.tabData.uid, false);
           const link = <IStringData>data.data['P_LINKS'];
           if (link) {
             this.docLink.emit(link.data);

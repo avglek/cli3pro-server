@@ -51,6 +51,21 @@ export class TabDataService {
     }
   }
 
+  setLoadData(uid: string, isLoadData: boolean) {
+    const currentTab = this.tabs.find((tab) => tab.uid === uid);
+    if (currentTab) {
+      currentTab.isDataLoading = isLoadData;
+    }
+  }
+
+  setChangesData(uid: string, changeData: boolean) {
+    const currentTab = this.tabs.find((tab) => tab.uid === uid);
+    if (currentTab) {
+      currentTab.isChangesData = changeData;
+    }
+    this.refresh();
+  }
+
   setCurrentIndex(index: number) {
     this.currentIndex = index;
     this.subject.next(index);
