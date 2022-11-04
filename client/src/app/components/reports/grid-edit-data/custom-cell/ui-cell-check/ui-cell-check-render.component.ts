@@ -12,13 +12,7 @@ import { ICellRendererParams } from 'ag-grid-community';
       [(ngModel)]="checked"
     ></label>
   </div>`,
-  styles: [
-    `
-      .check-label {
-        text-align: center;
-      }
-    `,
-  ],
+  styleUrls: ['ui-cell-check.component.less'],
 })
 export class UiCellCheckRenderComponent implements ICellRendererAngularComp {
   checked: boolean = false;

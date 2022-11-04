@@ -59,8 +59,6 @@ function sorting(sortParam, rows) {
 }
 
 function filter(filterParam, rows) {
-  //console.log('filter:', filterParam);
-
   return filterParam.reduce((acc, filterElement) => {
     acc = acc.filter((row) => {
       switch (filterElement.filterType) {
@@ -111,13 +109,13 @@ function textTypeFilter(rowValue, filter) {
     case 'notEqual':
       return value !== filterValue;
     case 'contains':
-      return value.includes(filterValue);
+      return value ? value.includes(filterValue) : false;
     case 'notContains':
-      return !value.includes(filterValue);
+      return value ? !value.includes(filterValue) : true;
     case 'startsWith':
-      return value.startsWith(filterValue);
+      return value ? value.startsWith(filterValue) : false;
     case 'endsWith':
-      return value.endsWith(filterValue);
+      return value ? value.endsWith(filterValue) : false;
     case 'blank':
       return !value || value.trim() === '';
     case 'notBlank':

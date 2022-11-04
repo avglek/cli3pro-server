@@ -33,13 +33,15 @@ import { customAlphabet } from 'nanoid';
 import {
   UiCellCheckEditComponent,
   UiCellCheckRenderComponent,
-} from './custom-cell-render';
-import { UiCellSelectRender } from './custom-cell-render/ui-cell-select/ui-cell-select-render';
+} from './custom-cell';
+import { UiCellSelectRenderComponent } from './custom-cell/ui-cell-select/ui-cell-select-render.component';
 import { EditDataService } from '../../../shared/services/edit-data.service';
-import {
-  parseAndCamelCase,
-} from '../../../shared/utils/str-utils';
-import { UiCellSimpleSelectRender } from './custom-cell-render/ui-cell-simple-select/ui-cell-simple-select-render';
+import { parseAndCamelCase } from '../../../shared/utils/str-utils';
+import { UiCellSimpleSelectRenderComponent } from './custom-cell/ui-cell-simple-select/ui-cell-simple-select-render.component';
+import { UiCellSelectEditComponent } from './custom-cell/ui-cell-select/ui-cell-select-edit.component';
+import { UiCellSimpleSelectEditComponent } from './custom-cell/ui-cell-simple-select/ui-cell-simple-select-edit.component';
+import { dataFormatter } from '../../../shared/utils/grid-utils';
+import { UiCellInputRenderComponent } from './custom-cell/ui-cell-input/ui-cell-input-render.component';
 
 const nanoid = customAlphabet('ABCDEF0987654321', 16);
 
@@ -55,8 +57,8 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
 
   private docSub: Subscription | undefined;
   private procParams: IProcParam[] = [];
-//  private cursorName: string = 'P_DOC';
-//  private updateTableName: string | undefined;
+  //  private cursorName: string = 'P_DOC';
+  //  private updateTableName: string | undefined;
 
   private gridApi: GridApi | undefined;
   private gridColumnApi: ColumnApi | undefined;
@@ -64,6 +66,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
   defaultColDef = {
     resizable: true,
     cellStyle: { borderRight: '1px solid #dfdfdf' },
+    cellClass: 'cell-render',
     sortable: true,
     floatingFilter: false,
     editable: true,
@@ -88,8 +91,11 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
   components: any = {
     UICellCheckBoxRender: UiCellCheckRenderComponent,
     UICellCheckBoxEdit: UiCellCheckEditComponent,
-    UICellSelectRender: UiCellSelectRender,
-    UICellSimpleSelectRender: UiCellSimpleSelectRender,
+    UICellSelectRender: UiCellSelectRenderComponent,
+    UICellSimpleSelectRender: UiCellSimpleSelectRenderComponent,
+    UICellSelectEdit: UiCellSelectEditComponent,
+    UICellSimpleSelectEdit: UiCellSimpleSelectEditComponent,
+    UICellInputRender: UiCellInputRenderComponent,
   };
 
   constructor(
@@ -140,7 +146,6 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
         this.tabData.docId!
       )
       .subscribe((lookData) => {
-        console.log('look data:', lookData);
         this.isLoading = false;
         this.tabService.setLoadData(this.tabData.uid, false);
         if (this.gridApi) this.gridApi.hideOverlay();
@@ -148,7 +153,6 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
         const docData = this.editDataService.data;
 
         if (docData) {
-          console.log('doc data:', docData);
           this.columnDefs = docData.fields
             .sort((a, b) => a.order - b.order)
             .map((field) => {
@@ -160,10 +164,23 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
                   : undefined,
                 cellRenderer: UICellRenderType[field.controlType!],
                 cellEditor: UICellEditType[field.controlType!],
+                valueFormatter: (params: any) =>
+                  dataFormatter(params, field.displayFormat, field.dbTypeName),
               };
 
               if (field.controlType === 3) {
                 Object.assign(col, {
+                  cellEditorParams: {
+                    fieldName: field.fieldName,
+                    lookData: lookData[field.fieldName!],
+                    lookupKeyfields: parseAndCamelCase(field.lookupKeyfields),
+                    lookupResultfield: parseAndCamelCase(
+                      field.lookupResultfield
+                    ),
+                    lookupDisplayfields: parseAndCamelCase(
+                      field.lookupDisplayfields
+                    ),
+                  },
                   cellRendererParams: {
                     fieldName: field.fieldName,
                     lookData: lookData[field.fieldName!],
@@ -180,6 +197,9 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
               if (field.controlType === 2) {
                 Object.assign(col, {
                   cellRendererParams: {
+                    itemList: field.itemList,
+                  },
+                  cellEditorParams: {
                     itemList: field.itemList,
                   },
                 });
@@ -206,8 +226,6 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
         data: [],
       };
     }
-
-    console.log('item list:', itemList);
 
     return {
       count: 0,
@@ -259,7 +277,6 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
       return;
     }
     const selectedData = this.gridApi.getSelectedRows();
-    console.log('selected:', selectedData);
     if (selectedData.length > 0) {
       this.gridApi.applyTransaction({ remove: selectedData });
       this.tabService.setChangesData(this.tabData.uid, true);

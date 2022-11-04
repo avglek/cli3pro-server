@@ -7,13 +7,7 @@ import { ICellEditorParams } from 'ag-grid-community';
   template: `<div class="check-label">
     <label nz-checkbox ngDefaultControl [(ngModel)]="checked"></label>
   </div>`,
-  styles: [
-    `
-      .check-label {
-        text-align: center;
-      }
-    `,
-  ],
+  styleUrls: ['ui-cell-check.component.less'],
 })
 export class UiCellCheckEditComponent implements ICellEditorAngularComp {
   checked: boolean = false;

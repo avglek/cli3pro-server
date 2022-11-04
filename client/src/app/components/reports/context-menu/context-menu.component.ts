@@ -25,7 +25,6 @@ export class ContextMenuComponent implements OnInit {
     this.commonService.getContextMenuEvent().subscribe((event) => {
       this.contextEvent = event;
       this.contextValue = event.value;
-      console.log('context subject:', event);
     });
   }
 

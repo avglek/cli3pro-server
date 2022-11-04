@@ -126,6 +126,7 @@ async function getFields(schema, meta, docId) {
     return acc + `'${i.name}',`;
   }, '');
   fieldsStr = fieldsStr.slice(0, -1);
+  console.log('fields:', fieldsStr);
   const proc = 'docs_utils.get_fields';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
@@ -154,16 +155,31 @@ async function getFields(schema, meta, docId) {
     }
   });
 
-  return fieldsResult.map((i) => {
-    const order = meta.findIndex((field) => field.name === i.fieldName);
+  return meta.map((field, index) => {
+    const order = fieldsResult.findIndex((i) => field.name === i.fieldName);
     return {
-      ...i,
-      order,
-      fieldName: toCamelCase(i.fieldName),
-      dbTypeName: meta[order].dbTypeName,
-      meta: meta[order],
+      ...fieldsResult[order],
+      order: index,
+      fieldName: toCamelCase(field.name),
+      dbTypeName: field.dbTypeName,
+      meta: field,
     };
   });
+
+  //console.log('all:', allFields);
+
+  // return fieldsResult.map((i) => {
+  //   const order = meta.findIndex((field) => field.name === i.fieldName);
+  //   return {
+  //     ...i,
+  //     order,
+  //     fieldName: toCamelCase(i.fieldName),
+  //     dbTypeName: meta[order].dbTypeName,
+  //     meta: meta[order],
+  //   };
+  // });
+
+  //return allFields;
 }
 
 function toCamelCase(str) {

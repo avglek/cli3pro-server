@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { DataServerService } from '../../../../../shared/services/data-server.service';
 
 type LookData = {
   fieldName: string;
@@ -13,10 +12,21 @@ type LookData = {
 
 @Component({
   selector: 'ui-cell-selector',
-  template: `<p>{{ value }}</p>`,
-  styles: [``],
+  template: `<div class="cell-render">
+    {{ value }}
+  </div>`,
+  styles: [
+    `
+      .cell-render {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+    `,
+  ],
 })
-export class UiCellSelectRender implements ICellRendererAngularComp {
+export class UiCellSelectRenderComponent implements ICellRendererAngularComp {
   params!: ICellRendererParams & LookData;
   value: string = '';
 

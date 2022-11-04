@@ -30,11 +30,15 @@ import { GridEditDataComponent } from '../../../components/reports/grid-edit-dat
 import { PortalModule } from '@angular/cdk/portal';
 import { MatIconModule } from '@angular/material/icon';
 import { UiDividerComponent } from '../../UI-controls';
-import { UiCellCheckRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell-render';
+import { UiCellCheckRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { UiCellCheckEditComponent } from '../../../components/reports/grid-edit-data/custom-cell-render';
-import { UiCellSelectRender } from '../../../components/reports/grid-edit-data/custom-cell-render/ui-cell-select/ui-cell-select-render';
-import { UiCellSimpleSelectRender } from '../../../components/reports/grid-edit-data/custom-cell-render/ui-cell-simple-select/ui-cell-simple-select-render';
+import { UiCellCheckEditComponent } from '../../../components/reports/grid-edit-data/custom-cell';
+import { UiCellSelectRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-select/ui-cell-select-render.component';
+import { UiCellSimpleSelectRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-simple-select/ui-cell-simple-select-render.component';
+import { UiCellSelectEditComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-select/ui-cell-select-edit.component';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { UiCellSimpleSelectEditComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-simple-select/ui-cell-simple-select-edit.component';
+import { UiCellInputRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-input/ui-cell-input-render.component';
 
 @NgModule({
   declarations: [
@@ -56,8 +60,11 @@ import { UiCellSimpleSelectRender } from '../../../components/reports/grid-edit-
     UiDividerComponent,
     UiCellCheckRenderComponent,
     UiCellCheckEditComponent,
-    UiCellSelectRender,
-    UiCellSimpleSelectRender,
+    UiCellSelectRenderComponent,
+    UiCellSimpleSelectRenderComponent,
+    UiCellSelectEditComponent,
+    UiCellSimpleSelectEditComponent,
+    UiCellInputRenderComponent,
   ],
   imports: [
     CommonModule,
@@ -76,7 +83,8 @@ import { UiCellSimpleSelectRender } from '../../../components/reports/grid-edit-
     NzDatePickerModule,
     PortalModule,
     MatIconModule,
+    NzSelectModule,
   ],
-  exports: [UiDividerComponent],
+  exports: [UiDividerComponent, NzSelectModule, NzSpinModule],
 })
 export class DocsLayoutModule {}

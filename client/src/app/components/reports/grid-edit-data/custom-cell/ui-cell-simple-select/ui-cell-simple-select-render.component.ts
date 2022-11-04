@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { DataServerService } from '../../../../../shared/services/data-server.service';
 
 type LookData = {
   itemList: string;
@@ -9,10 +8,13 @@ type LookData = {
 
 @Component({
   selector: 'ui-cell-simple-selector',
-  template: `<p>{{ value }}</p>`,
-  styles: [``],
+  template: `<div class="cell-render">{{ value }}</div>`,
+  styleUrls: ['ui-cell-simple-select.component.less'],
+  encapsulation: ViewEncapsulation.Emulated,
 })
-export class UiCellSimpleSelectRender implements ICellRendererAngularComp {
+export class UiCellSimpleSelectRenderComponent
+  implements ICellRendererAngularComp
+{
   params!: ICellRendererParams & LookData;
   value: string = '';
 

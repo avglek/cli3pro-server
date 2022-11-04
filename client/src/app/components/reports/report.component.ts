@@ -15,7 +15,6 @@ export class ReportComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.tabData.isLoading) {
-      console.log('report:', this.tabData);
       this.reportType = this.tabData.reportType || TypeReport.Table;
       this.isEdit = this.tabData.isEdit || false;
     }

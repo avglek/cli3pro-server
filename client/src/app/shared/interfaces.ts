@@ -124,6 +124,7 @@ export enum UIControlType {
 }
 
 export enum UICellRenderType {
+  'UICellInputRender' = 0,
   'UICellCheckBoxRender' = 9,
   'UICellSelectRender' = 3,
   'UICellSimpleSelectRender' = 2,
@@ -131,6 +132,8 @@ export enum UICellRenderType {
 
 export enum UICellEditType {
   'UICellCheckBoxEdit' = 9,
+  'UICellSelectEdit' = 3,
+  'UICellSimpleSelectEdit' = 2,
 }
 
 export interface IDescDescription {

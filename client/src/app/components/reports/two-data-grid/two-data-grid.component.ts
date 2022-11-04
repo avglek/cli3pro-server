@@ -62,7 +62,7 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-  //Doc.Code=Detail.Code
+  // Doc.Code=Detail.Code
   getDocLink($event: string) {
     const a1 = $event.split('=');
     this.docLinkKey = a1[0].trim().slice(a1[0].indexOf('.') + 1, a1[0].length);
@@ -70,16 +70,16 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
       .trim()
       .slice(a1[1].indexOf('.') + 1, a1[1].length);
 
-    const key = 'code';
-    const value = '0040';
-    const type = 'equals';
-    const testFilter: FilterModelItem = {
-      colId: key,
-      value,
-      type,
-    };
-
-    this.linkFilter.push(testFilter);
+    // const key = 'code';
+    // const value = '0040';
+    // const type = 'equals';
+    // const testFilter: FilterModelItem = {
+    //   colId: key,
+    //   value,
+    //   type,
+    // };
+    //
+    // this.linkFilter.push(testFilter);
   }
 
   docRowClick($event: RowClickedEvent) {
@@ -90,14 +90,38 @@ export class TwoDataGridComponent implements OnInit, AfterViewInit {
         .split(';')
         .map((key) => toCamelCase(key));
 
-      const searchFields = keys.filter((key) => detailKeys.includes(key));
+      const docKeys = this.docLinkKey.split(';').map((key) => toCamelCase(key));
+
+      const searchFields = keys.filter((key) => docKeys.includes(key));
 
       this.linkFilter = searchFields.map((col) => {
-        return {
-          colId: col.trim(),
-          value: $event.data[col],
-          type: 'equals',
-        };
+        const colDef = <any>$event.columnApi.getColumn(col)?.getColDef();
+        const type = colDef.fieldType;
+        const colDocIndex = docKeys.indexOf(col);
+
+        switch (type) {
+          case 'NUMBER':
+            return {
+              colId: detailKeys[colDocIndex].trim(),
+              value: $event.data[col],
+              type: 'equals',
+              filterType: 'number',
+            };
+          case 'DATE':
+            return {
+              colId: detailKeys[colDocIndex].trim(),
+              value: $event.data[col],
+              type: 'equals',
+              filterType: 'date',
+            };
+          default:
+            return {
+              colId: detailKeys[colDocIndex].trim(),
+              value: $event.data[col],
+              type: 'equals',
+              filterType: 'text',
+            };
+        }
       });
     }
   }

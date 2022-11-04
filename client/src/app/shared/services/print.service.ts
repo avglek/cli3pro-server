@@ -19,7 +19,6 @@ export class PrintService {
     return timer(2000).pipe(
       tap(() => {
         if (printWindow) {
-          console.log('print:', printWindow);
           printWindow.print();
           printWindow.close();
         }
@@ -44,5 +43,4 @@ export class PrintService {
     `
     );
   }
-
 }

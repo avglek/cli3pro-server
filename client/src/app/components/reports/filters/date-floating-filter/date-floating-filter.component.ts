@@ -21,7 +21,6 @@ export class DateFloatingFilterComponent implements IFloatingFilterAngularComp {
   disabledDate: any;
 
   agInit(params: IFloatingFilterParams<any>): void {
-    console.log('ag init:', params);
     this.params = params;
   }
 
@@ -29,7 +28,6 @@ export class DateFloatingFilterComponent implements IFloatingFilterAngularComp {
     parentModel: any,
     filterChangedEvent?: FilterChangedEvent | null
   ): void {
-    console.log('on parent model changes:', parentModel, filterChangedEvent);
     if (!parentModel) {
       this.currentValue = null;
     } else {
@@ -37,18 +35,13 @@ export class DateFloatingFilterComponent implements IFloatingFilterAngularComp {
     }
   }
 
-  onChange(result: Date): void {
-    console.log('Selected Time: ', result);
-  }
+  onChange(result: Date): void {}
 
   onOk(result: Date | Date[] | null): void {
-    console.log('onOk', result);
     this.params.parentFilterInstance((instance) => {
       instance.onFloatingFilterChanged('inRange', result);
     });
   }
 
-  onCalendarChange(result: Array<Date | null>): void {
-    console.log('onCalendarChange', result);
-  }
+  onCalendarChange(result: Array<Date | null>): void {}
 }

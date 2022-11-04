@@ -73,7 +73,6 @@ export class HomePageComponent implements OnInit {
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({
         next: (data) => {
-          console.log('desc:', data);
           const isEdit = !!data.params.find(
             (param) => param.argumentName === 'P_UPDATE_TABLE'
           );

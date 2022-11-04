@@ -11,9 +11,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AppRoutingModule } from '../../../app-routing.module';
 import { HomePageComponent } from '../../../pages/home-page/home-page.component';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { PersonalAreaComponent } from '../../../pages/personal-area/personal-area.component';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -21,6 +19,7 @@ import { SelectSchemaComponent } from '../../../pages/personal-area/select-schem
 import { UploadOwnListComponent } from '../../../pages/personal-area/upload-own-list/upload-own-list.component';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { DocsLayoutModule } from '../docs-layout/docs-layout.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +32,7 @@ import { MatIconModule } from '@angular/material/icon';
     UploadOwnListComponent,
   ],
   imports: [
+    DocsLayoutModule,
     CommonModule,
     NzLayoutModule,
     NzMenuModule,
@@ -41,8 +41,8 @@ import { MatIconModule } from '@angular/material/icon';
     NzToolTipModule,
     NzIconModule,
     AppRoutingModule,
-    NzSpinModule,
-    NzSelectModule,
+    //NzSpinModule,
+    //NzSelectModule,
     FormsModule,
     NzUploadModule,
     NzButtonModule,

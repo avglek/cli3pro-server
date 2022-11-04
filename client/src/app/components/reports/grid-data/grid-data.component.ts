@@ -18,9 +18,9 @@ import {
   GridReadyEvent,
   IDatasource,
   IGetRowsParams,
+  NumberFilter,
   RowClickedEvent,
   TextFilter,
-  ValueFormatterParams,
 } from 'ag-grid-community';
 import {
   FilterModelItem,
@@ -46,6 +46,7 @@ import { ToolbarService } from '../../../shared/services/toolbar.service';
 import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
 import { PrintService } from '../../../shared/services/print.service';
 import { TabDataService } from '../../../shared/services/tab-data.service';
+import { dataFormatter, prepareFilter } from '../../../shared/utils/grid-utils';
 
 @Component({
   selector: 'app-grid-data',
@@ -55,7 +56,7 @@ import { TabDataService } from '../../../shared/services/tab-data.service';
 export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tabData!: ITabData;
   @Input() cursorName!: string;
-  @Input() filter: FilterModelItem[] = [];
+  @Input() linkFilter: FilterModelItem[] = [];
   @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
   @Output() rowCount: EventEmitter<number> = new EventEmitter<number>();
   @Output() rowClick: EventEmitter<RowClickedEvent> =
@@ -129,6 +130,13 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       if (this.gridApi) {
         if (filter) {
           const filterInstance = this.gridApi.getFilterInstance(filter.colId);
+          if (filterInstance instanceof NumberFilter) {
+            filterInstance.setModel({
+              filterType: 'number',
+              type: 'equals',
+              filter: <number>filter.value,
+            });
+          }
           if (filterInstance instanceof TextFilter) {
             if (filter.value === '') {
               filterInstance.setModel(null);
@@ -141,10 +149,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
           if (filterInstance instanceof DateFilter) {
-            console.log(
-              filter.value,
-              dayjs(filter.value).add(1, 'day').format('YYYY-MM-DD')
-            );
             filterInstance.setModel({
               filterType: 'date',
               type: 'inRange',
@@ -168,10 +172,9 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       const allFilter: FilterModelItem[] = [];
       if (Object.keys(params.filterModel).length > 0) {
         allFilter.push(...prepareFilter(params.filterModel));
-        //console.log('filter:', params.filterModel, allFilter);
       }
-      if (this.filter.length > 0) {
-        allFilter.push(...this.filter);
+      if (this.linkFilter.length > 0) {
+        allFilter.push(...this.linkFilter);
       }
 
       if (this.tabData.isLoading) {
@@ -203,6 +206,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       });
+
       this.docSub = this.dataService
         .procExecute(
           this.tabData.owner!,
@@ -228,14 +232,16 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             }
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
-              const columns = <ColDef[]>docData.fields
+              const columns = <any[]>docData.fields
                 .sort((a, b) => a.order - b.order)
-                .filter((col) => col.visible === 'T')
                 .map((col) => {
                   const refColumnDef = {
                     field: col.fieldName,
                     headerName: col.displayLabel,
                     headerTooltip: col.displayLabel,
+                    fieldType: col.dbTypeName,
+                    visible: col.visible,
+                    hide: col.visible !== 'T',
                     width: col.displaySize
                       ? col.displaySize * 10 + 20
                       : undefined,
@@ -246,6 +252,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
                   return refColumnDef;
                 });
+
               if (this.gridApi) {
                 this.gridApi.setColumnDefs(this.groupColumns(columns));
               }
@@ -286,8 +293,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //console.log('changes:',changes)
-    if (changes['filter'] && !this.tabData.isLoading) {
+    if (changes['linkFilter'] && !this.tabData.isLoading) {
       if (this.gridApi) {
         this.gridApi.setDatasource(this.dataSource);
       }
@@ -358,18 +364,11 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         Object.assign(def, { filter: 'agTextColumnFilter' });
         break;
     }
-
-    // Object.assign(def, {
-    //   floatingFilterComponentParams: {
-    //     suppressFilterButton: true,
-    //   },
-    // });
   }
 
   initToolbarSubject() {
     this.onFloatingFilter = this.toolBarService.btnFilter.subscribe(
       (onFilter) => {
-        console.log('filter:', onFilter);
         if (this.gridApi) {
           this.defaultColDef.floatingFilter = onFilter;
           this.gridApi.setDefaultColDef(this.defaultColDef);
@@ -406,71 +405,4 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       this.gridApi.setFilterModel(null);
     }
   }
-}
-
-function prepareFilter(params: any): FilterModelItem[] {
-  const keys = Object.keys(params);
-  return keys.map((key) => {
-    return {
-      colId: key,
-      value: params[key].filter,
-      valueTo: params[key].filterTo,
-      type: params[key].type,
-      filterType: params[key].filterType,
-      dateFrom: params[key].dateFrom,
-      dateTo: params[key].dateTo,
-    };
-  });
-}
-
-function dataFormatter(
-  params: ValueFormatterParams,
-  format: string | null | undefined,
-  type: string | undefined
-): string {
-  let value = params.value;
-
-  if (!type) {
-    return value;
-  }
-
-  switch (type) {
-    case 'NUMBER':
-      if (!value) return '0';
-      if (format) {
-        return formatStringToFixFloat(value.toString(), format).toString();
-      }
-      return Number.parseInt(value.toString()).toString();
-    case 'DATE':
-      if (dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid()) {
-        const currYear = value.slice(0, value.indexOf('-'));
-        const nowYear = dayjs().year();
-        if (currYear === '0000') {
-          value = nowYear + '-' + value.slice(value.indexOf('-') + 1);
-        }
-        if (format) {
-          format = format
-            .toUpperCase()
-            .replace('YY', 'YYYY')
-            .replace('NN', 'mm');
-          return dayjs(value).format(format);
-        } else {
-          return dayjs(value).format('DD.MM.YYYY');
-        }
-      }
-      return value;
-  }
-
-  return value;
-}
-
-function formatStringToFixFloat(value: string, format: string): number {
-  const a = format;
-  const b = value;
-  const f =
-    b.indexOf('.') + 1 === 0
-      ? b
-      : b.slice(0, b.indexOf('.') + 1 + a.slice(a.indexOf('.') + 1).length);
-
-  return Number.parseFloat(f);
 }
