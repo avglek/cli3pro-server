@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UiBaseControlComponent } from '../ui-base-control.component';
+import { CompatibleDate } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'app-ui-data-picker',
@@ -9,8 +10,6 @@ import { UiBaseControlComponent } from '../ui-base-control.component';
       [formControlName]="name"
       [nzFormat]="format"
       [nzMode]="'date'"
-      [(ngModel)]="currentDate"
-      (ngModelChange)="onChange($event)"
     ></nz-date-picker>
   </div>`,
   styles: [
@@ -22,14 +21,17 @@ import { UiBaseControlComponent } from '../ui-base-control.component';
   ],
 })
 //      [nzSize]="'large'"
-export class UiDataPickerComponent extends UiBaseControlComponent {
+export class UiDataPickerComponent
+  extends UiBaseControlComponent
+  implements OnInit
+{
   @Input() format: string = 'dd-MM-YYYY';
+  @Input() override name: any;
   currentDate!: Date;
 
-  onChange($event: Date) {
-    if ($event) {
-      //$event.setHours(0, 0, 0, 0);
-      this.currentDate = new Date($event.toDateString()); //.getTime());
-    }
+  override ngOnInit() {
+    super.ngOnInit();
+
+    this.formGroup.controls[this.name].setValue(new Date());
   }
 }

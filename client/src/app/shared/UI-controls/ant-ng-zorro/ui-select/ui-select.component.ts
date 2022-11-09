@@ -1,13 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { UiBaseControlComponent } from '../ui-base-control.component';
-import { IDescParam } from '../../../interfaces';
+import { IDescParam, IOption } from '../../../interfaces';
 import { DataServerService } from '../../../services/data-server.service';
 import { toCamelCase } from '../../../utils/str-utils';
-
-export interface Options {
-  key: string;
-  value: string;
-}
 
 @Component({
   selector: 'app-ui-select',
@@ -25,8 +20,8 @@ export interface Options {
     >
       <nz-option
         *ngFor="let o of controlOptions"
-        [nzValue]="o.key"
-        [nzLabel]="o.value"
+        [nzValue]="o.value"
+        [nzLabel]="o.label"
       ></nz-option>
     </nz-select>
     <ng-template #renderTemplate>
@@ -39,7 +34,7 @@ export class UiSelectComponent extends UiBaseControlComponent {
   @Input() options!: IDescParam | undefined;
   @Input() isLoading: boolean = false;
 
-  controlOptions: Options[] = [];
+  controlOptions: IOption[] = [];
   rowPoint = 0;
   countRow = 10;
 
@@ -56,6 +51,7 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   override ngOnInit() {
+    console.log('option:', this.options);
     if (this.options) {
       this.table = this.options.lookupTable;
       this.order = this.options.lookupTableorder
@@ -96,14 +92,14 @@ export class UiSelectComponent extends UiBaseControlComponent {
             this.allRows = data.count;
             this.rowPoint += this.countRow;
 
-            const loadList = <Options[]>data.data.map((item: any) => {
+            const loadList = <IOption[]>data.data.map((item: any) => {
               const value = arrayValues.reduce((acc, v) => {
                 return acc + ' ' + item[v];
               }, '');
 
               return {
-                key: item[this.keyName],
-                value: value.slice(1),
+                value: item[this.keyName],
+                label: value.slice(1),
               };
             });
 

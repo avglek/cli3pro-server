@@ -1,3 +1,5 @@
+import { IOption } from '../interfaces';
+
 export function toCamelCase(str: string | null | undefined): string {
   if (!str) {
     return '';
@@ -22,6 +24,23 @@ export function parseAndCamelCase(str: string | null | undefined): string {
   const res = arr.map((s) => toCamelCase(s));
 
   return res.join(';');
+}
+
+export function parseSimpleParams(list: string): IOption[] | null {
+  const items = list.split('\n');
+  if (items) {
+    return items.map((item) => {
+      const arr = item.split('=');
+      return {
+        label: arr[0].split('_').join(' ').trim(),
+        value: arr[1].trim()
+          ? arr[1].trim()
+          : arr[0].split('_').join(' ').trim(),
+      };
+    });
+  } else {
+    return null;
+  }
 }
 // const getSearchParams = (str: string): any => {
 //   if (!str) return [];

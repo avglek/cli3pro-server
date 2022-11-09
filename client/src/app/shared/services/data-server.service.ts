@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ICursorData, IData, IDesc, IProcParam } from '../interfaces';
+import {
+  ICursorData,
+  IData,
+  IDesc,
+  IDescParam,
+  IProcParam,
+} from '../interfaces';
 import { mergeAll, Observable, of } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
@@ -65,5 +71,11 @@ export class DataServerService {
         return item.map((i) => i.owner);
       })
     );
+  }
+
+  getControls(owner: string, docId: number, controls: string) {
+    const url = `/api/fields/${owner}?docId=${docId}&fields=${controls}`;
+    console.log('group url:', url);
+    return this.http.get<IDescParam[]>(url);
   }
 }

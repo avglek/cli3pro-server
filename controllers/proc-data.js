@@ -4,6 +4,7 @@ const oraTypes = require('../common/ora-types');
 const database = require('../services/database');
 const errorHandler = require('../utils/errorHandler');
 const owner = require('./owner');
+const tools = require('../utils/data-tools');
 
 module.exports.get = async function (req, res) {
   const docName = req.params['name'];
@@ -42,7 +43,26 @@ module.exports.get = async function (req, res) {
       switch (param.type) {
         case 'REF_CURSOR':
           const data = await getCursorData(param, result);
-          const fields = await getFields(schema, data.meta, docId);
+
+          let fieldsStr = data.meta.reduce((acc, i) => {
+            return acc + `'${i.name}',`;
+          }, '');
+          fieldsStr = fieldsStr.slice(0, -1);
+
+          const fieldsResult = await tools.getFields(schema, fieldsStr, docId);
+
+          const fields = data.meta.map((field, index) => {
+            const order = fieldsResult.findIndex(
+              (i) => field.name === i.fieldName
+            );
+            return {
+              ...fieldsResult[order],
+              order: index,
+              fieldName: tools.toCamelCase(field.name),
+              dbTypeName: field.dbTypeName,
+              meta: field,
+            };
+          });
 
           collection[param.name] = {
             fields,
@@ -112,80 +132,13 @@ async function getCursorData(param, result) {
   while ((row = await resultSet.getRow())) {
     const obj = {};
     meta.forEach((i, index) => {
-      const key = toCamelCase(i.name);
+      const key = tools.toCamelCase(i.name);
       obj[key] = row[index];
     });
 
     rowArray.push(obj);
   }
   return { rows: rowArray, meta };
-}
-
-async function getFields(schema, meta, docId) {
-  let fieldsStr = meta.reduce((acc, i) => {
-    return acc + `'${i.name}',`;
-  }, '');
-  fieldsStr = fieldsStr.slice(0, -1);
-  console.log('fields:', fieldsStr);
-  const proc = 'docs_utils.get_fields';
-  const bind = {
-    pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
-    pOwn: schema.toUpperCase(),
-    pFields: fieldsStr,
-  };
-
-  const fields = await database.procedureExecute(proc, bind);
-
-  let fieldsResult = [];
-  fields.forEach((item) => {
-    const findIndex = fieldsResult.findIndex(
-      (i) => i.fieldName === item.fieldName
-    );
-
-    if (item.docId == docId) {
-      if (findIndex >= 0) {
-        fieldsResult[findIndex] = { ...item };
-      } else {
-        fieldsResult.push(item);
-      }
-    } else if (item.docId === 0) {
-      if (findIndex < 0) {
-        fieldsResult.push(item);
-      }
-    }
-  });
-
-  return meta.map((field, index) => {
-    const order = fieldsResult.findIndex((i) => field.name === i.fieldName);
-    return {
-      ...fieldsResult[order],
-      order: index,
-      fieldName: toCamelCase(field.name),
-      dbTypeName: field.dbTypeName,
-      meta: field,
-    };
-  });
-
-  //console.log('all:', allFields);
-
-  // return fieldsResult.map((i) => {
-  //   const order = meta.findIndex((field) => field.name === i.fieldName);
-  //   return {
-  //     ...i,
-  //     order,
-  //     fieldName: toCamelCase(i.fieldName),
-  //     dbTypeName: meta[order].dbTypeName,
-  //     meta: meta[order],
-  //   };
-  // });
-
-  //return allFields;
-}
-
-function toCamelCase(str) {
-  return str
-    .toLowerCase()
-    .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
 }
 
 function formatValue(type, value) {

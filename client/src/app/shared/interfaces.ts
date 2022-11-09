@@ -92,6 +92,11 @@ export interface IDesc {
   form: 'Y' | 'N';
   params: IDescParam[];
 }
+
+export interface IOption {
+  label: string;
+  value: any;
+}
 /********************
  * 0.0 Edit
  * 1.0 Date
@@ -311,6 +316,8 @@ export interface IControlBase {
   controlNumber?: number;
   type?: string;
   options?: IDescParam;
+  itemList?: string;
+  group?: any; //IControlBase[];
 }
 
 /********************
