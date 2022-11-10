@@ -78,13 +78,16 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   clipboardContext!: any;
   contextEvent: CellContextMenuEvent | undefined = undefined;
 
-  defaultColDef = {
+  defaultColDef: ColDef = {
     resizable: true,
     cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
     floatingFilter: false,
     wrapHeaderText: true,
     autoHeaderHeight: true,
+    filterParams: {
+      suppressAndOrCondition: true,
+    },
   };
 
   constructor(
