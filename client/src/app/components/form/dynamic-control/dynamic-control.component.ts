@@ -16,6 +16,8 @@ export class DynamicControlComponent implements OnInit {
   }
 
   get isValid() {
-    return this.form.controls[this.control.key].valid;
+    if (this.form.controls[this.control.key])
+      return this.form.controls[this.control.key].valid;
+    else return false;
   }
 }

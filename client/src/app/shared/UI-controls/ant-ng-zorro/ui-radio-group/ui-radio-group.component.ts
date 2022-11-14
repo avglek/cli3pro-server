@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UiBaseControlComponent } from '../ui-base-control.component';
-import { IDescParam } from '../../../interfaces';
 import { parseSimpleParams } from '../../../utils/str-utils';
 
 @Component({
@@ -30,12 +29,18 @@ export class UiRadioGroupComponent
   options: { label: string; value: any }[] = [];
 
   override ngOnInit() {
+    super.ngOnInit();
+
     if (this.items) {
       this.options = parseSimpleParams(this.items) || [];
     }
 
-    console.log('option:', this.options);
-
-    super.ngOnInit();
+    if (this.defaultValue) {
+      this.formGroup.controls[this.name].setValue(
+        this.defaultValue.replace(/"/g, '')
+      );
+    } else {
+      this.formGroup.controls[this.name].setValue(this.options[0].value);
+    }
   }
 }

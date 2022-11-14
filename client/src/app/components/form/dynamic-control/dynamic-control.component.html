@@ -46,8 +46,17 @@
       [name]="control.key"
       [formGroup]="form"
       [items]="control.itemList"
+      [defaultValue]="control.defaultValue"
     >
     </app-ui-radio-group>
+    <app-ui-combo
+      *ngSwitchCase="'combo'"
+      [name]="control.key"
+      [formGroup]="form"
+      [group]="control.group"
+      [defaultValue]="control.defaultValue"
+    >
+    </app-ui-combo>
     <h3 *ngSwitchDefault style="color: tomato">
       No control for № {{ control.controlNumber }}
     </h3>

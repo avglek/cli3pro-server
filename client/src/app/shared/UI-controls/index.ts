@@ -7,3 +7,4 @@ export { UiNumberInputComponent } from './ant-ng-zorro/ui-number-input/ui-number
 export { UiSimpleSelectComponent } from './ant-ng-zorro/ui-simple-select/ui-simple-select.component';
 export { UiRadioGroupComponent } from './ant-ng-zorro/ui-radio-group/ui-radio-group.component';
 export { UiDividerComponent } from './custom/ui-divider/ui-divider.component';
+export { UiComboComponent } from './ant-ng-zorro/ui-combo/ui-combo.component';

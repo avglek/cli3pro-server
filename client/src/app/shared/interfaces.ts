@@ -360,6 +360,8 @@ export enum ControlType {
   'undefBox' = -1,
   'simpleSelectBox' = 2,
   'radioGroup' = 7,
+  'combo' = 10,
+  'radio' = 11,
 }
 
 export enum ContextMenuAction {

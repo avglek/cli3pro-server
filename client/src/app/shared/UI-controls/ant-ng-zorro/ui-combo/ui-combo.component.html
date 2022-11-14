@@ -1,0 +1,35 @@
+<div [formGroup]="formGroup">
+  <nz-radio-group
+    [(ngModel)]="value"
+    (ngModelChange)="onChange($event)"
+    [ngModelOptions]="{ standalone: true }"
+  >
+    <label *ngFor="let control of controls" nz-radio [nzValue]="control.value"
+      >{{ control.label }}
+      <nz-select
+        *ngIf="control.type === 3"
+        nzAllowClear
+        nzShowSearch
+        nzServerSearch
+        nzPlaceHolder="Выберите значение"
+        [(ngModel)]="selectedValue"
+        (ngModelChange)="onSelectChange($event)"
+        (nzScrollToBottom)="loadMore()"
+        [nzDropdownRender]="renderTemplate"
+        [nzOptionOverflowSize]="5"
+        (nzOnSearch)="search($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [disabled]="isSelectDisabled"
+      >
+        <nz-option
+          *ngFor="let o of controlOptions"
+          [nzValue]="o.value"
+          [nzLabel]="o.label"
+        ></nz-option>
+      </nz-select>
+      <ng-template #renderTemplate>
+        <nz-spin *ngIf="isLoading"></nz-spin>
+      </ng-template>
+    </label>
+  </nz-radio-group>
+</div>

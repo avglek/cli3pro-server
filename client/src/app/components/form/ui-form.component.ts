@@ -58,19 +58,20 @@ export class UiFormComponent implements OnInit, OnDestroy {
                   param.groupedFields
                 )
                 .subscribe((res) => {
-                  console.log('get group controls:', res);
+                  console.log('get group controls:', res, param);
                   if (res) {
-                    item.group = res.map((param, index) => ({
-                      key: param.argumentName,
+                    item.group = res.map((p, index) => ({
+                      key: p.fieldName,
                       order: index,
-                      controlType: ControlType[param.controlType!],
-                      controlNumber: param.controlType,
-                      defaultValue: param.defaultValue,
-                      label: param.displayLabel
-                        ? param.displayLabel.replace('_', ' ').trim()
+                      controlType: ControlType[p.controlType!],
+                      controlNumber: p.controlType,
+                      defaultValue: p.defaultValue,
+                      options: { ...p, objectOwner: param.objectOwner },
+                      label: p.displayLabel
+                        ? p.displayLabel.replace('_', ' ').trim()
                         : '',
-                      itemList: param.itemList
-                        ? param.itemList.replace('_', ' ').trim()
+                      itemList: p.itemList
+                        ? p.itemList.replace('_', ' ').trim()
                         : '',
                     }));
                   }
@@ -94,9 +95,11 @@ export class UiFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   onSubmit($event: any): void {
+    console.log('submit:', $event);
     this.tabData.params?.map((param) => {
       if (param.inOut === 'IN') {
         if (param.argumentName) {
+          console.log('param:', param);
           param.value = this.valueAdapter($event[param.argumentName], param);
         }
       }
