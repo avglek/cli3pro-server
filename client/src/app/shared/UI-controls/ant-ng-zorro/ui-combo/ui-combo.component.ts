@@ -63,18 +63,13 @@ export class UiComboComponent extends UiBaseControlComponent implements OnInit {
 
     this.value = this.controls[0].value;
 
-    console.log('init:', this.name, this.formGroup);
-
     this.formGroup.controls[this.name].setValue(this.controls[0].label);
   }
 
   onChange($event: any) {
-    console.log('value:', this.value, $event);
     const selectControl = this.group.find((control) => {
-      console.log(control);
       return control.key === $event;
     });
-    console.log('c:', selectControl);
     if (selectControl?.controlNumber === 3) {
       this.isSelectDisabled = false;
       if (selectControl.options) {
@@ -101,7 +96,6 @@ export class UiComboComponent extends UiBaseControlComponent implements OnInit {
   }
 
   getOptions() {
-    console.log('select get option:', this.table, this.order, this.options);
     if (this.table && this.order && this.options && this.options.objectOwner) {
       this.isLoading = true;
       const arrayValues = this.valueName.split(';');
@@ -153,7 +147,6 @@ export class UiComboComponent extends UiBaseControlComponent implements OnInit {
   }
 
   onSelectChange($event: any) {
-    console.log('select change:', $event, this.selectedValue);
     this.formGroup.controls[this.name].setValue($event);
   }
 }
