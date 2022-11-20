@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
-import { ITabData, ITreeDocs } from '../../shared/interfaces';
+import { ITabData, ITreeDocs, TypeReport } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { DataServerService } from '../../shared/services/data-server.service';
 import { CommonService } from '../../shared/services/common.service';
@@ -79,10 +79,10 @@ export class HomePageComponent implements OnInit {
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({
         next: (data) => {
-          console.log('get description:', data);
-          const isEdit = !!data.params.find(
-            (param) => param.argumentName === 'P_UPDATE_TABLE'
-          );
+          const isEdit =
+            !!data.params.find(
+              (param) => param.argumentName === 'P_UPDATE_TABLE'
+            ) && data.description.docClass === TypeReport.Table;
           const newTab: ITabData = {
             uid,
             docId: tab.docId,

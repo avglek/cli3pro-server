@@ -70,36 +70,38 @@
             </button>
             <app-ui-divider></app-ui-divider>
           </ng-template>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            nz-dropdown
-            [nzDropdownMenu]="menu"
-            [nzPlacement]="'bottomLeft'"
-          >
-            <mat-icon svgIcon="export"></mat-icon>
-          </button>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="toExcel()">Выгрузить в Excel</li>
-              <li nz-menu-item (click)="toCSV()">Выгрузить в CSV</li>
-              <li nz-menu-item (click)="toPDF()">Выгрузить в PDF</li>
-            </ul>
-          </nz-dropdown-menu>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="onClickPrint()"
-            nz-tooltip
-            [nzTooltipTitle]="'Печать'"
-            [nzTooltipPlacement]="'bottom'"
-          >
-            <mat-icon svgIcon="print"></mat-icon>
-          </button>
-          <ng-template [ngIf]="isGrid">
+          <ng-template [ngIf]="!isTwoTables">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              nz-dropdown
+              [nzDropdownMenu]="menu"
+              [nzPlacement]="'bottomLeft'"
+            >
+              <mat-icon svgIcon="export"></mat-icon>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="toExcel()">Выгрузить в Excel</li>
+                <li nz-menu-item (click)="toCSV()">Выгрузить в CSV</li>
+                <li nz-menu-item (click)="toPDF()">Выгрузить в PDF</li>
+              </ul>
+            </nz-dropdown-menu>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="onClickPrint()"
+              nz-tooltip
+              [nzTooltipTitle]="'Печать'"
+              [nzTooltipPlacement]="'bottom'"
+            >
+              <mat-icon svgIcon="print"></mat-icon>
+            </button>
             <app-ui-divider></app-ui-divider>
+          </ng-template>
+          <ng-template [ngIf]="isGrid">
             <button
               nz-button
               nzType="primary"
@@ -134,6 +136,18 @@
           <!--            <mat-icon svgIcon="markerColor"></mat-icon>-->
           <!--          </button>-->
         </ng-template>
+        <!--        <app-ui-divider></app-ui-divider>-->
+        <!--        <button-->
+        <!--          nz-button-->
+        <!--          nzType="primary"-->
+        <!--          nzSize="large"-->
+        <!--          (click)="onTest()"-->
+        <!--          nz-tooltip-->
+        <!--          [nzTooltipTitle]="'test'"-->
+        <!--          [nzTooltipPlacement]="'bottom'"-->
+        <!--        >-->
+        <!--          Test-->
+        <!--        </button>-->
         <app-ui-divider></app-ui-divider>
         <button
           nz-button

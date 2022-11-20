@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="header">{{ title }}</div>
+  <div class="content">
+    <nz-input-group [nzAddOnAfter]="exp">
+      <input
+        type="text"
+        nz-input
+        [placeholder]="placeholder"
+        [(ngModel)]="inputValue"
+      />
+    </nz-input-group>
+  </div>
+  <div class="action">
+    <button nz-button (click)="onCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="onOk()">OK</button>
+  </div>
+</div>

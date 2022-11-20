@@ -17,7 +17,7 @@
         [cursorName]="docCursorName"
         (docLink)="getDocLink($event)"
         (rowClick)="docRowClick($event)"
-        (rowCount)="onMasterRowCount($event)"
+        (setRowCount)="onMasterRowCount($event)"
       ></app-grid-data>
     </div>
   </div>
@@ -27,7 +27,7 @@
         [tabData]="tabData"
         [cursorName]="detailCursorName"
         [linkFilter]="linkFilter"
-        (rowCount)="onSlaveRowCount($event)"
+        (setRowCount)="onSlaveRowCount($event)"
       ></app-grid-data>
     </div>
   </div>
@@ -52,7 +52,7 @@
           [cursorName]="docCursorName"
           (docLink)="getDocLink($event)"
           (rowClick)="docRowClick($event)"
-          (rowCount)="onMasterRowCount($event)"
+          (setRowCount)="onMasterRowCount($event)"
         ></app-grid-data>
       </div>
     </div>
@@ -62,7 +62,7 @@
           [tabData]="tabData"
           [cursorName]="detailCursorName"
           [linkFilter]="linkFilter"
-          (rowCount)="onSlaveRowCount($event)"
+          (setRowCount)="onSlaveRowCount($event)"
         ></app-grid-data>
       </div>
     </div>

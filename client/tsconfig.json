@@ -20,7 +20,10 @@
     "module": "es2020",
     "lib": ["es2020", "dom"],
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "exceljs": ["node_modules/exceljs/dist/exceljs.min"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

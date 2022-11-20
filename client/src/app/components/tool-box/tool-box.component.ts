@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { ITabData, TypeReport } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { ToolbarService } from '../../shared/services/toolbar.service';
+import { ExportService } from '../../shared/services/export.service';
 
 @Component({
   selector: 'app-tool-box',
@@ -35,7 +36,8 @@ export class ToolBoxComponent implements OnInit {
     private router: Router,
     private location: Location,
     private tabDataService: TabDataService,
-    private toolBarService: ToolbarService
+    private toolBarService: ToolbarService,
+    private exportService: ExportService
   ) {
     this.navEnd = router.events.pipe(
       filter((evt) => evt instanceof NavigationEnd)
@@ -53,15 +55,22 @@ export class ToolBoxComponent implements OnInit {
     this.tabDataService.getCurrentTab().subscribe({
       next: (tab) => {
         if (tab) {
+          this.isDocTools = this.isDocTools;
           this.currentTab = tab;
           this.isTwoTables = tab.reportType === TypeReport.TwoTables;
           this.isVertical = !!tab.isVerticalOrient;
           this.isEdit = tab.isEdit || false;
           this.isGrid =
-            tab.reportType === TypeReport.Table ||
-            tab.reportType === TypeReport.TwoTables;
+            !tab.isForm &&
+            (tab.reportType === TypeReport.Table ||
+              tab.reportType === TypeReport.TwoTables);
           this.saveDisabled = !tab.isChangesData;
         }
+        console.log('isTwoTables', this.isTwoTables);
+        console.log('isVertical', this.isVertical);
+        console.log('isEdit', this.isEdit);
+        console.log('isGrid', this.isGrid);
+        console.log('tab:', tab);
       },
       error: (err) => {
         console.log(err);

@@ -47,6 +47,7 @@ import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
 import { PrintService } from '../../../shared/services/print.service';
 import { TabDataService } from '../../../shared/services/tab-data.service';
 import { dataFormatter, prepareFilter } from '../../../shared/utils/grid-utils';
+import { ExportService } from '../../../shared/services/export.service';
 
 @Component({
   selector: 'app-grid-data',
@@ -58,7 +59,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Input() cursorName!: string;
   @Input() linkFilter: FilterModelItem[] = [];
   @Output() docLink: EventEmitter<string> = new EventEmitter<string>();
-  @Output() rowCount: EventEmitter<number> = new EventEmitter<number>();
+  @Output() setRowCount: EventEmitter<number> = new EventEmitter<number>();
   @Output() rowClick: EventEmitter<RowClickedEvent> =
     new EventEmitter<RowClickedEvent>();
 
@@ -72,8 +73,10 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   cacheOverflowSize = 3;
   isLoading = false;
   docSub: Subscription | undefined;
+  filesSub: Subscription | undefined;
   onFloatingFilter: Subscription | undefined;
   locale = AG_GRID_LOCALE_RU;
+  rowCount: number = 0;
 
   clipboardContext!: any;
   contextEvent: CellContextMenuEvent | undefined = undefined;
@@ -96,7 +99,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     private commonService: CommonService,
     private toolBarService: ToolbarService,
     private printService: PrintService,
-    private tabService: TabDataService
+    private tabService: TabDataService,
+    private exportService: ExportService
   ) {
     dayjs.extend(customParseFormat);
   }
@@ -109,6 +113,10 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     if (this.onFloatingFilter) {
       this.onFloatingFilter.unsubscribe();
       this.onFloatingFilter = undefined;
+    }
+    if (this.filesSub) {
+      this.filesSub.unsubscribe();
+      this.filesSub = undefined;
     }
   }
 
@@ -229,7 +237,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           if (data.data) {
             //     const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[this.cursorName];
-            this.rowCount.emit(docData.count);
+            this.rowCount = docData.count;
+            this.setRowCount.emit(docData.count);
             if (docData.rows.length === 0) {
               this.gridApi.showNoRowsOverlay();
             }
@@ -400,7 +409,43 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private exportGridData(format: string) {
-    console.log('tabData', format);
+    const exportParams = this.procParams.map((param) => {
+      if (param.name === this.cursorName) {
+        param.start = 0;
+        param.end = this.rowCount;
+      }
+      return param;
+    });
+
+    this.filesSub = this.dataService
+      .procExecute(
+        this.tabData.owner!,
+        this.tabData.procName!,
+        exportParams,
+        this.tabData.uid!,
+        this.tabData.docId!
+      )
+      .subscribe((data) => {
+        switch (format) {
+          case 'excel':
+            const keys = Object.keys(data.data);
+
+            const keysCursorData = keys.filter((item) => {
+              return data.data[item].type === 'cursor';
+            });
+            this.exportService.toExcel(
+              <ICursorData>data.data[keysCursorData[0]],
+              this.tabData.title
+            );
+            break;
+          case 'pdf':
+            this.exportService.toPdf(data);
+            break;
+          case 'csv':
+            this.exportService.toCsv(data);
+            break;
+        }
+      });
   }
 
   private resetAllFilters() {

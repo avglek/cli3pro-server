@@ -39,6 +39,9 @@ import { UiCellSelectEditComponent } from '../../../components/reports/grid-edit
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { UiCellSimpleSelectEditComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-simple-select/ui-cell-simple-select-edit.component';
 import { UiCellInputRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-input/ui-cell-input-render.component';
+import { ExportDialogComponent } from '../../../components/dialogs/export-dialog/export-dialog.component';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @NgModule({
   declarations: [
@@ -65,9 +68,11 @@ import { UiCellInputRenderComponent } from '../../../components/reports/grid-edi
     UiCellSelectEditComponent,
     UiCellSimpleSelectEditComponent,
     UiCellInputRenderComponent,
+    ExportDialogComponent,
   ],
   imports: [
     CommonModule,
+    NzInputModule,
     NzTabsModule,
     NzIconModule,
     NzCheckboxModule,
@@ -84,6 +89,7 @@ import { UiCellInputRenderComponent } from '../../../components/reports/grid-edi
     PortalModule,
     MatIconModule,
     NzSelectModule,
+    NzButtonModule,
   ],
   exports: [UiDividerComponent, NzSelectModule, NzSpinModule],
 })
