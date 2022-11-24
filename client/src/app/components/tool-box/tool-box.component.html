@@ -83,9 +83,19 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="toExcel()">Выгрузить в Excel</li>
-                <li nz-menu-item (click)="toCSV()">Выгрузить в CSV</li>
-                <li nz-menu-item (click)="toPDF()">Выгрузить в PDF</li>
+                <li
+                  nz-menu-item
+                  [nzDisabled]="!isExportExcel"
+                  (click)="toExcel()"
+                >
+                  Выгрузить в Excel
+                </li>
+                <li nz-menu-item [nzDisabled]="!isExportCSV" (click)="toCSV()">
+                  Выгрузить в CSV
+                </li>
+                <li nz-menu-item [nzDisabled]="!isExportPDF" (click)="toPDF()">
+                  Выгрузить в PDF
+                </li>
               </ul>
             </nz-dropdown-menu>
             <button

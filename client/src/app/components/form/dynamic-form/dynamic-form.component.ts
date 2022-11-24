@@ -17,14 +17,12 @@ export class DynamicFormComponent implements OnInit {
   constructor(private controlService: ControlService) {}
 
   ngOnInit() {
-    console.log('controls:', this.controls);
     this.form = this.controlService.toFormGroup(
       this.controls as IControlBase[]
     );
   }
 
   onSubmit() {
-    console.log('form:', this.form);
     this.Submit.emit(this.form.getRawValue());
   }
 }

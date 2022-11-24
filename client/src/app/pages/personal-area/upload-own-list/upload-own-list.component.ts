@@ -45,7 +45,6 @@ export class UploadOwnListComponent {
         },
         error: (err) => {
           this.uploading = false;
-          console.log('upload failed.', err);
         },
       });
   }

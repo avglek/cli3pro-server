@@ -112,7 +112,6 @@ export class UiComboComponent extends UiBaseControlComponent implements OnInit {
         )
         .subscribe({
           next: (data: any) => {
-            console.log('get data:', data);
             this.allRows = data.count;
             this.rowPoint += this.countRow;
 

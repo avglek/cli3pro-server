@@ -18,10 +18,16 @@ export class PlainTextComponent implements OnInit {
   procParams: IProcParam[] = [];
   text!: string[];
 
-  constructor(private dataService: DataServerService) {}
+  constructor(
+    private dataService: DataServerService,
+    private tabService: TabDataService
+  ) {}
 
   ngOnInit(): void {
     this.tabData.isLoading = true;
+    this.tabData.toPrint = this.printData.bind(this);
+
+    this.tabData.toExport = this.exportData.bind(this);
     if (
       this.tabData.procName &&
       this.tabData.uid &&
@@ -39,6 +45,7 @@ export class PlainTextComponent implements OnInit {
         this.procParams.push(procParam);
       });
 
+      this.tabService.setLoadData(this.tabData.uid, true);
       this.dataService
         .procExecute(
           this.tabData.owner,
@@ -50,6 +57,7 @@ export class PlainTextComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.tabData.isLoading = false;
+            this.tabService.setLoadData(this.tabData.uid, false);
             const params = this.tabData.params?.filter(
               (param) => param.inOut === TypeOut.Out
             );
@@ -69,5 +77,13 @@ export class PlainTextComponent implements OnInit {
           },
         });
     }
+  }
+
+  printData() {
+    console.log('print:', this.text);
+  }
+
+  exportData(format: string) {
+    console.log('export:', format, this.text);
   }
 }

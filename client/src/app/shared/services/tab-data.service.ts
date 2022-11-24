@@ -56,6 +56,8 @@ export class TabDataService {
     if (currentTab) {
       currentTab.isDataLoading = isLoadData;
     }
+    this.subject.next(this.currentIndex);
+    this.currentTabs.next(this.tabs[this.currentIndex]);
   }
 
   setChangesData(uid: string, changeData: boolean) {

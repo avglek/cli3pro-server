@@ -1,7 +1,5 @@
 const oracledb = require('oracledb');
 const oraTypes = require('./common/ora-types');
-const { BIND_OUT } = require('oracledb');
-const de = require('./utils/data-excel');
 
 const proc = 'COMMON.HIPPO_2730';
 const params = [
@@ -131,16 +129,19 @@ function prepareSql(inParams) {
   };
 }
 
-function camalize(str) {
-  return str
-    .toLowerCase()
-    .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+/**********
+ *
+ * „<” (знак меньше),  „>” (знак больше), „:” (двоеточие), „«” (двойные кавычки), „/” (слеш), „\” (обратный слеш), „|” (вертикальная черта), „?” (вопросительный знак), „*” (звездочка)
+ * @param str
+ * @returns {string}
+ */
+
+function checkFileName(str) {
+  return str.replace(/['<','>',':','\"','\"','\/','\\','|','?','*']/g, '_');
 }
 
 console.log('start test');
-//prepareSql(params);
-//run();
-//const str = JSON.stringify(params); //camalize('KOL_ST_P');
-const ws = de.getExcel('data from de');
-console.log(ws);
+const fname = 'stop п?п;';
+const ws = checkFileName(fname);
+console.log(fname, ws);
 console.log('end test');

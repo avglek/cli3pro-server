@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
-  ICursorData,
   IData,
   IDesc,
   IDescParam,
   IProcParam,
 } from '../interfaces';
-import { mergeAll, Observable, of } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { Observable} from 'rxjs';
+import { map} from 'rxjs/operators';
 
 interface OwnerListItem {
   owner: string;
@@ -75,7 +74,6 @@ export class DataServerService {
 
   getControls(owner: string, docId: number, controls: string) {
     const url = `/api/fields/${owner}?docId=${docId}&fields=${controls}`;
-    console.log('group url:', url);
     return this.http.get<IDescParam[]>(url);
   }
 }

@@ -11,9 +11,7 @@ export class DynamicControlComponent implements OnInit {
   @Input() control!: IControlBase;
   @Input() form!: FormGroup;
 
-  ngOnInit() {
-    console.log('control:', this.control);
-  }
+  ngOnInit() {}
 
   get isValid() {
     if (this.form.controls[this.control.key])

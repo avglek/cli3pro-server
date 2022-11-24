@@ -58,7 +58,6 @@ export class UiFormComponent implements OnInit, OnDestroy {
                   param.groupedFields
                 )
                 .subscribe((res) => {
-                  console.log('get group controls:', res, param);
                   if (res) {
                     item.group = res.map((p, index) => ({
                       key: p.fieldName,
@@ -95,11 +94,9 @@ export class UiFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   onSubmit($event: any): void {
-    console.log('submit:', $event);
     this.tabData.params?.map((param) => {
       if (param.inOut === 'IN') {
         if (param.argumentName) {
-          console.log('param:', param);
           param.value = this.valueAdapter($event[param.argumentName], param);
         }
       }

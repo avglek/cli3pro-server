@@ -51,7 +51,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   override ngOnInit() {
-    console.log('select option:', this.options);
     if (this.options) {
       this.table = this.options.lookupTable;
       this.order = this.options.lookupTableorder
@@ -65,15 +64,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
     } else {
     }
 
-    console.log(
-      'table:',
-      this.table,
-      ' key:',
-      this.keyName,
-      ' value:',
-      this.valueName
-    );
-
     super.ngOnInit();
   }
 
@@ -82,7 +72,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
   }
 
   getOptions() {
-    console.log('select get option:', this.table, this.order, this.options);
     if (this.table && this.order && this.options && this.options.objectOwner) {
       this.isLoading = true;
       const arrayValues = this.valueName.split(';');
@@ -99,7 +88,6 @@ export class UiSelectComponent extends UiBaseControlComponent {
         )
         .subscribe({
           next: (data: any) => {
-            console.log('get data:', data);
             this.allRows = data.count;
             this.rowPoint += this.countRow;
 

@@ -69,12 +69,6 @@ export class HomePageComponent implements OnInit {
     };
     const uid = this.tabService.add(tab);
 
-    console.log(
-      'post desc:',
-      this.commonService.getCurrentOwner() || '',
-      docId
-    );
-
     this.server
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({

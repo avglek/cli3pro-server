@@ -42,13 +42,14 @@ export function parseSimpleParams(list: string): IOption[] | null {
     return null;
   }
 }
-// const getSearchParams = (str: string): any => {
-//   if (!str) return [];
-//   const rex = /\.([a-z-_1-9;]+)/gim;
-//   const newStr = str.split(rex)[1];
-//   if (newStr) {
-//     return newStr.toUpperCase().split(';');
-//   } else {
-//     return [];
-//   }
-// };
+
+export function checkFileName(str: string): string {
+  return str.replace(/['<','>',':','\"','\"','\/','\\','|','?','*']/g, '_');
+}
+
+export function checkWorkSheetName(str: string): string {
+  return str.replace(
+    /['<','>',':','\"','\"','\/','\\','|','?','*','\[','\]']/g,
+    '_'
+  );
+}

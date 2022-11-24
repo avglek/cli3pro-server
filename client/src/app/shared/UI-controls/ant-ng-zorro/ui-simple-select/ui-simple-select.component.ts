@@ -31,7 +31,6 @@ export class UiSimpleSelectComponent extends UiBaseControlComponent {
     if (this.items) {
       this.controlOptions = parseSimpleParams(this.items) || [];
     }
-    console.log('options:', this.controlOptions, this.defaultValue);
 
     if (this.defaultValue) {
       this.formGroup.controls[this.name].setValue(

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UiBaseControlComponent } from '../ui-base-control.component';
 
 @Component({
@@ -20,7 +20,6 @@ export class UiNumberInputComponent
 
   override ngOnInit() {
     super.ngOnInit();
-    console.log('default:', this.defaultValue);
     this.formGroup.controls[this.name].setValue(this.defaultValue);
   }
 }

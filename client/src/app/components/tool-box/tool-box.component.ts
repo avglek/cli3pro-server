@@ -30,6 +30,9 @@ export class ToolBoxComponent implements OnInit {
   isEdit: boolean = false;
   isGrid: boolean = false;
   saveDisabled: boolean = true;
+  isExportExcel: boolean = false;
+  isExportCSV: boolean = false;
+  isExportPDF: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -37,7 +40,6 @@ export class ToolBoxComponent implements OnInit {
     private location: Location,
     private tabDataService: TabDataService,
     private toolBarService: ToolbarService,
-    private exportService: ExportService
   ) {
     this.navEnd = router.events.pipe(
       filter((evt) => evt instanceof NavigationEnd)
@@ -48,14 +50,14 @@ export class ToolBoxComponent implements OnInit {
     this.navEnd.subscribe((nav) => {
       this.menuTitle = nav.url.includes('home') ? 'Запросы' : 'Меню';
       this.isTwoTables = nav.url.includes('doc');
-      this.isDocTools = nav.url.includes('doc');
+      this.isDocTools = nav.url.includes('doc') && !!this.currentTab;
       this.prevUrl = nav.url;
     });
 
     this.tabDataService.getCurrentTab().subscribe({
       next: (tab) => {
         if (tab) {
-          this.isDocTools = this.isDocTools;
+          this.isDocTools = !tab.isForm && !tab.isLoading && !tab.isDataLoading;
           this.currentTab = tab;
           this.isTwoTables = tab.reportType === TypeReport.TwoTables;
           this.isVertical = !!tab.isVerticalOrient;
@@ -65,12 +67,12 @@ export class ToolBoxComponent implements OnInit {
             (tab.reportType === TypeReport.Table ||
               tab.reportType === TypeReport.TwoTables);
           this.saveDisabled = !tab.isChangesData;
+          this.isExportCSV = this.isGrid;
+          this.isExportExcel = this.isGrid;
+          this.isExportPDF =
+            tab.reportType === TypeReport.Text ||
+            tab.reportType == TypeReport.Table;
         }
-        console.log('isTwoTables', this.isTwoTables);
-        console.log('isVertical', this.isVertical);
-        console.log('isEdit', this.isEdit);
-        console.log('isGrid', this.isGrid);
-        console.log('tab:', tab);
       },
       error: (err) => {
         console.log(err);
@@ -104,6 +106,7 @@ export class ToolBoxComponent implements OnInit {
 
   onClickPersonalArea() {
     this.router.navigate(['person']);
+    this.isDocTools = false;
   }
 
   onClickFilter() {
