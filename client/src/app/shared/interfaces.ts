@@ -58,6 +58,8 @@ export interface ITabData {
   onAddRow?: () => void;
   onRemoveRows?: () => void;
   isChangesData?: boolean;
+  timeQuery?: string;
+  timeRunQuery?: string;
 }
 
 export enum TypeReport {

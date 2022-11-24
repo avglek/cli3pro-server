@@ -58,6 +58,7 @@ export class PlainTextComponent implements OnInit {
           next: (data) => {
             this.tabData.isLoading = false;
             this.tabService.setLoadData(this.tabData.uid, false);
+            this.tabService.setTimeQuery(this.tabData.uid);
             const params = this.tabData.params?.filter(
               (param) => param.inOut === TypeOut.Out
             );

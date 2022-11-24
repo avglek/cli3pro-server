@@ -3,6 +3,7 @@ import { ContextMenuAction, FilterModelItem } from '../../../shared/interfaces';
 import { ClipboardService } from 'ngx-clipboard';
 import { CellContextMenuEvent } from 'ag-grid-community';
 import { CommonService } from '../../../shared/services/common.service';
+import { ToolbarService } from '../../../shared/services/toolbar.service';
 
 @Component({
   selector: 'app-context-menu',
@@ -18,7 +19,8 @@ export class ContextMenuComponent implements OnInit {
 
   constructor(
     private clipboardService: ClipboardService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private toolbarService: ToolbarService
   ) {}
 
   ngOnInit() {
@@ -32,6 +34,9 @@ export class ContextMenuComponent implements OnInit {
     switch (action) {
       case ContextMenuAction.Copy:
         this.clipboardService.copy(this.contextValue);
+        break;
+      case ContextMenuAction.ExportExel:
+        this.toolbarService.toExport('excel');
         break;
       case ContextMenuAction.Filter:
         if (this.contextEvent) {

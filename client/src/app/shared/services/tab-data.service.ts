@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ITabData } from '../interfaces';
 import { customAlphabet } from 'nanoid';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import dayjs from 'dayjs';
 
 const nanoid = customAlphabet('ABCDEF0987654321', 8);
 
@@ -101,5 +102,15 @@ export class TabDataService {
 
   refresh() {
     this.subject.next(this.currentIndex);
+    this.currentTabs.next(this.tabs[this.currentIndex]);
+  }
+
+  setTimeQuery(uid: string) {
+    const tab = this.tabs.find((tab) => tab.uid === uid);
+
+    if (tab && !tab.timeQuery) {
+      tab.timeQuery = dayjs().format('HH:mm:ss');
+      this.refresh();
+    }
   }
 }

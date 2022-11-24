@@ -15,7 +15,7 @@ export function dataFormatter(
 
   switch (type) {
     case 'NUMBER':
-      if (!value) return '0';
+      if (value === null || value === undefined) return '';
       if (format) {
         return formatStringToFixFloat(value.toString(), format).toString();
       }

@@ -15,6 +15,9 @@ export class FooterComponent implements OnInit {
   rowCount: string | undefined;
   procedure: string | undefined;
   currentOwner: string | undefined;
+  timeQuery: string | undefined;
+  timeRunQuery: string | undefined;
+
   currentTab!: ITabData;
 
   navEnd!: Observable<NavigationEnd>;
@@ -34,13 +37,19 @@ export class FooterComponent implements OnInit {
       if (nav.url.includes('person')) {
         this.currentOwner = this.common.getCurrentOwner() || undefined;
         this.procedure = undefined;
+        this.timeQuery = undefined;
+        this.rowCount = undefined;
       } else if (nav.url.includes('home')) {
         this.currentOwner = this.common.getCurrentOwner() || undefined;
         this.procedure = undefined;
+        this.timeQuery = undefined;
+        this.rowCount = undefined;
       } else {
         if (this.currentTab) {
           this.currentOwner = this.currentTab.owner;
           this.procedure = this.currentTab.procName;
+          this.timeQuery = this.currentTab.timeQuery;
+          this.rowCount = this.currentTab.statusRowCount;
         }
       }
     });
@@ -52,6 +61,7 @@ export class FooterComponent implements OnInit {
           this.currentOwner = tab.owner;
           this.procedure = tab.procName;
           this.rowCount = tab.statusRowCount;
+          this.timeQuery = tab.timeQuery;
         }
       }
     });
