@@ -39,7 +39,7 @@ export class ToolBoxComponent implements OnInit {
     private router: Router,
     private location: Location,
     private tabDataService: TabDataService,
-    private toolBarService: ToolbarService,
+    private toolBarService: ToolbarService
   ) {
     this.navEnd = router.events.pipe(
       filter((evt) => evt instanceof NavigationEnd)
@@ -67,11 +67,11 @@ export class ToolBoxComponent implements OnInit {
             (tab.reportType === TypeReport.Table ||
               tab.reportType === TypeReport.TwoTables);
           this.saveDisabled = !tab.isChangesData;
-          this.isExportCSV = this.isGrid;
+          this.isExportCSV = false; //this.isGrid;
           this.isExportExcel = this.isGrid;
-          this.isExportPDF =
-            tab.reportType === TypeReport.Text ||
-            tab.reportType == TypeReport.Table;
+          this.isExportPDF = false;
+          // tab.reportType === TypeReport.Text ||
+          // tab.reportType == TypeReport.Table;
         }
       },
       error: (err) => {
