@@ -56,7 +56,6 @@ export class PlainTextComponent implements OnInit {
         if (name.toUpperCase().includes('NV')) {
           this.vagNumber = <string>inParam?.value;
         }
-        console.log('in:', inParam);
       }
 
       this.tabService.setLoadData(this.tabData.uid, true);
