@@ -7,6 +7,7 @@ import {
 } from '../../../shared/interfaces';
 import { DataServerService } from '../../../shared/services/data-server.service';
 import { TabDataService } from '../../../shared/services/tab-data.service';
+import { PdfService } from '../../../shared/services/pdf.service';
 
 @Component({
   selector: 'app-plain-text',
@@ -18,16 +19,20 @@ export class PlainTextComponent implements OnInit {
   procParams: IProcParam[] = [];
   text!: string[];
 
+  private vagNumber: string | undefined;
+
   constructor(
     private dataService: DataServerService,
-    private tabService: TabDataService
+    private tabService: TabDataService,
+    private pdfService: PdfService
   ) {}
 
   ngOnInit(): void {
     this.tabData.isLoading = true;
-    this.tabData.toPrint = this.printData.bind(this);
 
+    this.tabData.toPrint = this.printData.bind(this);
     this.tabData.toExport = this.exportData.bind(this);
+
     if (
       this.tabData.procName &&
       this.tabData.uid &&
@@ -44,6 +49,15 @@ export class PlainTextComponent implements OnInit {
         };
         this.procParams.push(procParam);
       });
+
+      if (this.procParams) {
+        const inParam = this.procParams.find((i) => i.inOut === 'IN');
+        const name = inParam?.name || '';
+        if (name.toUpperCase().includes('NV')) {
+          this.vagNumber = <string>inParam?.value;
+        }
+        console.log('in:', inParam);
+      }
 
       this.tabService.setLoadData(this.tabData.uid, true);
       this.dataService
@@ -81,10 +95,21 @@ export class PlainTextComponent implements OnInit {
   }
 
   printData() {
-    console.log('print:', this.text);
+    this.pdfService.printPdf(this.text);
   }
 
   exportData(format: string) {
-    console.log('export:', format, this.text);
+    if(format === 'pdf') {
+      this.pdfService.downloadPdf(this.text, this.formatTitle() || 'file');
+    }
+  }
+
+  formatTitle() {
+    let title = this.tabData.title;
+    if (this.vagNumber) {
+      title = title + ' № ' + this.vagNumber;
+    }
+
+    return title;
   }
 }

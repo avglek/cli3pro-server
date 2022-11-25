@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { ITabData, TypeReport } from '../../shared/interfaces';
 import { TabDataService } from '../../shared/services/tab-data.service';
 import { ToolbarService } from '../../shared/services/toolbar.service';
-import { ExportService } from '../../shared/services/export.service';
 
 @Component({
   selector: 'app-tool-box',
@@ -69,8 +68,7 @@ export class ToolBoxComponent implements OnInit {
           this.saveDisabled = !tab.isChangesData;
           this.isExportCSV = false; //this.isGrid;
           this.isExportExcel = this.isGrid;
-          this.isExportPDF = false;
-          // tab.reportType === TypeReport.Text ||
+          this.isExportPDF = tab.reportType === TypeReport.Text;
           // tab.reportType == TypeReport.Table;
         }
       },
