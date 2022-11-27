@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DialogService } from './dialog.service';
 import { ExcelData, ExcelService } from './excel.service';
-import { ICursorData} from '../interfaces';
+import { ICursorData } from '../interfaces';
+import { ColumnApi, GridApi } from 'ag-grid-community';
+import { PdfService } from './pdf.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +11,8 @@ import { ICursorData} from '../interfaces';
 export class ExportService {
   constructor(
     private dialogService: DialogService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private pdfService: PdfService
   ) {}
 
   toExcel(data: ICursorData, title?: string) {
@@ -32,7 +35,7 @@ export class ExportService {
   toCsv(data: any) {
     console.log('to Csv:', data);
   }
-  toPdf(data: any) {
-    console.log('to pdf:', data);
+  toPdf(data: any, gridAip: GridApi, columnApi: ColumnApi) {
+    this.pdfService.openGridPdf(data, gridAip, columnApi);
   }
 }

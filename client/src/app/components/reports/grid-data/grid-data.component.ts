@@ -63,8 +63,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   @Output() rowClick: EventEmitter<RowClickedEvent> =
     new EventEmitter<RowClickedEvent>();
 
-  gridApi!: GridApi;
-  gridColumnApi!: ColumnApi;
+  gridApi: GridApi | undefined;
+  gridColumnApi: ColumnApi | undefined;
   gridId = 'dataGrid';
   procParams: IProcParam[] = [];
   rowSelection = 'single';
@@ -196,7 +196,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
       }
 
       this.isLoading = true;
-      this.gridApi.showLoadingOverlay();
+      this.gridApi?.showLoadingOverlay();
       this.tabService.setLoadData(this.tabData.uid, true);
       this.procParams.forEach((param) => {
         if (param.name === this.cursorName) {
@@ -228,7 +228,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         )
         .subscribe((data) => {
           this.isLoading = false;
-          this.gridApi.hideOverlay();
+          this.gridApi?.hideOverlay();
           this.tabService.setLoadData(this.tabData.uid, false);
           const link = <IStringData>data.data['P_LINKS'];
           if (link) {
@@ -240,7 +240,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             this.rowCount = docData.count;
             this.setRowCount.emit(docData.count);
             if (docData.rows.length === 0) {
-              this.gridApi.showNoRowsOverlay();
+              this.gridApi?.showNoRowsOverlay();
             }
             params.successCallback(docData.rows, docData.count);
             if (docData.fields) {
@@ -400,11 +400,11 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     const gridRef = <HTMLElement>document.getElementById(this.gridId);
     gridRef.style.width = '';
     gridRef.style.height = '';
-    this.gridApi.setDomLayout('print');
+    this.gridApi?.setDomLayout('print');
     this.printService.printElement(gridRef).subscribe(() => {
       gridRef.style.width = '100%';
       gridRef.style.height = '100%';
-      this.gridApi.setDomLayout();
+      this.gridApi?.setDomLayout();
     });
   }
 
@@ -439,7 +439,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             );
             break;
           case 'pdf':
-            this.exportService.toPdf(data);
+            if (this.gridApi && this.gridColumnApi)
+              this.exportService.toPdf(data, this.gridApi, this.gridColumnApi);
             break;
           case 'csv':
             this.exportService.toCsv(data);

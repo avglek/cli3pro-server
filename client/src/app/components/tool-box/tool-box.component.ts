@@ -66,10 +66,11 @@ export class ToolBoxComponent implements OnInit {
             (tab.reportType === TypeReport.Table ||
               tab.reportType === TypeReport.TwoTables);
           this.saveDisabled = !tab.isChangesData;
-          this.isExportCSV = false; //this.isGrid;
-          this.isExportExcel = this.isGrid;
-          this.isExportPDF = tab.reportType === TypeReport.Text;
-          // tab.reportType == TypeReport.Table;
+          this.isExportCSV = tab.reportType === TypeReport.Table;
+          this.isExportExcel = tab.reportType === TypeReport.Table;
+          this.isExportPDF =
+            tab.reportType === TypeReport.Text ||
+            tab.reportType === TypeReport.Table;
         }
       },
       error: (err) => {
