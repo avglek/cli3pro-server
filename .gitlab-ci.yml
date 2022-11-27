@@ -3,7 +3,7 @@ stages:
 
 deploy_production:
   stage: deploy
-  when: manual
+  #when: manual
   tags:
     - shell
   script:

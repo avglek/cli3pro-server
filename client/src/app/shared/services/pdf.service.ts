@@ -25,10 +25,16 @@ export class PdfService {
     // }
     this.fonts = {
       IBM: {
-        normal: 'IBMPlexMono-Regular.ttf',
+        normal: `${window.location.origin}/assets/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf`,
       },
       Roboto: {
         normal: `${window.location.origin}/assets/fonts/Roboto/Roboto-Regular.ttf`,
+      },
+      Jura: {
+        normal: `${window.location.origin}/assets/fonts/jura/static/Jura-Regular.ttf`,
+      },
+      Montserrat: {
+        normal: `${window.location.origin}/assets/fonts/Montserrat/static/Montserrat-Regular.ttf`,
       },
     };
   }
@@ -73,11 +79,22 @@ export class PdfService {
     const content = {
       content: [
         {
-          text: 'test',
+          text: 'Пример шрифта "Roboto"',
+        },
+        {
+          text: 'Пример шрифта "Jura"',
+          font: 'Jura',
+          fontSize: 10,
+        },
+        {
+          text: 'Пример шрифта "Montserrat"',
+          font: 'Montserrat',
+          fontSize: 10,
         },
       ],
       defaultStyle: {
         font: 'Roboto',
+        fontSize: 15,
       },
     };
     return content;
