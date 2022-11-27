@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /opt/oracle
 
-RUN apt-get update
+RUN apt-get update && apt-get install sudo
 RUN apt-get install -y libaio1 unzip wget
 RUN wget https://download.oracle.com/otn_software/linux/instantclient/1917000/instantclient-basic-linux.x64-19.17.0.0.0dbru.zip
 RUN unzip instantclient-basic-linux.x64-19.17.0.0.0dbru.zip
