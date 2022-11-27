@@ -1,12 +1,17 @@
-FROM oraclelinux:7-slim
+FROM node:buster-slim
 
-RUN yum -y install oracle-nodejs-release-el7 oracle-instantclient-release-el7 && \
-    yum-config-manager --disable ol7_developer_nodejs\* && \
-    yum-config-manager --enable ol7_developer_nodejs16 && \
-    yum -y install nodejs node-oracledb-node16 && \
-    rm -rf /var/cache/yum/*
+WORKDIR /opt/oracle
 
-ENV NODE_PATH=/usr/lib/node_modules/
+RUN apt-get update
+RUN apt-get install -y libaio1 unzip wget
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/1917000/instantclient-basic-linux.x64-19.17.0.0.0dbru.zip
+RUN unzip instantclient-basic-linux.x64-19.17.0.0.0dbru.zip
+RUN rm -f instantclient-basic-linux.x64-19.17.0.0.0dbru.zip
+
+RUN cd instantclient*
+
+RUN echo /opt/oracle/instantclient* > /etc/ld.so.conf.d/oracle-instantclient.conf
+RUN ldconfig
 
 WORKDIR /usr/src/app
 
@@ -17,11 +22,10 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . .
 
-#ENV ORACLE_HOME=/opt/oracle
-#ENV LD_LIBRARY_PATH=/opt/oracle
+ENV ORACLE_HOME=/opt/oracle
+ENV LD_LIBRARY_PATH=/opt/oracle
 ENV TNS_ADMIN=/usr/src/app/config
 ENV NLS_LANG=AMERICAN_AMERICA.UTF8
 
 EXPOSE 5000
 CMD [ "node", "index.js" ]
-
