@@ -3,7 +3,8 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TFontDictionary } from 'pdfmake/interfaces';
 import { checkFileName } from '../utils/str-utils';
-import { ColumnApi, GridApi } from 'ag-grid-community';
+import { DocumentGridDefinition } from '../classes/documentGridDefinition';
+import { ExcelData } from '../interfaces';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -14,21 +15,13 @@ export class PdfService {
   private fonts: TFontDictionary;
 
   constructor() {
-    // pdfMake.fonts = {
-    //   IBM: {
-    //     normal: 'fontFile.ttf',
-    //     bold: 'fontFile2.ttf',
-    //     italics: 'fontFile3.ttf',
-    //     bolditalics: 'fontFile4.ttf'
-    //   },
-
-    // }
     this.fonts = {
       IBM: {
         normal: `${window.location.origin}/assets/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf`,
       },
       Roboto: {
         normal: `${window.location.origin}/assets/fonts/Roboto/Roboto-Regular.ttf`,
+        bold: `${window.location.origin}/assets/fonts/Roboto/Roboto-Medium.ttf`,
       },
       Jura: {
         normal: `${window.location.origin}/assets/fonts/jura/static/Jura-Regular.ttf`,
@@ -41,11 +34,6 @@ export class PdfService {
 
   openPdf(text: string[]) {
     const documentDefinition = this.getDocumentDefinitionText(text);
-    pdfMake.createPdf(documentDefinition, undefined, this.fonts).open();
-  }
-
-  openGridPdf(data: any, gridAip: GridApi, columnApi: ColumnApi) {
-    const documentDefinition = this.getGridDefinition(data, gridAip, columnApi);
     pdfMake.createPdf(documentDefinition, undefined, this.fonts).open();
   }
 
@@ -62,6 +50,27 @@ export class PdfService {
     pdfMake.createPdf(documentDefinition, undefined, this.fonts).print();
   }
 
+  openGridPdf(data: ExcelData) {
+    const document = new DocumentGridDefinition(data);
+    const documentDefinition = document.getDocument();
+    pdfMake.createPdf(documentDefinition, undefined, this.fonts).open();
+  }
+
+  downloadGridPdf(data: ExcelData, name: string) {
+    const document = new DocumentGridDefinition(data);
+    const documentDefinition = document.getDocument();
+    const fileName = checkFileName(name) + '.pdf';
+    pdfMake
+      .createPdf(documentDefinition, undefined, this.fonts)
+      .download(fileName);
+  }
+
+  printGridPdf(data: ExcelData) {
+    const document = new DocumentGridDefinition(data);
+    const documentDefinition = document.getDocument();
+    pdfMake.createPdf(documentDefinition, undefined, this.fonts).print();
+  }
+
   getDocumentDefinitionText(text: string[]) {
     const report = text.join('\n');
     return {
@@ -73,30 +82,5 @@ export class PdfService {
         },
       ],
     };
-  }
-
-  getGridDefinition(data: any, gridAip: GridApi, columnApi: ColumnApi) {
-    const content = {
-      content: [
-        {
-          text: 'Пример шрифта "Roboto"',
-        },
-        {
-          text: 'Пример шрифта "Jura"',
-          font: 'Jura',
-          fontSize: 10,
-        },
-        {
-          text: 'Пример шрифта "Montserrat"',
-          font: 'Montserrat',
-          fontSize: 10,
-        },
-      ],
-      defaultStyle: {
-        font: 'Roboto',
-        fontSize: 15,
-      },
-    };
-    return content;
   }
 }

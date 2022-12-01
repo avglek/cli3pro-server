@@ -397,15 +397,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private printGridData() {
-    const gridRef = <HTMLElement>document.getElementById(this.gridId);
-    gridRef.style.width = '';
-    gridRef.style.height = '';
-    this.gridApi?.setDomLayout('print');
-    this.printService.printElement(gridRef).subscribe(() => {
-      gridRef.style.width = '100%';
-      gridRef.style.height = '100%';
-      this.gridApi?.setDomLayout();
-    });
+    this.exportGridData('print');
   }
 
   private exportGridData(format: string) {
@@ -426,24 +418,36 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
         this.tabData.docId!
       )
       .subscribe((data) => {
+        const keys = Object.keys(data.data);
+
+        const keysCursorData = keys.filter((item) => {
+          return data.data[item].type === 'cursor';
+        });
+
         switch (format) {
           case 'excel':
-            const keys = Object.keys(data.data);
-
-            const keysCursorData = keys.filter((item) => {
-              return data.data[item].type === 'cursor';
-            });
             this.exportService.toExcel(
               <ICursorData>data.data[keysCursorData[0]],
               this.tabData.title
             );
             break;
           case 'pdf':
-            if (this.gridApi && this.gridColumnApi)
-              this.exportService.toPdf(data, this.gridApi, this.gridColumnApi);
+            this.exportService.toPdf(
+              <ICursorData>data.data[keysCursorData[0]],
+              this.tabData.title
+            );
+            break;
+          case 'print':
+            this.exportService.printPdf(
+              <ICursorData>data.data[keysCursorData[0]],
+              this.tabData.title
+            );
             break;
           case 'csv':
-            this.exportService.toCsv(data);
+            this.exportService.toCsv(
+              <ICursorData>data.data[keysCursorData[0]],
+              this.tabData.title
+            );
             break;
         }
       });

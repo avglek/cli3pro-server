@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DialogService } from './dialog.service';
-import { ExcelData, ExcelService } from './excel.service';
-import { ICursorData } from '../interfaces';
-import { ColumnApi, GridApi } from 'ag-grid-community';
+import { ExcelService } from './excel.service';
+import { ExcelData, ICursorData } from '../interfaces';
 import { PdfService } from './pdf.service';
 
 @Injectable({
@@ -15,8 +14,8 @@ export class ExportService {
     private pdfService: PdfService
   ) {}
 
-  toExcel(data: ICursorData, title?: string) {
-    const excelData: ExcelData = {
+  toExcelData(data: ICursorData, title: string = ''): ExcelData {
+    return {
       cols: data.fields
         .filter((item) => item.visible === 'T')
         .map((item) => ({
@@ -30,12 +29,30 @@ export class ExportService {
       rows: data.rows,
       title: title || '',
     };
-    this.excelService.toExcel(excelData, title || 'export');
   }
-  toCsv(data: any) {
-    console.log('to Csv:', data);
+
+  async toExcel(data: ICursorData, title: string = '') {
+    await this.excelService.toExcel(
+      this.toExcelData(data, title),
+      title || 'export'
+    );
   }
-  toPdf(data: any, gridAip: GridApi, columnApi: ColumnApi) {
-    this.pdfService.openGridPdf(data, gridAip, columnApi);
+
+  async toCsv(data: ICursorData, title: string = '') {
+    await this.excelService.toExcel(
+      this.toExcelData(data, title),
+      title || 'export',
+      true
+    );
+  }
+
+  toPdf(data: ICursorData, title: string = '') {
+    const excelData = this.toExcelData(data, title);
+    this.pdfService.downloadGridPdf(excelData, title || 'export');
+  }
+
+  printPdf(data: ICursorData, title: string = '') {
+    const excelData = this.toExcelData(data, title);
+    this.pdfService.printGridPdf(excelData);
   }
 }

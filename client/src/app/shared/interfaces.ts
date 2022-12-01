@@ -380,3 +380,18 @@ export interface JWTPayload {
   roles: string[];
   user: string;
 }
+
+export interface ExcelData {
+  cols: ExcelCol[];
+  rows: any[];
+  title: string;
+}
+
+export interface ExcelCol {
+  name: string;
+  key: string;
+  size: number;
+  type?: string;
+  format?: string | null;
+  order: number;
+}

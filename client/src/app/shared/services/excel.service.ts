@@ -4,21 +4,7 @@ import { saveAs } from 'file-saver';
 import { dataFormatter } from '../utils/grid-utils';
 import { ValueFormatterParams } from 'ag-grid-community';
 import { checkFileName, checkWorkSheetName } from '../utils/str-utils';
-
-export interface ExcelData {
-  cols: ExcelCol[];
-  rows: any[];
-  title: string;
-}
-
-export interface ExcelCol {
-  name: string;
-  key: string;
-  size: number;
-  type?: string;
-  format?: string | null;
-  order: number;
-}
+import { ExcelData, ExcelCol } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +25,7 @@ export class ExcelService {
 
   constructor() {}
 
-  async toExcel(data: ExcelData, fileName: string) {
+  async toExcel(data: ExcelData, fileName: string, csv: boolean = false) {
     this.workbook = new ExcelJS.Workbook();
     this._fontSize = 14;
     this.worksheet = this.workbook.addWorksheet(
@@ -98,12 +84,21 @@ export class ExcelService {
 
     this.worksheet.views = [{ showGridLines: false }];
 
-    const buffer = await this.workbook.xlsx.writeBuffer();
+    if (csv) {
+      const buffer = await this.workbook.csv.writeBuffer();
 
-    saveAs(
-      new Blob([buffer], { type: 'application/octet-stream' }),
-      `${checkFileName(fileName)}.xlsx`
-    );
+      saveAs(
+        new Blob([buffer], { type: 'application/octet-stream' }),
+        `${checkFileName(fileName)}.csv`
+      );
+    } else {
+      const buffer = await this.workbook.xlsx.writeBuffer();
+
+      saveAs(
+        new Blob([buffer], { type: 'application/octet-stream' }),
+        `${checkFileName(fileName)}.xlsx`
+      );
+    }
   }
   private isEmptyArray(arr: string[]): boolean {
     const filtr = arr.filter((el) => !!el);
