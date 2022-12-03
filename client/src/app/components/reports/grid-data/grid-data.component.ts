@@ -9,7 +9,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {
+  CellClassParams,
   CellContextMenuEvent,
+  CellStyle,
   ColDef,
   ColGroupDef,
   ColumnApi,
@@ -28,6 +30,7 @@ import {
   IField,
   IProcParam,
   IStringData,
+  IStyle,
   ITabData,
   TypeOut,
 } from '../../../shared/interfaces';
@@ -46,7 +49,12 @@ import { ToolbarService } from '../../../shared/services/toolbar.service';
 import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
 import { PrintService } from '../../../shared/services/print.service';
 import { TabDataService } from '../../../shared/services/tab-data.service';
-import { dataFormatter, prepareFilter } from '../../../shared/utils/grid-utils';
+import {
+  addFontStyle,
+  dataFormatter,
+  parseColor,
+  prepareFilter,
+} from '../../../shared/utils/grid-utils';
 import { ExportService } from '../../../shared/services/export.service';
 
 @Component({
@@ -83,7 +91,6 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   defaultColDef: ColDef = {
     resizable: true,
-    cellStyle: { borderRight: '1px solid #dfdfdf' },
     sortable: true,
     floatingFilter: false,
     wrapHeaderText: true,
@@ -259,6 +266,8 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
                       : undefined,
                     valueFormatter: (params: any) =>
                       dataFormatter(params, col.displayFormat, col.dbTypeName),
+                    cellStyle: (params: CellClassParams) =>
+                      this.getCellStyle(params, docData.styles),
                   };
                   this.setColumFilter(refColumnDef, col);
 
@@ -426,10 +435,12 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
         switch (format) {
           case 'excel':
-            this.exportService.toExcel(
-              <ICursorData>data.data[keysCursorData[0]],
-              this.tabData.title
-            );
+            this.exportService
+              .toExcel(
+                <ICursorData>data.data[keysCursorData[0]],
+                this.tabData.title
+              )
+              .then();
             break;
           case 'pdf':
             this.exportService.toPdf(
@@ -444,10 +455,12 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
             );
             break;
           case 'csv':
-            this.exportService.toCsv(
-              <ICursorData>data.data[keysCursorData[0]],
-              this.tabData.title
-            );
+            this.exportService
+              .toCsv(
+                <ICursorData>data.data[keysCursorData[0]],
+                this.tabData.title
+              )
+              .then();
             break;
         }
       });
@@ -457,5 +470,45 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
     if (this.gridApi) {
       this.gridApi.setFilterModel(null);
     }
+  }
+
+  private getCellStyle(
+    params: CellClassParams,
+    style: IStyle[]
+  ): CellStyle | null | undefined {
+    if (!params.data) {
+      return null;
+    }
+    let styleObj: CellStyle | null = null;
+    const keys = Object.keys(params.data);
+    const styleCellKeys = keys.filter((key) => key.includes('style'));
+    if (styleCellKeys) {
+      styleCellKeys.forEach((styleCellKey) => {
+        const styleCellName = params.data[styleCellKey];
+        if (styleCellName) {
+          const currentStyle = style.find((s) => s.styleName === styleCellName);
+          if (currentStyle && styleCellKey === 'style') {
+            styleObj = {
+              color: parseColor(currentStyle.color),
+              background: parseColor(currentStyle.bkColor),
+            };
+            Object.assign(styleObj, addFontStyle(currentStyle.options));
+          }
+          if (
+            currentStyle &&
+            params.column.getColId().toUpperCase() ===
+              styleCellKey.slice(5).toUpperCase()
+          ) {
+            styleObj = {
+              color: parseColor(currentStyle.color),
+              background: parseColor(currentStyle.bkColor),
+            };
+            Object.assign(styleObj, addFontStyle(currentStyle.options));
+          }
+        }
+      });
+    }
+
+    return styleObj;
   }
 }

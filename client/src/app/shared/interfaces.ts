@@ -206,9 +206,21 @@ export interface IDescParam {
   paramVisible?: 'T' | 'F';
   value?: any;
 }
+
+export interface IStyle {
+  styleName: string;
+  fontName: string | null;
+  color: number | null;
+  bkColor: number | null;
+  displayLabel: string | null;
+  options: number | null;
+  width: number | null;
+}
+
 export interface ICursorData {
   fields: IField[];
   rows: any[];
+  styles: IStyle[];
   type: string;
   count: number;
 }

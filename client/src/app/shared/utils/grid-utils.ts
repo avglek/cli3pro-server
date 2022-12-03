@@ -1,6 +1,9 @@
 import { ValueFormatterParams } from 'ag-grid-community';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { FilterModelItem } from '../interfaces';
+
+dayjs.extend(utc);
 
 export function dataFormatter(
   params: ValueFormatterParams,
@@ -32,9 +35,9 @@ export function dataFormatter(
             .toUpperCase()
             .replace('YY', 'YYYY')
             .replace('NN', 'mm');
-          return dayjs(value).format(format);
+          return dayjs.utc(value).format(format);
         } else {
-          return dayjs(value).format('DD.MM.YYYY');
+          return dayjs.utc(value).format('DD.MM.YYYY');
         }
       }
       return value;
@@ -67,4 +70,31 @@ export function prepareFilter(params: any): FilterModelItem[] {
       dateTo: params[key].dateTo,
     };
   });
+}
+
+export function parseColor(color: number | null): string {
+  if (color === null || color === undefined) {
+    return '';
+  }
+  let colorStr = '000000' + color.toString(16);
+  colorStr = colorStr.slice(-6);
+  const blue = colorStr.slice(0, 2);
+  const green = colorStr.slice(2, 4);
+  const red = colorStr.slice(4);
+
+  return `#${red}${green}${blue}`;
+}
+
+export function addFontStyle(option: number | null): { [key: string]: string } {
+  const fontWeight = option && option & 1 ? 'bold' : 'normal';
+  const fontStyle = option && option & 2 ? 'italic' : 'normal';
+  let textDecoration = option && option & 4 ? 'underline' : 'none';
+  textDecoration = option && option & 8 ? 'line-through' : textDecoration;
+
+  return  {
+    fontWeight,
+    fontStyle,
+    textDecoration,
+  };
+
 }

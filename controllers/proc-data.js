@@ -1,7 +1,6 @@
 const oracledb = require('oracledb');
 const config = require('config');
 const oraTypes = require('../common/ora-types');
-const database = require('../services/database');
 const errorHandler = require('../utils/errorHandler');
 const owner = require('./owner');
 const tools = require('../utils/data-tools');
@@ -12,6 +11,7 @@ module.exports.get = async function (req, res) {
 
   let connection = undefined;
   let pool = undefined;
+
   try {
     const docParams = JSON.parse(req.query.params);
     const uid = req.query.uid;
@@ -42,7 +42,12 @@ module.exports.get = async function (req, res) {
       let collection = await acc;
       switch (param.type) {
         case 'REF_CURSOR':
+          let styles;
           const data = await getCursorData(param, result);
+
+          if (data.styles) {
+            styles = await tools.getStyles(data.styles, schema);
+          }
 
           let fieldsStr = data.meta.reduce((acc, i) => {
             return acc + `'${i.name}',`;
@@ -66,6 +71,7 @@ module.exports.get = async function (req, res) {
 
           collection[param.name] = {
             fields,
+            styles,
             rows: data.rows,
             count: data.rows.length,
             type: 'cursor',
@@ -126,6 +132,7 @@ async function getCursorData(param, result) {
   const resultSet = result.outBinds[param.name];
   let row = null;
   let rowArray = [];
+  const stylesArray = [];
 
   const meta = resultSet.metaData;
 
@@ -134,11 +141,15 @@ async function getCursorData(param, result) {
     meta.forEach((i, index) => {
       const key = tools.toCamelCase(i.name);
       obj[key] = row[index];
+      if (key.includes('style')) {
+        if (stylesArray.indexOf(obj[key]) < 0 && !!obj[key])
+          stylesArray.push(obj[key]);
+      }
     });
 
     rowArray.push(obj);
   }
-  return { rows: rowArray, meta };
+  return { rows: rowArray, meta, styles: stylesArray };
 }
 
 function formatValue(type, value) {

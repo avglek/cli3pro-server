@@ -2,21 +2,6 @@ const database = require('../services/database');
 const oracledb = require('oracledb');
 const errorHandler = require('../utils/errorHandler');
 
-/******************
- *   docs_utils.get_look_table(p_doc => :p_doc,
- *                             p_owner => :p_owner,
- *                             p_table => :p_table,
- *                             p_order => :p_order,
- *                             p_start_row => :p_start_row,
- *                             p_count_row => :p_count_row,
- *                             p_sort);
- *
- *                                    "order": "ms",
- *         "start": "4471",
- *         "count": "20",
- *         "sort": "desc"
- */
-
 module.exports.get = async function (req, res) {
   const table = req.params['table'];
   const schema = req.params['schema'];

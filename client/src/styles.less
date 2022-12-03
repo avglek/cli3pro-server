@@ -13,7 +13,7 @@
 //@import "src/app/components/tool-box/tool-box.component";
 
 @import 'ag-grid-community/dist/styles/ag-grid.css';
-@import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+//@import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 @import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
 //for resize
@@ -45,4 +45,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.ag-theme-balham .ag-cell,
+//.ag-theme-balham .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+//  border-right: 1px solid #dfdfdf;
+//}
+.ag-theme-balham .ag-ltr .ag-cell{
+  border-right: 1px solid #dfdfdf;
 }

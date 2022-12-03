@@ -12,7 +12,6 @@ module.exports.getFields = async function getFields(schema, fieldsStr, docId) {
   const fields = await database.procedureExecute(proc, bind);
 
   let fieldsResult = [];
-  console.log('fields:', fields);
   fields.forEach((item) => {
     const findIndex = fieldsResult.findIndex(
       (i) => i.fieldName === item.fieldName
@@ -31,9 +30,26 @@ module.exports.getFields = async function getFields(schema, fieldsStr, docId) {
     }
   });
 
-  console.log('result:', fieldsResult);
-
   return fieldsResult;
+};
+
+module.exports.getStyles = async function getStyles(stylesArr, schema) {
+  if (stylesArr.length === 0) {
+    return [];
+  }
+  let stylesStr = stylesArr.reduce((acc, i) => {
+    return acc + `'${i}',`;
+  }, '');
+  stylesStr = stylesStr.slice(0, -1);
+
+  const proc = 'docs_utils.get_styles';
+  const bind = {
+    pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
+    pOwn: schema.toUpperCase(),
+    pStyles: stylesStr,
+  };
+
+  return await database.procedureExecute(proc, bind);
 };
 
 module.exports.toCamelCase = function toCamelCase(str) {
