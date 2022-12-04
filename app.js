@@ -39,6 +39,10 @@ app.use('/api/file', fileRoutes);
 app.use('/api/update-table', updateTableRoutes);
 app.use('/api/fields', fieldsRoutes);
 
+app.get('/api/version', (req, res) => {
+  res.send(database.version());
+});
+
 app.get('/test', async (req, res) => {
   const result = await database.simpleExecute(
     'select user, systimestamp from dual'

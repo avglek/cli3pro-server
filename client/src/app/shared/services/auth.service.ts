@@ -66,4 +66,8 @@ export class AuthService {
     this.setToken('');
     localStorage.clear();
   }
+
+  getVersion() {
+    return this.http.get('/api/version');
+  }
 }

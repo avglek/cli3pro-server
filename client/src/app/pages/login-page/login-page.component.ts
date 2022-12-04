@@ -26,6 +26,10 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.auth
+      .getVersion()
+      .subscribe((message) => console.log(JSON.stringify(message)));
+
     this.validateForm = this.fb.group({
       userName: [null, [Validators.required]],
       password: [null, [Validators.required]],

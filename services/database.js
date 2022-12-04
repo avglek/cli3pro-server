@@ -2,6 +2,11 @@ const oracledb = require('oracledb');
 const config = require('config');
 
 //let rootPool, userPool;
+module.exports.version = function () {
+  const version = config.get('version');
+  const db = config.get('dbRootPool.connectString');
+  return { version, db };
+};
 
 async function initialize() {
   const rootPool = await oracledb.createPool(config.get('dbRootPool'));
