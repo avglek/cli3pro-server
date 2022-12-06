@@ -12,7 +12,7 @@ services:
       - cli3-net
     volumes:
  #     - /Users/avglek/WebstormProjects/cli/cli3/config
-      - /home/glek/cli3/config
+      - /usr/src/app/config:/home/glek/cli3/config
   cli3-client:
     build: ./client
     ports:
