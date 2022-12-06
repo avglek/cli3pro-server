@@ -306,7 +306,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   contextMenu($event: CellContextMenuEvent) {
     this.clipboardContext = $event.value;
     this.contextEvent = $event;
-    this.commonService.setContextMenuEvent($event);
+    this.commonService.setContextMenuEvent($event, this.tabData);
   }
 
   onRowClick($event: RowClickedEvent) {

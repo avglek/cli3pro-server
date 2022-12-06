@@ -1,4 +1,4 @@
-import { SortModelItem } from 'ag-grid-community';
+import { CellContextMenuEvent, SortModelItem } from 'ag-grid-community';
 import { ISimpleFilterModelType } from 'ag-grid-community/dist/lib/filter/provided/simpleFilter';
 
 export interface User {
@@ -406,4 +406,9 @@ export interface ExcelCol {
   type?: string;
   format?: string | null;
   order: number;
+}
+
+export interface ContextData {
+  event: CellContextMenuEvent;
+  parent: ITabData;
 }

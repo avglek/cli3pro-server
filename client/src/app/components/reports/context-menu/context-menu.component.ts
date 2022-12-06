@@ -4,6 +4,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { CellContextMenuEvent } from 'ag-grid-community';
 import { CommonService } from '../../../shared/services/common.service';
 import { ToolbarService } from '../../../shared/services/toolbar.service';
+import { TabDataService } from '../../../shared/services/tab-data.service';
 
 @Component({
   selector: 'app-context-menu',
@@ -20,13 +21,15 @@ export class ContextMenuComponent implements OnInit {
   constructor(
     private clipboardService: ClipboardService,
     private commonService: CommonService,
-    private toolbarService: ToolbarService
+    private toolbarService: ToolbarService,
+    private tabService: TabDataService
   ) {}
 
   ngOnInit() {
     this.commonService.getContextMenuEvent().subscribe((event) => {
-      this.contextEvent = event;
-      this.contextValue = event.value;
+      console.log('context event:', event);
+      this.contextEvent = event.event;
+      this.contextValue = event.event.value;
     });
   }
 
