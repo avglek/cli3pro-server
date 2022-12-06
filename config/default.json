@@ -4,7 +4,7 @@
   "dbRootPool": {
     "user": "cli3prof",
     "password": "twister",
-    "connectString": "grimm",
+    "connectString": "eva",
     "poolMin": 10,
     "poolMax": 10,
     "poolIncrement": 0,
@@ -12,7 +12,7 @@
     "poolPingInterval": 0
   },
   "dbUserPool": {
-    "connectString": "grimm",
+    "connectString": "eva",
     "poolMin": 10,
     "poolMax": 10,
     "poolIncrement": 0,

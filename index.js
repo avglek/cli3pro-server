@@ -16,7 +16,9 @@ function init() {
     httpServer
       .listen(config.get('port'))
       .on('listening', () => {
-        console.log(`Web server listening on localhost:${config.get('port')}`);
+        console.log(
+          `Express server listening on localhost:${config.get('port')}`
+        );
         resolve();
       })
       .on('error', (err) => {
@@ -40,7 +42,7 @@ function close() {
 
 async function startup() {
   try {
-    console.log('Initialization web server');
+    console.log('Initialization express server');
     await init();
     let wait = true;
     while (wait) {

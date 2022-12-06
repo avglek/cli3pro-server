@@ -9,6 +9,8 @@ module.exports.version = function () {
 };
 
 async function initialize() {
+  const dbName = config.get('dbRootPool.connectString');
+  console.log(`Connected to ${dbName} ...`);
   const rootPool = await oracledb.createPool(config.get('dbRootPool'));
   const userPool = await oracledb.createPool(config.get('dbUserPool'));
   console.log(
