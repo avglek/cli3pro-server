@@ -12,6 +12,7 @@ const ownersRoutes = require('./routes/owner');
 const fileRoutes = require('./routes/file-data');
 const updateTableRoutes = require('./routes/update-table');
 const fieldsRoutes = require('./routes/fields');
+const contextRoutes = require('./routes/context');
 
 const database = require('./services/database');
 
@@ -38,6 +39,7 @@ app.use('/api/owners', ownersRoutes);
 app.use('/api/file', fileRoutes);
 app.use('/api/update-table', updateTableRoutes);
 app.use('/api/fields', fieldsRoutes);
+app.use('/api/context', contextRoutes);
 
 app.get('/api/version', (req, res) => {
   res.send(database.version());
