@@ -24,7 +24,7 @@ module.exports.get = async function (req, res) {
   try {
     const data = await database.procedureExecute(sql, bind);
 
-    res.status(200).json({ data });
+    res.status(200).json(data);
   } catch (e) {
     errorHandler(res, e);
   }

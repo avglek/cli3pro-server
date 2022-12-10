@@ -1,12 +1,12 @@
 const oracledb = require('oracledb');
 const database = require('../services/database');
 
-module.exports.getFields = async function getFields(schema, fieldsStr, docId) {
+module.exports.getFields = async function getFields(schema, fieldsArr, docId) {
   const proc = 'docs_utils.get_fields';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
     pOwn: schema.toUpperCase(),
-    pFields: fieldsStr,
+    pFields: arrayToParamString(fieldsArr),
   };
 
   const fields = await database.procedureExecute(proc, bind);
@@ -37,16 +37,29 @@ module.exports.getStyles = async function getStyles(stylesArr, schema) {
   if (stylesArr.length === 0) {
     return [];
   }
-  let stylesStr = stylesArr.reduce((acc, i) => {
-    return acc + `'${i}',`;
-  }, '');
-  stylesStr = stylesStr.slice(0, -1);
 
   const proc = 'docs_utils.get_styles';
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
     pOwn: schema.toUpperCase(),
-    pStyles: stylesStr,
+    pStyles: arrayToParamString(stylesArr),
+  };
+
+  return await database.procedureExecute(proc, bind);
+};
+
+module.exports.getContext = async function (schema, fields, parent, roles) {
+  if (fields.length === 0) {
+    return [];
+  }
+
+  const proc = 'docs_utils.get_context';
+  const bind = {
+    pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
+    pOwner: schema.toUpperCase(),
+    pFields: arrayToParamString(fields, true),
+    pRoles: arrayToParamString(roles),
+    pParent: parent || 0,
   };
 
   return await database.procedureExecute(proc, bind);
@@ -57,3 +70,18 @@ module.exports.toCamelCase = function toCamelCase(str) {
     .toLowerCase()
     .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
 };
+
+module.exports.parseJwt = function (token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
+
+function arrayToParamString(arr, upper = false) {
+  if (upper) {
+    return arr.map((i) => `'${i.toUpperCase()}'`).join(',');
+  }
+  return arr.map((i) => `'${i}'`).join(',');
+}

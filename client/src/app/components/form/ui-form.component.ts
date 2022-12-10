@@ -8,6 +8,8 @@ import {
 import { ControlService } from '../../shared/services/control.service';
 import dayjs from 'dayjs';
 import { DataServerService } from '../../shared/services/data-server.service';
+import { parseTemplate } from '../../shared/utils/str-utils';
+import { paramsToObject } from '../../shared/utils/data-utils';
 
 @Component({
   selector: 'app-form',
@@ -39,7 +41,8 @@ export class UiFormComponent implements OnInit, OnDestroy {
             order: index,
             controlType: ControlType[param.controlType],
             controlNumber: param.controlType,
-            defaultValue: param.defaultValue,
+            defaultValue: param.value ? param.value : param.defaultValue,
+            disabled: !!param.value,
             label: param.displayLabel
               ? param.displayLabel.replace('_', ' ').trim()
               : '',
@@ -101,7 +104,12 @@ export class UiFormComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    const params = paramsToObject(this.tabData.params || []);
+    const title = parseTemplate(this.tabData.template, params);
+    if (title) this.tabData.title = title;
     this.tabData.isForm = false;
+    console.log('submit:', this.tabData, params, title);
   }
 
   valueAdapter(value: any, param: IDescParam): any {

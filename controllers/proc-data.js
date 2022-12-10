@@ -6,6 +6,8 @@ const owner = require('./owner');
 const tools = require('../utils/data-tools');
 
 module.exports.get = async function (req, res) {
+  const token = req.get('authorization').split(' ')[1];
+
   const docName = req.params['name'];
   const schema = req.params['schema'];
 
@@ -13,6 +15,8 @@ module.exports.get = async function (req, res) {
   let pool = undefined;
 
   try {
+    const tokenObj = tools.parseJwt(token);
+
     const docParams = JSON.parse(req.query.params);
     const uid = req.query.uid;
     const docId = req.query.docId;
@@ -34,10 +38,19 @@ module.exports.get = async function (req, res) {
       connection = await pool.getConnection();
     }
     oracledb.fetchAsString = [oracledb.CLOB];
-    const result = await connection.execute(stm, bind, {
-      extendedMetaData: true,
-    });
-    const outParams = docParams.filter((item) => item.inOut === 'OUT');
+    let result;
+    try {
+      result = await connection.execute(stm, bind, {
+        extendedMetaData: true,
+      });
+    } catch (e) {
+      console.log('execute err:', e.message);
+    }
+    const outBindsKeys = Object.keys(result.outBinds);
+    const outParams = docParams.filter((item) =>
+      outBindsKeys.includes(item.name)
+    );
+    console.log('params:', outParams);
     const data = await outParams.reduce(async (acc, param) => {
       let collection = await acc;
       switch (param.type) {
@@ -49,12 +62,9 @@ module.exports.get = async function (req, res) {
             styles = await tools.getStyles(data.styles, schema);
           }
 
-          let fieldsStr = data.meta.reduce((acc, i) => {
-            return acc + `'${i.name}',`;
-          }, '');
-          fieldsStr = fieldsStr.slice(0, -1);
+          const fieldsArr = data.meta.map((i) => i.name);
 
-          const fieldsResult = await tools.getFields(schema, fieldsStr, docId);
+          const fieldsResult = await tools.getFields(schema, fieldsArr, docId);
 
           const fields = data.meta.map((field, index) => {
             const order = fieldsResult.findIndex(
@@ -69,9 +79,17 @@ module.exports.get = async function (req, res) {
             };
           });
 
+          const context = await tools.getContext(
+            schema,
+            fieldsArr,
+            docId,
+            tokenObj.roles
+          );
+
           collection[param.name] = {
             fields,
             styles,
+            context,
             rows: data.rows,
             count: data.rows.length,
             type: 'cursor',
@@ -129,27 +147,36 @@ function prepareSql(name, params) {
 }
 
 async function getCursorData(param, result) {
-  const resultSet = result.outBinds[param.name];
-  let row = null;
-  let rowArray = [];
-  const stylesArray = [];
+  try {
+    console.log('get:', param.name);
+    const resultSet = result.outBinds[param.name];
+    let row = null;
+    let rowArray = [];
+    const stylesArray = [];
+    let meta = null;
 
-  const meta = resultSet.metaData;
+    if (resultSet) {
+      meta = resultSet.metaData;
+      console.log('meta:', meta);
 
-  while ((row = await resultSet.getRow())) {
-    const obj = {};
-    meta.forEach((i, index) => {
-      const key = tools.toCamelCase(i.name);
-      obj[key] = row[index];
-      if (key.includes('style')) {
-        if (stylesArray.indexOf(obj[key]) < 0 && !!obj[key])
-          stylesArray.push(obj[key]);
+      while ((row = await resultSet.getRow())) {
+        const obj = {};
+        meta.forEach((i, index) => {
+          const key = tools.toCamelCase(i.name);
+          obj[key] = row[index];
+          if (key.includes('style')) {
+            if (stylesArray.indexOf(obj[key]) < 0 && !!obj[key])
+              stylesArray.push(obj[key]);
+          }
+        });
+
+        rowArray.push(obj);
       }
-    });
-
-    rowArray.push(obj);
+    }
+    return { rows: rowArray, meta, styles: stylesArray };
+  } catch (e) {
+    console.log('err:', e.message);
   }
-  return { rows: rowArray, meta, styles: stylesArray };
 }
 
 function formatValue(type, value) {

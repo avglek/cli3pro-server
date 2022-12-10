@@ -35,6 +35,7 @@ export interface ITabData {
   uid: string;
   docId?: number;
   title?: string;
+  template?: string | null;
   isLoading?: boolean;
   isDataLoading?: boolean;
   isForm?: boolean;
@@ -217,10 +218,17 @@ export interface IStyle {
   width: number | null;
 }
 
+export interface IContextData {
+  fieldName: string;
+  docId: number;
+  docName: string;
+}
+
 export interface ICursorData {
   fields: IField[];
   rows: any[];
   styles: IStyle[];
+  context: IContextData[];
   type: string;
   count: number;
 }
@@ -332,6 +340,7 @@ export interface IControlBase {
   options?: IDescParam;
   itemList?: string;
   group?: any; //IControlBase[];
+  disabled?: boolean;
 }
 
 /********************
@@ -379,11 +388,12 @@ export enum ControlType {
 }
 
 export enum ContextMenuAction {
-  'Copy',
-  'History',
-  'ExportExel',
-  'Filter',
-  'FilterOff',
+  'Copy' = 1,
+  'History' = 2,
+  'ExportExel' = 3,
+  'Filter' = 4,
+  'FilterOff' = 5,
+  'Custom' = 6,
 }
 
 export interface JWTPayload {
@@ -408,7 +418,20 @@ export interface ExcelCol {
   order: number;
 }
 
-export interface ContextData {
+export interface ContextEvent {
   event: CellContextMenuEvent;
-  parent: ITabData;
+  context: IContextData[];
+  parentId: number;
+}
+
+export interface ContextMenuData {
+  docId: number;
+  docName: string;
+}
+
+export interface ContextMenu {
+  title: string;
+  action?: ContextMenuAction;
+  icon?: string;
+  docId?: number;
 }

@@ -23,6 +23,7 @@ import { DynamicControlComponent } from './dynamic-control/dynamic-control.compo
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { DisableControlDirective } from '../../shared/directive/disable-control.directive';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
     UiBaseControlComponent,
     UiNumberInputComponent,
     UiComboComponent,
+    DisableControlDirective,
   ],
   imports: [
     NzButtonModule,

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
+  ContextMenuData,
   IData,
   IDesc,
   IDescParam,
   IProcParam,
 } from '../interfaces';
-import { Observable} from 'rxjs';
-import { map} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface OwnerListItem {
   owner: string;
@@ -57,8 +58,6 @@ export class DataServerService {
     searchField: string = '',
     searchValue: string = ''
   ): Observable<any> {
-    //{{baseUrl}}/api/look-table/:schema/:table?order=kd&start=0&count=10&searchField=nd&searchValue=ГР
-
     const url = `/api/look-table/${owner}/${table}?order=${order}&start=${startRow}&count=${countRows}&searchField=${searchField}&searchValue=${searchValue}`;
 
     return this.http.get(url);
@@ -75,5 +74,16 @@ export class DataServerService {
   getControls(owner: string, docId: number, controls: string) {
     const url = `/api/fields/${owner}?docId=${docId}&fields=${controls}`;
     return this.http.get<IDescParam[]>(url);
+  }
+
+  getContext(
+    owner: string,
+    docId: number,
+    field: string,
+    roles: string[]
+  ): Observable<ContextMenuData[]> {
+    const roleStr = roles.map((el) => `'${el}'`).join(',');
+    const url = `/api/context/${owner}?field='${field}'&roles=${roleStr}&parent=${docId}`;
+    return this.http.get<ContextMenuData[]>(url);
   }
 }

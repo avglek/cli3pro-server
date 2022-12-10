@@ -53,3 +53,17 @@ export function checkWorkSheetName(str: string): string {
     '_'
   );
 }
+
+export function parseTemplate(
+  template: string | undefined | null,
+  replacement: { [key: string]: string }
+): string | undefined {
+  if (!template) {
+    return undefined;
+  }
+
+  return template.replace(/%\w+/g, (str) => {
+    const key = toCamelCase(str.slice(1, str.length));
+    return replacement[key] || str;
+  });
+}

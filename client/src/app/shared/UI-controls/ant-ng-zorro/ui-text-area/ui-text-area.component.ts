@@ -7,7 +7,7 @@ import { UiBaseControlComponent } from '../ui-base-control.component';
     <div [formGroup]="formGroup">
       <textarea
         nz-input
-        placeholder="Autosize height with minimum and maximum number of lines"
+        placeholder=""
         [nzAutosize]="{ minRows: 3, maxRows: 7 }"
         [formControlName]="name"
         (change)="onChange()"
@@ -23,7 +23,10 @@ export class UiTextAreaComponent extends UiBaseControlComponent {
   onChange() {
     let value = <string>this.formGroup.get(this.name)?.value;
     if (value) {
-      value = value.split('\n').join(';').slice(0, -1);
+      const arr = value.split('\n');
+      if (arr.length > 1) {
+        value = arr.join(';');
+      }
     }
     this.formGroup.setValue({ [this.name]: value });
   }

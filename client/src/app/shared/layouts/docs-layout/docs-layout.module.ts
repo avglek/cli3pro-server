@@ -42,6 +42,7 @@ import { UiCellInputRenderComponent } from '../../../components/reports/grid-edi
 import { ExportDialogComponent } from '../../../components/dialogs/export-dialog/export-dialog.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     MatIconModule,
     NzSelectModule,
     NzButtonModule,
+    NzDividerModule,
   ],
   exports: [UiDividerComponent, NzSelectModule, NzSpinModule],
 })

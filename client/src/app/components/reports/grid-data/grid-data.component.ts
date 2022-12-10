@@ -26,6 +26,7 @@ import {
 } from 'ag-grid-community';
 import {
   FilterModelItem,
+  IContextData,
   ICursorData,
   IField,
   IProcParam,
@@ -88,6 +89,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
 
   clipboardContext!: any;
   contextEvent: CellContextMenuEvent | undefined = undefined;
+  context: IContextData[] | undefined;
 
   defaultColDef: ColDef = {
     resizable: true,
@@ -244,6 +246,7 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
           if (data.data) {
             //     const keys = Object.keys(data.data);
             const docData = <ICursorData>data.data[this.cursorName];
+            this.context = docData.context;
             this.rowCount = docData.count;
             this.setRowCount.emit(docData.count);
             if (docData.rows.length === 0) {
@@ -306,7 +309,11 @@ export class GridDataComponent implements OnInit, OnChanges, OnDestroy {
   contextMenu($event: CellContextMenuEvent) {
     this.clipboardContext = $event.value;
     this.contextEvent = $event;
-    this.commonService.setContextMenuEvent($event, this.tabData);
+    this.commonService.setContextMenuEvent(
+      $event,
+      this.context || [],
+      this.tabData.docId || 0
+    );
   }
 
   onRowClick($event: RowClickedEvent) {

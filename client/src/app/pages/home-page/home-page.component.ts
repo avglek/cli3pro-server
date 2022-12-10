@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TreeService } from '../../shared/services/tree.service';
@@ -7,16 +7,20 @@ import { TabDataService } from '../../shared/services/tab-data.service';
 import { DataServerService } from '../../shared/services/data-server.service';
 import { CommonService } from '../../shared/services/common.service';
 import { AuthService } from '../../shared/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.less'],
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   docs!: ITreeDocs[];
   isLoading: boolean = false;
   owner: string = '';
+
+  activeRouteSub: Subscription | undefined;
+  serverSub: Subscription | undefined;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -28,11 +32,16 @@ export class HomePageComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  ngOnDestroy(): void {
+    if (this.activeRouteSub) this.activeRouteSub.unsubscribe();
+    if (this.serverSub) this.serverSub.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.owner = this.commonService.getCurrentOwner() || '';
 
     this.isLoading = true;
-    this.activateRoute.params
+    this.activeRouteSub = this.activateRoute.params
       .pipe(
         switchMap((params) => {
           return this.treeService.getDocs(this.owner, params['id']);
@@ -69,7 +78,7 @@ export class HomePageComponent implements OnInit {
     };
     const uid = this.tabService.add(tab);
 
-    this.server
+    this.serverSub = this.server
       .getDesc(this.commonService.getCurrentOwner() || '', docId)
       .subscribe({
         next: (data) => {
@@ -81,6 +90,7 @@ export class HomePageComponent implements OnInit {
             uid,
             docId: tab.docId,
             title: data.description.docName,
+            template: data.description.docTitle,
             description: data.description,
             procName: data.procName,
             params: data.params,

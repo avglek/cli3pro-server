@@ -19,7 +19,7 @@ export class TabDataService {
   add(tab: ITabData): string {
     tab.uid = nanoid();
     this.tabs.push(tab);
-    this.currentIndex++;
+    this.currentIndex = this.tabs.length - 1;
     this.subject.next(this.currentIndex);
     this.currentTabs.next(this.tabs[this.currentIndex]);
     return tab.uid;
@@ -41,6 +41,7 @@ export class TabDataService {
   }
 
   update(tab: ITabData) {
+    console.log('update tab:', tab);
     if (this.tabs.length > 0) {
       const index = this.tabs.findIndex((i) => i.uid === tab.uid);
       if (index >= 0) {
@@ -77,6 +78,10 @@ export class TabDataService {
 
   getCurrent() {
     return this.currentTabs;
+  }
+
+  getCurrentIndex(): Observable<number> {
+    return this.subject;
   }
 
   getCurrentTab(): Observable<ITabData> {

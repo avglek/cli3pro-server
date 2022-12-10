@@ -8,7 +8,8 @@
       *ngSwitchCase="'textBox'"
       [name]="control.key"
       [formGroup]="form"
-      [defaultValue]="'test'"
+      [defaultValue]="control.defaultValue"
+      [disabled]="!!control.disabled"
     ></app-ui-text-input>
     <app-ui-data-picker
       *ngSwitchCase="'dateBox'"

@@ -1,34 +1,20 @@
 <div class="root">
   <ul nz-menu>
-    <li nz-menu-item>
-      <i nz-icon nzType="copy" nzTheme="outline"></i>
-      <span class="menu-item" (click)="clickContext(actionType.Copy)"
-        >Копировать</span
+    <li *ngFor="let item of menu" nz-menu-item>
+      <i nz-icon [nzType]="item.icon || ''" nzTheme="outline"></i>
+      <span
+        *ngIf="item.title === 'divider'; else itemBlock"
+        class="menu-item menu-divider"
+        disabled
       >
+      </span>
+      <ng-template #itemBlock>
+        <span
+          class="menu-item"
+          (click)="item.action ? clickContext(item) : null"
+          >{{ item.title }}</span
+        >
+      </ng-template>
     </li>
-    <li nz-menu-item>
-      <i nz-icon nzType="file-excel" nzTheme="outline"></i>
-      <span class="menu-item" (click)="clickContext(actionType.ExportExel)"
-        >Сохранить в Excel</span
-      >
-    </li>
-    <li nz-menu-item>
-      <i nz-icon nzType="filter" nzTheme="outline"></i>
-      <span class="menu-item" (click)="clickContext(actionType.Filter)"
-        >Фильтр по выделенному</span
-      >
-    </li>
-    <li nz-menu-item>
-      <i nz-icon nzType="undo" nzTheme="outline"></i>
-      <span class="menu-item" (click)="clickContext(actionType.FilterOff)"
-        >Сбросить фильтр</span
-      >
-    </li>
-    <!--      <li nz-submenu nzDisabled nzTitle="disabled sub menu">-->
-    <!--        <ul>-->
-    <!--          <li nz-menu-item>3rd menu item</li>-->
-    <!--          <li nz-menu-item>4th menu item</li>-->
-    <!--        </ul>-->
-    <!--      </li>-->
   </ul>
 </div>

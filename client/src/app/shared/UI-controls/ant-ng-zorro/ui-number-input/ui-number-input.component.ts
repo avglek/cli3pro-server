@@ -16,8 +16,6 @@ export class UiNumberInputComponent
   extends UiBaseControlComponent
   implements OnInit
 {
-  //  @Input() override defaultValue!: string;
-
   override ngOnInit() {
     super.ngOnInit();
     this.formGroup.controls[this.name].setValue(this.defaultValue);

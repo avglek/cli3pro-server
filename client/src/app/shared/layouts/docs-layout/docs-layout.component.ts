@@ -19,7 +19,9 @@ export class DocsLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.tabs = this.tabDataService.getAll();
-    this.selectedIndex = this.tabs.length;
+    this.tabDataService.getCurrentIndex().subscribe((index) => {
+      this.selectedIndex = index;
+    });
   }
 
   closeTab(event: { index: number }) {

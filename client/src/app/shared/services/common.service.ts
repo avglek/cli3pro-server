@@ -1,14 +1,26 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { ContextData, FilterModelItem, ITabData } from '../interfaces';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import {
+  ContextEvent,
+  ContextMenuData,
+  FilterModelItem,
+  IContextData
+} from '../interfaces';
 import { CellContextMenuEvent } from 'ag-grid-community';
+import { AuthService } from './auth.service';
+import { DataServerService } from './data-server.service';
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
   currentOwner: string = '';
   owner = new BehaviorSubject<string>('');
   contextFilter = new Subject<FilterModelItem>();
-  contextMenuEvent = new Subject<ContextData>();
+  contextMenuEvent = new Subject<ContextEvent>();
+
+  constructor(
+    private auth: AuthService,
+    private dataService: DataServerService
+  ) {}
 
   getCurrentOwnerFromStorage(): string | null {
     return localStorage.getItem('owner');
@@ -39,11 +51,25 @@ export class CommonService {
     return this.contextFilter;
   }
 
-  setContextMenuEvent(event: CellContextMenuEvent, parent: ITabData) {
-    this.contextMenuEvent.next({ event, parent });
+  setContextMenuEvent(
+    event: CellContextMenuEvent,
+    context: IContextData[],
+    parentId: number
+  ) {
+    this.contextMenuEvent.next({ event, context, parentId });
   }
 
   getContextMenuEvent() {
     return this.contextMenuEvent;
+  }
+
+  getContext(field: string, docId: number): Observable<ContextMenuData[]> {
+    const roles = this.auth.getCurrentRoles() || ['oper'];
+    return this.dataService.getContext(
+      this.currentOwner,
+      docId,
+      field.toUpperCase(),
+      roles
+    );
   }
 }

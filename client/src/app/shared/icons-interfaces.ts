@@ -12,4 +12,5 @@ export const Icons: { [keys: string]: string } = {
   addRow: 'add-tool-svgrepo-com',
   deleteRow: 'round-delete-button-svgrepo-com',
   save: 'save-svgrepo-com',
+  logo: 'ics_logo',
 };
