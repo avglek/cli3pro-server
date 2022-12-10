@@ -23,10 +23,12 @@ export class UiTextAreaComponent extends UiBaseControlComponent {
   onChange() {
     let value = <string>this.formGroup.get(this.name)?.value;
     if (value) {
-      const arr = value.split('\n');
-      if (arr.length > 1) {
-        value = arr.join(';');
-      }
+      // const arr = value.split('\n');
+      // if (arr.length > 1) {
+      //   value = arr.join(';');
+      // }
+
+      value = value.replace(/[\n,' ',',',';']/g, ';');
     }
     this.formGroup.setValue({ [this.name]: value });
   }
