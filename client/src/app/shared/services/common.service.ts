@@ -4,7 +4,7 @@ import {
   ContextEvent,
   ContextMenuData,
   FilterModelItem,
-  IContextData
+  IContextData,
 } from '../interfaces';
 import { CellContextMenuEvent } from 'ag-grid-community';
 import { AuthService } from './auth.service';
@@ -22,26 +22,27 @@ export class CommonService {
     private dataService: DataServerService
   ) {}
 
-  getCurrentOwnerFromStorage(): string | null {
-    return localStorage.getItem('owner');
-  }
-
-  getCurrentOwner(): string | null {
-    return this.currentOwner;
-  }
-
-  changeOwner(owner: string) {
-    localStorage.setItem('owner', owner);
-    this.currentOwner = owner;
-    this.owner.next(owner);
-  }
-
-  initCurrentOwner() {
-    const owner = this.getCurrentOwner() || this.getCurrentOwnerFromStorage();
-    if (owner) {
-      this.changeOwner(owner);
-    }
-  }
+  // getCurrentOwnerFromStorage(): string | null {
+  //   return localStorage.getItem('owner');
+  // }
+  //
+  // getCurrentOwner(): string | null {
+  //   return this.currentOwner;
+  // }
+  //
+  // changeOwner(owner: string) {
+  //   console.log('chane owner:', owner);
+  //   localStorage.setItem('owner', owner);
+  //   this.currentOwner = owner;
+  //   this.owner.next(owner);
+  // }
+  //
+  // initCurrentOwner() {
+  //   const owner = this.getCurrentOwner() || this.getCurrentOwnerFromStorage();
+  //   if (owner) {
+  //     this.changeOwner(owner);
+  //   }
+  // }
 
   setContextFilter(value: FilterModelItem) {
     this.contextFilter.next(value);

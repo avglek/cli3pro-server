@@ -38,7 +38,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.owner = this.commonService.getCurrentOwner() || '';
+    this.authService.getCurrentOwner().subscribe((owner) => {
+      this.owner = owner;
+    });
 
     this.isLoading = true;
     this.activeRouteSub = this.activateRoute.params
@@ -78,43 +80,41 @@ export class HomePageComponent implements OnInit, OnDestroy {
     };
     const uid = this.tabService.add(tab);
 
-    this.serverSub = this.server
-      .getDesc(this.commonService.getCurrentOwner() || '', docId)
-      .subscribe({
-        next: (data) => {
-          const isEdit =
-            !!data.params.find(
-              (param) => param.argumentName === 'P_UPDATE_TABLE'
-            ) && data.description.docClass === TypeReport.Table;
-          const newTab: ITabData = {
-            uid,
-            docId: tab.docId,
-            title: data.description.docName,
-            template: data.description.docTitle,
-            description: data.description,
-            procName: data.procName,
-            params: data.params,
-            isForm: data.form === 'Y',
-            reportType: data.description.docClass,
-            isSuccess: true,
-            isLoading: false,
-            owner: this.owner,
-            isEdit,
-          };
-          this.tabService.update(newTab);
-        },
-        error: (err) => {
-          console.log(err.error);
-          const newTab: ITabData = {
-            uid,
-            docId: tab.docId,
-            title: 'Ошибка запроса',
-            isSuccess: false,
-            isLoading: false,
-            errorMessage: err.error.message,
-          };
-          this.tabService.update(newTab);
-        },
-      });
+    this.serverSub = this.server.getDesc(this.owner, docId).subscribe({
+      next: (data) => {
+        const isEdit =
+          !!data.params.find(
+            (param) => param.argumentName === 'P_UPDATE_TABLE'
+          ) && data.description.docClass === TypeReport.Table;
+        const newTab: ITabData = {
+          uid,
+          docId: tab.docId,
+          title: data.description.docName,
+          template: data.description.docTitle,
+          description: data.description,
+          procName: data.procName,
+          params: data.params,
+          isForm: data.form === 'Y',
+          reportType: data.description.docClass,
+          isSuccess: true,
+          isLoading: false,
+          owner: this.owner,
+          isEdit,
+        };
+        this.tabService.update(newTab);
+      },
+      error: (err) => {
+        console.log(err.error);
+        const newTab: ITabData = {
+          uid,
+          docId: tab.docId,
+          title: 'Ошибка запроса',
+          isSuccess: false,
+          isLoading: false,
+          errorMessage: err.error.message,
+        };
+        this.tabService.update(newTab);
+      },
+    });
   }
 }

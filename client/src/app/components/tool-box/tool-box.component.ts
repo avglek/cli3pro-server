@@ -32,6 +32,7 @@ export class ToolBoxComponent implements OnInit {
   isExportExcel: boolean = false;
   isExportCSV: boolean = false;
   isExportPDF: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -46,6 +47,9 @@ export class ToolBoxComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const roles = this.auth.getCurrentRoles();
+    if (roles) this.isAdmin = roles?.includes('admin');
+
     this.navEnd.subscribe((nav) => {
       this.menuTitle = nav.url.includes('home') ? 'Запросы' : 'Меню';
       this.isTwoTables = nav.url.includes('doc');

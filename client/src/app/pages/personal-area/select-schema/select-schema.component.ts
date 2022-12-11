@@ -27,28 +27,30 @@ import { CommonService } from '../../../shared/services/common.service';
 export class SelectSchemaComponent implements OnInit {
   selectedValue = '';
   listOfOption: string[] = [];
+  currentOwner = '';
 
   constructor(
     private dataService: DataServerService,
     private authService: AuthService,
-    private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
+    this.authService
+      .getCurrentOwner()
+      .subscribe((owner) => (this.currentOwner = owner));
     const user = this.authService.getCurrentUser();
-    const owner = this.commonService.getCurrentOwner();
 
     if (user) {
       this.dataService.getOwners(user).subscribe((data) => {
         this.listOfOption = data;
         if (data.length > 0) {
-          this.selectedValue = owner || data[0];
+          this.selectedValue = this.currentOwner || data[0];
         }
       });
     }
   }
 
   onClick() {
-    this.commonService.changeOwner(this.selectedValue);
+    this.authService.changeOwner(this.selectedValue);
   }
 }

@@ -1,11 +1,12 @@
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TabDataService } from './tab-data.service';
-import { IDesc, IDescParam, ITabData} from '../interfaces';
+import { IDesc, IDescParam, ITabData } from '../interfaces';
 import { DataServerService } from './data-server.service';
 import { CommonService } from './common.service';
 import { parseTemplate, toCamelCase } from '../utils/str-utils';
 import dayjs from 'dayjs';
 import { paramsToObject } from '../utils/data-utils';
+import { AuthService } from './auth.service';
 
 export interface DocumentParams {
   key: string;
@@ -22,9 +23,12 @@ export class DocumentService {
   constructor(
     private tabService: TabDataService,
     private dataService: DataServerService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private authService: AuthService
   ) {
-    this.owner = this.commonService.getCurrentOwner() || '';
+    this.authService
+      .getCurrentOwner()
+      .subscribe((owner) => (this.owner = owner));
 
     this.tabService.currentTabs.subscribe((tab) => {
       this.currentTab = tab;
@@ -119,8 +123,6 @@ export class DocumentService {
 
   hintDictionary(data: IDesc, parentId: number, colId: string): boolean {
     const params = data.params.filter((i) => i.inOut === 'IN');
-    console.log('data:', params);
-    console.log(parentId, this.rowData, colId);
     params.forEach((param) => {
       switch (param.argumentName) {
         case 'P_DOC_ID':
@@ -135,7 +137,6 @@ export class DocumentService {
           break;
       }
     });
-    console.log(params);
     return false;
   }
 }

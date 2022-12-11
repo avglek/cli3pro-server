@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { CommonService } from '../../shared/services/common.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { AuthService } from '../../shared/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tree',
@@ -24,6 +25,8 @@ export class TreeComponent implements OnInit, OnDestroy {
   subMenuIcon = 'folder';
   isLoading: boolean = false;
 
+  authSub: Subscription | undefined;
+
   constructor(
     private treeService: TreeService,
     private router: Router,
@@ -31,12 +34,15 @@ export class TreeComponent implements OnInit, OnDestroy {
     private msg: NzNotificationService,
     private authService: AuthService
   ) {}
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.authSub) this.authSub.unsubscribe();
+  }
 
   ngOnInit(): void {
-    this.commonService.initCurrentOwner();
+    //this.commonService.initCurrentOwner();
 
-    this.commonService.owner
+    this.authSub = this.authService
+      .getCurrentOwner()
       .pipe(
         catchError((err, caught) => {
           this.isLoading = false;
@@ -45,6 +51,7 @@ export class TreeComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((owner) => {
+        console.log('tree owner:', owner);
         this.isLoading = true;
         this.treeService.getLeftTree(owner).subscribe({
           next: async (data) => {

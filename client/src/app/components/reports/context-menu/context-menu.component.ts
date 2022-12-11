@@ -52,7 +52,6 @@ export class ContextMenuComponent implements OnInit {
 
   ngOnInit() {
     this.commonService.getContextMenuEvent().subscribe((event) => {
-      console.log('context init:', event);
       this.menu = [];
       this.contextEvent = event.event;
       this.contextValue = event.event.value;

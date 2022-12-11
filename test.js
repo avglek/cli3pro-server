@@ -102,8 +102,6 @@ function prepareSql(inParams) {
 
   let stm = `begin ${proc}(${stm2.slice(0, -1)});end;`;
 
-  console.log('stm:', stm);
-
   let bind = {
     ora: oraTypes.type['VARCHAR2'],
     type: oracledb[oraTypes.type['REF_CURSOR']],
@@ -122,7 +120,6 @@ function prepareSql(inParams) {
     return acc;
   }, {});
 
-  console.log('bind:', bind);
   return {
     stm,
     bind,

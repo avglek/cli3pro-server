@@ -50,7 +50,6 @@ module.exports.get = async function (req, res) {
     const outParams = docParams.filter((item) =>
       outBindsKeys.includes(item.name)
     );
-    console.log('params:', outParams);
     const data = await outParams.reduce(async (acc, param) => {
       let collection = await acc;
       switch (param.type) {
@@ -148,7 +147,6 @@ function prepareSql(name, params) {
 
 async function getCursorData(param, result) {
   try {
-    console.log('get:', param.name);
     const resultSet = result.outBinds[param.name];
     let row = null;
     let rowArray = [];
@@ -157,7 +155,6 @@ async function getCursorData(param, result) {
 
     if (resultSet) {
       meta = resultSet.metaData;
-      console.log('meta:', meta);
 
       while ((row = await resultSet.getRow())) {
         const obj = {};

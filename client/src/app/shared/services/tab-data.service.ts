@@ -41,7 +41,6 @@ export class TabDataService {
   }
 
   update(tab: ITabData) {
-    console.log('update tab:', tab);
     if (this.tabs.length > 0) {
       const index = this.tabs.findIndex((i) => i.uid === tab.uid);
       if (index >= 0) {
@@ -117,5 +116,9 @@ export class TabDataService {
       tab.timeQuery = dayjs().format('HH:mm:ss');
       this.refresh();
     }
+  }
+
+  clean() {
+    this.tabs = [];
   }
 }

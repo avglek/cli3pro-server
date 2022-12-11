@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ITabData } from '../../shared/interfaces';
 import { CommonService } from '../../shared/services/common.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -25,7 +26,8 @@ export class FooterComponent implements OnInit {
   constructor(
     private tabService: TabDataService,
     private router: Router,
-    private common: CommonService
+    private common: CommonService,
+    private authService: AuthService
   ) {
     this.navEnd = router.events.pipe(
       filter((evt) => evt instanceof NavigationEnd)
@@ -33,14 +35,15 @@ export class FooterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService
+      .getCurrentOwner()
+      .subscribe((owner) => (this.currentOwner = owner));
     this.navEnd.subscribe((nav) => {
       if (nav.url.includes('person')) {
-        this.currentOwner = this.common.getCurrentOwner() || undefined;
         this.procedure = undefined;
         this.timeQuery = undefined;
         this.rowCount = undefined;
       } else if (nav.url.includes('home')) {
-        this.currentOwner = this.common.getCurrentOwner() || undefined;
         this.procedure = undefined;
         this.timeQuery = undefined;
         this.rowCount = undefined;

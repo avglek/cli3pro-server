@@ -158,19 +158,23 @@
         <!--        >-->
         <!--          Test-->
         <!--        </button>-->
+        <ng-template [ngIf]="isAdmin">
+          <app-ui-divider></app-ui-divider>
+
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="onClickPersonalArea()"
+            nz-tooltip
+            [nzTooltipTitle]="'Личный кабинет'"
+            [nzTooltipPlacement]="'bottom'"
+          >
+            <mat-icon svgIcon="userPersonArea"></mat-icon>
+          </button>
+        </ng-template>
         <app-ui-divider></app-ui-divider>
-        <button
-          nz-button
-          nzType="primary"
-          nzSize="large"
-          (click)="onClickPersonalArea()"
-          nz-tooltip
-          [nzTooltipTitle]="'Личный кабинет'"
-          [nzTooltipPlacement]="'bottom'"
-        >
-          <mat-icon svgIcon="userPersonArea"></mat-icon>
-        </button>
-        <app-ui-divider></app-ui-divider>
+
         <button
           nz-button
           nzType="primary"

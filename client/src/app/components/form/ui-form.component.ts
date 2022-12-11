@@ -109,7 +109,6 @@ export class UiFormComponent implements OnInit, OnDestroy {
     const title = parseTemplate(this.tabData.template, params);
     if (title) this.tabData.title = title;
     this.tabData.isForm = false;
-    console.log('submit:', this.tabData, params, title);
   }
 
   valueAdapter(value: any, param: IDescParam): any {
