@@ -3,6 +3,7 @@ const database = require('../services/database');
 
 module.exports.getFields = async function getFields(schema, fieldsArr, docId) {
   const proc = 'docs_utils.get_fields';
+
   const bind = {
     pDoc: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT },
     pOwn: schema.toUpperCase(),

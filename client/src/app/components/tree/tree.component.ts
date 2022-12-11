@@ -51,7 +51,6 @@ export class TreeComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((owner) => {
-        console.log('tree owner:', owner);
         this.isLoading = true;
         this.treeService.getLeftTree(owner).subscribe({
           next: async (data) => {

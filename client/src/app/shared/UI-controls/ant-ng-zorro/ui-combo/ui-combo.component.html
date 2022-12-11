@@ -7,6 +7,7 @@
     <label *ngFor="let control of controls" nz-radio [nzValue]="control.value"
       >{{ control.label }}
       <nz-select
+        class="radio-select"
         *ngIf="control.type === 3"
         nzAllowClear
         nzShowSearch

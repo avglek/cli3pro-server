@@ -16,7 +16,7 @@ import { parseSimpleParams } from '../../../utils/str-utils';
       [nz-radio] {
         display: block;
         height: 32px;
-        line-height: 32px;
+        line-height: 14px;
       }
     `,
   ],

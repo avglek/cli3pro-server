@@ -15,7 +15,6 @@ export class AuthService {
 
   constructor(private http: HttpClient, private tabService: TabDataService) {
     const initOwner = localStorage.getItem('owner');
-    console.log('init owner:', initOwner);
     if (initOwner) this.owner.next(initOwner);
   }
 
@@ -25,7 +24,6 @@ export class AuthService {
         const decode = <JWTPayload>jwtDecode(token);
         localStorage.setItem('auth-token', token);
         if (decode) {
-          console.log(decode);
           this.owner.next(decode.owner);
           localStorage.setItem('owner', decode.owner);
         }
@@ -75,7 +73,6 @@ export class AuthService {
   }
 
   logout() {
-    console.log('logout');
     this.tabService.clean();
     this.setToken('');
     localStorage.clear();

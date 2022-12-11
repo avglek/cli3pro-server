@@ -1,9 +1,13 @@
-<nz-form-item [formGroup]="form" class="root">
-  <nz-form-label [nzSpan]="6" [attr.for]="control.key">{{
+<nz-form-item
+  [formGroup]="form"
+  class="root"
+  [nzGutter]="{ xs: 2, sm: 4, md: 6, lg: 8 }"
+>
+  <nz-form-label [nzSpan]="10" [attr.for]="control.key">{{
     control.label
   }}</nz-form-label>
 
-  <nz-form-control [ngSwitch]="control.controlType">
+  <nz-form-control [nzSpan]="14" [ngSwitch]="control.controlType">
     <app-ui-text-input
       *ngSwitchCase="'textBox'"
       [name]="control.key"
