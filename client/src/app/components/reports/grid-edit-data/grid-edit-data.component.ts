@@ -22,6 +22,7 @@ import {
   GetRowIdFunc,
   GridApi,
   GridReadyEvent,
+  NewValueParams,
   RowClickedEvent,
 } from 'ag-grid-community';
 import { AG_GRID_LOCALE_RU } from '../../../shared/locale/locale-ru';
@@ -44,6 +45,12 @@ import { dataFormatter } from '../../../shared/utils/grid-utils';
 import { UiCellInputRenderComponent } from './custom-cell/ui-cell-input/ui-cell-input-render.component';
 
 const nanoid = customAlphabet('ABCDEF0987654321', 16);
+
+export interface IRowEdit {
+  [key: string]: any;
+  _uid: string;
+  _marker: TypeUpdateMarker;
+}
 
 @Component({
   selector: 'app-grid-edit-data',
@@ -84,7 +91,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
   };
 
   columnDefs: ColDef[] = [];
-  rowData: any;
+  rowData: IRowEdit[] | undefined;
   private isLoading: boolean = false;
   getRowId: GetRowIdFunc;
 
@@ -104,7 +111,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
     private notification: NzNotificationService,
     private editDataService: EditDataService
   ) {
-    this.getRowId = (params) => params.data.uid;
+    this.getRowId = (params) => params.data._uid;
   }
 
   ngOnInit(): void {
@@ -154,6 +161,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
 
         if (docData) {
           this.columnDefs = docData.fields
+            .filter((field) => field.visible === 'T')
             .sort((a, b) => a.order - b.order)
             .map((field) => {
               const col: ColDef = {
@@ -166,6 +174,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
                 cellEditor: UICellEditType[field.controlType!],
                 valueFormatter: (params: any) =>
                   dataFormatter(params, field.displayFormat, field.dbTypeName),
+                onCellValueChanged: this.cellValueChanged.bind(this),
               };
 
               if (field.controlType === 3) {
@@ -210,7 +219,8 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
           if (docData.rows.length === 0) {
             this.gridApi!.showNoRowsOverlay();
           } else {
-            this.rowData = this.prepareData(docData.rows);
+            this.rowData = <IRowEdit[]>this.prepareData(docData.rows);
+            this.gridApi?.setRowData(this.rowData);
           }
         }
       });
@@ -235,7 +245,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
 
   prepareData(rows: any): any {
     return rows.map((row: any) => {
-      return { ...row, uid: nanoid(), marker: TypeUpdateMarker.None };
+      return { ...row, _uid: nanoid(), _marker: TypeUpdateMarker.None };
     });
   }
 
@@ -266,20 +276,49 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
         return Object.assign(acc, { [col.field!]: '' });
       }, {});
 
+      const uid = nanoid();
+      const row = <IRowEdit>{
+        ...objRow,
+        _uid: uid,
+        _marker: TypeUpdateMarker.Add,
+      };
+
       this.gridApi.applyTransaction({
-        add: [{ ...objRow, uid: nanoid(), marker: TypeUpdateMarker.Add }],
+        add: [row],
       });
+      if (this.rowData) this.rowData.push(row);
+
+      const rowNode = this.gridApi.getRowNode(uid);
+
+      this.gridApi.ensureNodeVisible(rowNode, 'bottom');
     }
   }
 
   onRemoveRows() {
-    if (!this.gridApi) {
+    if (!this.gridApi || !this.rowData) {
       return;
     }
     const selectedData = this.gridApi.getSelectedRows();
     if (selectedData.length > 0) {
-      this.gridApi.applyTransaction({ remove: selectedData });
-      this.tabService.setChangesData(this.tabData.uid, true);
+      const data: IRowEdit[] = this.rowData.map((row) => {
+        const result = { ...row };
+        if (selectedData.find((i) => i._uid === row._uid)) {
+          if (row._marker === TypeUpdateMarker.Add) {
+            result._uid = '0';
+          } else {
+            result._marker = TypeUpdateMarker.Remove;
+          }
+        }
+        return result;
+      });
+
+      this.rowData = data.filter((row) => row._uid !== '0');
+
+      if (this.rowData.find((row) => row._marker !== TypeUpdateMarker.None)) {
+        this.tabService.setChangesData(this.tabData.uid, true);
+      } else {
+        this.tabService.setChangesData(this.tabData.uid, false);
+      }
     } else {
       this.notification.create(
         'warning',
@@ -289,7 +328,35 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
     }
   }
 
+  cellValueChanged(event: NewValueParams) {
+    console.log('event:', event);
+    if (event.data._marker === TypeUpdateMarker.None)
+      event.data._marker = TypeUpdateMarker.Update;
+    this.tabService.setChangesData(this.tabData.uid, true);
+  }
+
   onSaveData() {
+    if (!this.rowData) {
+      return;
+    }
+
     this.tabService.setChangesData(this.tabData.uid, false);
+
+    const changedData = this.rowData.filter(
+      (row) =>
+        row._marker === TypeUpdateMarker.Update ||
+        row._marker === TypeUpdateMarker.Remove ||
+        row._marker === TypeUpdateMarker.Add
+    );
+
+    console.log('save data:', changedData);
+  }
+
+  getRowData() {
+    if (this.rowData)
+      return this.rowData.filter(
+        (row) => row._marker !== TypeUpdateMarker.Remove
+      );
+    else return [];
   }
 }

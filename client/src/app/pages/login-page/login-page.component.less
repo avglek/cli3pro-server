@@ -1,8 +1,8 @@
-@import "current";
+@import 'current';
 
-.wrapper{
+.wrapper {
   position: relative;
-  top:0;
+  top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
@@ -10,9 +10,9 @@
   justify-content: center;
   align-items: center;
   min-height: 800px;
-  background-image: url("../../../assets/img/elbrus.jpg");
+  background-image: url('../../../assets/img/elbrus.jpg');
 }
-.wrapper-form{
+.wrapper-form {
   width: 412px;
   height: 312px;
   display: flex;
@@ -21,18 +21,19 @@
   align-items: center;
 }
 
-.title-form{
+.title-form {
   height: 50px;
-  font-family: 'Jura', serif;
+  font-family: 'Verdana', serif;
   font-style: normal;
-  font-weight: 700;
-  font-size: 42px;
+  font-weight: 400;
+  font-size: 40px;
   line-height: 47px;
+  letter-spacing: 0.1rem;
 
   color: @primary-color;
   text-align: center;
 }
-.input-login-form{
+.input-login-form {
   height: 100px;
   display: flex;
   flex-direction: column;
@@ -40,31 +41,32 @@
   align-items: center;
 }
 
-.field-input{
+.field-input {
   width: 278px;
 }
 i {
   cursor: pointer;
 }
 
-.field-submit{
+.field-submit {
   width: 278px;
   height: 42px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background: @primary-color;
-  color: #F4F4F4;
+  color: #ffffff;
   border-radius: 4px;
 
-  font-family: 'Jura', serif;
+  font-family: 'Verdana', serif;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 24px;
-  line-height: 38px;
   letter-spacing: 0.3em;
-  border: 1px solid #424242;
+  border: 1px solid #ffffff;
 
   &:hover {
-    background-color: #144a56;
+    background-color: darken(@primary-color, 10%);
   }
 }

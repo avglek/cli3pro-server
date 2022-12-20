@@ -14,3 +14,8 @@
   font-family: 'Roboto';
   src: url('/assets/fonts/Roboto/Roboto-Regular.ttf');
 }
+
+@font-face {
+  font-family: 'Verdana';
+  src: url('/assets/fonts/Verdana/Verdana.ttf');
+}

@@ -8,7 +8,6 @@
     [rowSelection]="'multiple'"
     [rowModelType]="'clientSide'"
     [columnDefs]="columnDefs"
-    [rowData]="rowData"
     (cellContextMenu)="contextMenu($event)"
     (rowClicked)="onRowClick($event)"
     [loadingOverlayComponent]="loadingOverlayComponent"
@@ -18,6 +17,7 @@
     [localeText]="locale"
     [getRowId]="getRowId"
     [components]="components"
-    [singleClickEdit]="true"
+    [singleClickEdit]="false"
+    [rowData]="getRowData()"
   ></ag-grid-angular>
 </div>
