@@ -137,8 +137,62 @@ function checkFileName(str) {
   return str.replace(/['<','>',':','\"','\"','\/','\\','|','?','*']/g, '_');
 }
 
+const insertRow = {
+  styleName: 'taxi_test',
+  fontName: 'arial',
+  color: '',
+  bkColor: '255',
+  displayLabel: 'test',
+  options: '',
+  width: '',
+};
+
+function prepareInsertSql() {
+  const tableName = 'test_styles';
+  const keys = Object.keys(insertRow);
+  let params = keys.reduce((acc, i) => {
+    acc = acc + `:${i}, `;
+    return acc;
+  }, '');
+  return `insert into ${tableName} values  (${params.trim().slice(0, -1)})`;
+}
+
+async function testInsert() {
+  let connection;
+
+  const sql = prepareInsertSql();
+
+  const binds = [insertRow];
+
+  const options = {
+    autoCommit: true,
+  };
+
+  try {
+    connection = await oracledb.getConnection({
+      user: 'common',
+      password: 'pass4common',
+      connectString: 'eva',
+    });
+
+    const result = await connection.executeMany(sql, binds, options);
+    console.log('Result is:', result);
+  } catch (err) {
+    console.log('error:', err.message);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close(); // Always close connections
+      } catch (err) {
+        console.error(err.message);
+      }
+    }
+  }
+}
+
 console.log('start test');
-const fname = 'stop п?п;';
-const ws = checkFileName(fname);
-console.log(fname, ws);
-console.log('end test');
+
+const ws = prepareInsertSql();
+
+console.log('sql:', ws);
+testInsert().then(() => console.log('end test'));

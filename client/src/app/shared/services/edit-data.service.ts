@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { DataServerService } from './data-server.service';
-import { ICursorData, IField, IProcParam } from '../interfaces';
-import { EMPTY, forkJoin, Observable, of } from 'rxjs';
+import { ICursorData, IField, IProcParam, IStringData } from '../interfaces';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EditDataService {
-  data!: ICursorData;
+  data: ICursorData | undefined;
+  tableName: string | undefined;
 
   constructor(private dataService: DataServerService) {}
 
@@ -20,8 +21,12 @@ export class EditDataService {
     docId: number
   ): Observable<any> {
     return this.dataService
-      .procExecute(owner, procName, params, uid, docId)
+      .procExecute(owner, procName, params, uid, docId, false)
       .pipe(
+        tap((data) => {
+          const updateTable = <IStringData>data.data['P_UPDATE_TABLE'];
+          this.tableName = updateTable.data;
+        }),
         map((data) => <ICursorData>data.data['P_DOC']),
         tap((data) => {
           this.data = data;

@@ -37,7 +37,10 @@ import {
 } from './custom-cell';
 import { UiCellSelectRenderComponent } from './custom-cell/ui-cell-select/ui-cell-select-render.component';
 import { EditDataService } from '../../../shared/services/edit-data.service';
-import { parseAndCamelCase } from '../../../shared/utils/str-utils';
+import {
+  buildOracleDbType,
+  parseAndCamelCase,
+} from '../../../shared/utils/str-utils';
 import { UiCellSimpleSelectRenderComponent } from './custom-cell/ui-cell-simple-select/ui-cell-simple-select-render.component';
 import { UiCellSelectEditComponent } from './custom-cell/ui-cell-select/ui-cell-select-edit.component';
 import { UiCellSimpleSelectEditComponent } from './custom-cell/ui-cell-simple-select/ui-cell-simple-select-edit.component';
@@ -69,6 +72,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
 
   private gridApi: GridApi | undefined;
   private gridColumnApi: ColumnApi | undefined;
+  private updateTableName: string | undefined;
 
   defaultColDef = {
     resizable: true,
@@ -158,10 +162,11 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
         if (this.gridApi) this.gridApi.hideOverlay();
 
         const docData = this.editDataService.data;
+        this.updateTableName = this.editDataService.tableName;
 
         if (docData) {
           this.columnDefs = docData.fields
-            .filter((field) => field.visible === 'T')
+            //           .filter((field) => field.visible === 'T')
             .sort((a, b) => a.order - b.order)
             .map((field) => {
               const col: ColDef = {
@@ -176,6 +181,11 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
                   dataFormatter(params, field.displayFormat, field.dbTypeName),
                 onCellValueChanged: this.cellValueChanged.bind(this),
               };
+
+              //Скрываем колонки
+              if (field.visible !== 'T') {
+                Object.assign(col, { hide: true });
+              }
 
               if (field.controlType === 3) {
                 Object.assign(col, {
@@ -306,7 +316,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
           if (row._marker === TypeUpdateMarker.Add) {
             result._uid = '0';
           } else {
-            result._marker = TypeUpdateMarker.Remove;
+            result._marker = TypeUpdateMarker.Delete;
           }
         }
         return result;
@@ -329,33 +339,59 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
   }
 
   cellValueChanged(event: NewValueParams) {
-    console.log('event:', event);
     if (event.data._marker === TypeUpdateMarker.None)
       event.data._marker = TypeUpdateMarker.Update;
     this.tabService.setChangesData(this.tabData.uid, true);
   }
 
   onSaveData() {
-    if (!this.rowData) {
+    if (!this.rowData || !this.updateTableName || !this.tabData.owner) {
       return;
     }
 
     this.tabService.setChangesData(this.tabData.uid, false);
 
-    const changedData = this.rowData.filter(
-      (row) =>
-        row._marker === TypeUpdateMarker.Update ||
-        row._marker === TypeUpdateMarker.Remove ||
-        row._marker === TypeUpdateMarker.Add
-    );
+    const changedData = this.rowData
+      .filter(
+        (row) =>
+          row._marker === TypeUpdateMarker.Update ||
+          row._marker === TypeUpdateMarker.Delete ||
+          row._marker === TypeUpdateMarker.Add
+      )
+      .map((row) => {
+        const keys = Object.keys(row);
 
-    console.log('save data:', changedData);
+        return {
+          [row._marker]: keys
+            .map((key) => {
+              const field = this.editDataService.data?.fields.find(
+                (field) => field.fieldName === key
+              );
+              return {
+                // Замена  с CamelCase на имя в базе
+                name: key.replace(/[A-Z]/gm, (s) => `_${s}`).toUpperCase(),
+                value: row[key],
+                type: field
+                  ? buildOracleDbType(field.dbTypeName) || 'NONE'
+                  : 'NONE',
+              };
+            })
+            .filter((item) => item.type !== 'NONE'),
+        };
+      });
+    console.log(changedData);
+    this.dataService
+      .saveData(this.tabData.owner, this.updateTableName, changedData)
+      .subscribe((res) => {
+        console.log('response:', res);
+        this.loadData();
+      });
   }
 
   getRowData() {
     if (this.rowData)
       return this.rowData.filter(
-        (row) => row._marker !== TypeUpdateMarker.Remove
+        (row) => row._marker !== TypeUpdateMarker.Delete
       );
     else return [];
   }

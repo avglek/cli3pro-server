@@ -6,6 +6,7 @@ import {
   IDesc,
   IDescParam,
   IProcParam,
+  TypeRowEdit,
 } from '../interfaces';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -30,7 +31,8 @@ export class DataServerService {
     procName: string,
     params: IProcParam[],
     uid: string,
-    docId: number
+    docId: number,
+    isCache: boolean = true
   ): Observable<IData> {
     const outParams = params.map((param) => {
       if (param.type === 'DATE') {
@@ -44,7 +46,7 @@ export class DataServerService {
     });
     const url = `/api/proc/${owner}/${procName}?params=${JSON.stringify(
       outParams
-    )}&uid=${uid}&docId=${docId}`;
+    )}&uid=${uid}&docId=${docId}&isCache=${isCache}`;
 
     return this.http.get<IData>(url);
   }
@@ -85,5 +87,11 @@ export class DataServerService {
     const roleStr = roles.map((el) => `'${el}'`).join(',');
     const url = `/api/context/${owner}?field='${field}'&roles=${roleStr}&parent=${docId}`;
     return this.http.get<ContextMenuData[]>(url);
+  }
+
+  saveData(owner: string, table: string, params: TypeRowEdit<any>[]) {
+    const url = `/api/edit/${owner}/${table}`;
+
+    return this.http.post(url, params);
   }
 }

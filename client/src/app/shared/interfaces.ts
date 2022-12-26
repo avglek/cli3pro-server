@@ -1,6 +1,8 @@
 import { CellContextMenuEvent, SortModelItem } from 'ag-grid-community';
 import { ISimpleFilterModelType } from 'ag-grid-community/dist/lib/filter/provided/simpleFilter';
 
+export type TypeRowEdit<T> = { [key: string]: T };
+
 export interface User {
   user: string;
   password: string;
@@ -72,10 +74,10 @@ export enum TypeReport {
 }
 
 export enum TypeUpdateMarker {
-  None,
-  Add,
-  Update,
-  Remove,
+  None = 'none',
+  Add = 'add',
+  Update = 'update',
+  Delete = 'delete',
 }
 
 export enum TypeData {

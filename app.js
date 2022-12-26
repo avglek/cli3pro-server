@@ -10,7 +10,7 @@ const procDataRoutes = require('./routes/proc-data');
 const lookTableRoutes = require('./routes/look-table');
 const ownersRoutes = require('./routes/owner');
 const fileRoutes = require('./routes/file-data');
-const updateTableRoutes = require('./routes/update-table');
+const editTableRoutes = require('./routes/edit');
 const fieldsRoutes = require('./routes/fields');
 const contextRoutes = require('./routes/context');
 
@@ -37,7 +37,7 @@ app.use('/api/proc', procDataRoutes);
 app.use('/api/look-table', lookTableRoutes);
 app.use('/api/owners', ownersRoutes);
 app.use('/api/file', fileRoutes);
-app.use('/api/update-table', updateTableRoutes);
+app.use('/api/edit', editTableRoutes);
 app.use('/api/fields', fieldsRoutes);
 app.use('/api/context', contextRoutes);
 

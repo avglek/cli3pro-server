@@ -197,3 +197,124 @@ module.exports.setOwner = async function (owner, connstr, pass) {
     }
   }
 };
+
+module.exports.insertRows = async function (
+  tableName,
+  bind,
+  bindDef,
+  owner = {}
+) {
+  delete bindDef['ROWID'];
+  bind.forEach((i) => {
+    delete i['ROWID'];
+  });
+  const keys = Object.keys(bindDef);
+  let params = keys.reduce((acc, i) => {
+    acc = acc + `:${i}, `;
+    return acc;
+  }, '');
+  const sql = `insert into ${tableName} values  (${params
+    .trim()
+    .slice(0, -1)})`;
+
+  await executeManySql(sql, bind, bindDef, owner);
+};
+
+module.exports.updateRows = async function (
+  tableName,
+  bind,
+  bindDef,
+  owner = {}
+) {
+  /*********
+   * update test_styles t
+   *    set t.font_name = 'verdana'
+   *  where t.rowid='ABlf2LAAHAACxC3AAA';
+   *
+   */
+  const obj = {};
+  Object.assign(obj, { ...bindDef });
+  delete obj['ROWID'];
+  const keys = Object.keys(obj);
+  const setStr = keys
+    .reduce((acc, key) => {
+      return acc + `t.${key} = :${key},`;
+    }, '')
+    .trim()
+    .slice(0, -1);
+
+  const sql = `update ${tableName} t set ${setStr} where t.rowid = :a`;
+
+  const updateBind = bind.map((i) => {
+    const rowId = i['ROWID'];
+    delete i['ROWID'];
+    return { ...i, a: rowId };
+  });
+
+  const updateBindDef = bindDef;
+  delete updateBindDef['ROWID'];
+  Object.assign(updateBindDef, { a: { type: 'VARCHAR2' } });
+
+  await executeManySql(sql, updateBind, updateBindDef, owner);
+};
+
+module.exports.deleteRows = async function (
+  tableName,
+  bind,
+  bindDef,
+  owner = {}
+) {
+  const deleteBind = bind.map((i) => ({
+    a: i['ROWID'],
+  }));
+  const deleteBindDef = { a: { type: 'VARCHAR2' } };
+  const sql = `delete from ${tableName} where ROWID = :a`;
+
+  await executeManySql(sql, deleteBind, deleteBindDef, owner);
+};
+
+async function executeManySql(sql, bind, bindDef, owner) {
+  console.log('sql:', sql);
+  console.log('bind:', bind);
+  console.log('bindDef', bindDef);
+
+  let conn;
+  let pool;
+
+  const options = {
+    autoCommit: true,
+    bindDef,
+  };
+
+  try {
+    if (owner.user && owner.pass) {
+      pool = oracledb.getPool(config.get('dbUserPool.poolAlias'));
+      conn = await pool.getConnection({
+        user: owner.user,
+        password: owner.pass,
+      });
+    } else {
+      pool = oracledb.getPool(config.get('dbRootPool.poolAlias'));
+      conn = await pool.getConnection();
+    }
+
+    const result = await conn.executeMany(sql, bind, options);
+
+    console.log('result:', result);
+
+    return result;
+  } catch (err) {
+    console.error('own error:', err);
+    throw new Error(err.message);
+  } finally {
+    if (conn) {
+      // conn assignment worked, need to close
+      try {
+        await conn.close();
+        console.log('finally conn close');
+      } catch (err) {
+        console.log('own conn close:', err);
+      }
+    }
+  }
+}

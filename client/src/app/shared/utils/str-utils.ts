@@ -67,3 +67,10 @@ export function parseTemplate(
     return replacement[key] || str;
   });
 }
+
+export function buildOracleDbType(
+  type: string | undefined
+): string | undefined {
+  if (!type) return undefined;
+  return type;
+}

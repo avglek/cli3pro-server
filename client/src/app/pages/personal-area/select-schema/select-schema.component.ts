@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataServerService } from '../../../shared/services/data-server.service';
 import { AuthService } from '../../../shared/services/auth.service';
-import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-select-schema',
@@ -19,7 +18,7 @@ import { CommonService } from '../../../shared/services/common.service';
     `
       nz-select {
         margin: 0 8px 10px 0;
-        width: 120px;
+        width: 250px;
       }
     `,
   ],
@@ -31,7 +30,7 @@ export class SelectSchemaComponent implements OnInit {
 
   constructor(
     private dataService: DataServerService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
