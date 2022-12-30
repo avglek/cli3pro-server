@@ -43,6 +43,10 @@ import { ExportDialogComponent } from '../../../components/dialogs/export-dialog
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { UiCellColorRenderComponent } from '../../../components/reports/grid-edit-data/custom-cell';
+import { ColorSketchModule } from 'ngx-color/sketch';
+import { ColorChromeModule } from 'ngx-color/chrome';
+import { UiCellColorEditComponent } from '../../../components/reports/grid-edit-data/custom-cell/ui-cell-color/ui-cell-color-edit.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +73,9 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     UiCellSelectEditComponent,
     UiCellSimpleSelectEditComponent,
     UiCellInputRenderComponent,
+    UiCellColorRenderComponent,
     ExportDialogComponent,
+    UiCellColorEditComponent,
   ],
   imports: [
     CommonModule,
@@ -92,6 +98,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzSelectModule,
     NzButtonModule,
     NzDividerModule,
+    ColorSketchModule,
+    ColorChromeModule,
   ],
   exports: [UiDividerComponent, NzSelectModule, NzSpinModule],
 })

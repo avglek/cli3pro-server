@@ -85,16 +85,27 @@ export function parseColor(color: number | null): string {
   return `#${red}${green}${blue}`;
 }
 
+export function packColor(color: string): number {
+  console.log('pack color:', color);
+  let colorStr = color.slice(-6);
+  const blue = colorStr.slice(4);
+  const green = colorStr.slice(2, 4);
+  const red = colorStr.slice(0, 2);
+
+  colorStr = `${blue}${green}${red}`;
+
+  return Number.parseInt(colorStr, 16);
+}
+
 export function addFontStyle(option: number | null): { [key: string]: string } {
   const fontWeight = option && option & 1 ? 'bold' : 'normal';
   const fontStyle = option && option & 2 ? 'italic' : 'normal';
   let textDecoration = option && option & 4 ? 'underline' : 'none';
   textDecoration = option && option & 8 ? 'line-through' : textDecoration;
 
-  return  {
+  return {
     fontWeight,
     fontStyle,
     textDecoration,
   };
-
 }

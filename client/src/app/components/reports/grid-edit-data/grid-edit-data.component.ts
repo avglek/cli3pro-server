@@ -34,6 +34,7 @@ import { customAlphabet } from 'nanoid';
 import {
   UiCellCheckEditComponent,
   UiCellCheckRenderComponent,
+  UiCellColorRenderComponent,
 } from './custom-cell';
 import { UiCellSelectRenderComponent } from './custom-cell/ui-cell-select/ui-cell-select-render.component';
 import { EditDataService } from '../../../shared/services/edit-data.service';
@@ -46,6 +47,7 @@ import { UiCellSelectEditComponent } from './custom-cell/ui-cell-select/ui-cell-
 import { UiCellSimpleSelectEditComponent } from './custom-cell/ui-cell-simple-select/ui-cell-simple-select-edit.component';
 import { dataFormatter } from '../../../shared/utils/grid-utils';
 import { UiCellInputRenderComponent } from './custom-cell/ui-cell-input/ui-cell-input-render.component';
+import { UiCellColorEditComponent } from './custom-cell/ui-cell-color/ui-cell-color-edit.component';
 
 const nanoid = customAlphabet('ABCDEF0987654321', 16);
 
@@ -107,6 +109,8 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
     UICellSelectEdit: UiCellSelectEditComponent,
     UICellSimpleSelectEdit: UiCellSimpleSelectEditComponent,
     UICellInputRender: UiCellInputRenderComponent,
+    UICellColorRender: UiCellColorRenderComponent,
+    UiCellColorEdit: UiCellColorEditComponent,
   };
 
   constructor(
@@ -169,6 +173,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
             //           .filter((field) => field.visible === 'T')
             .sort((a, b) => a.order - b.order)
             .map((field) => {
+              console.log('field:', field);
               const col: ColDef = {
                 headerName: field.displayLabel,
                 field: field.fieldName,
@@ -181,6 +186,14 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
                   dataFormatter(params, field.displayFormat, field.dbTypeName),
                 onCellValueChanged: this.cellValueChanged.bind(this),
               };
+              //For color type
+              if (field.dlgClass === 'TFieldColorDlg') {
+                console.log('color');
+                Object.assign(col, {
+                  cellRenderer: 'UICellColorRender',
+                  cellEditor: 'UiCellColorEdit',
+                });
+              }
 
               //Скрываем колонки
               if (field.visible !== 'T') {
@@ -223,6 +236,7 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
                   },
                 });
               }
+              console.log('colDef:', col);
               return col;
             });
           this.rowCount.emit(docData.count);
@@ -379,12 +393,17 @@ export class GridEditDataComponent implements OnInit, OnDestroy {
             .filter((item) => item.type !== 'NONE'),
         };
       });
-    console.log(changedData);
     this.dataService
       .saveData(this.tabData.owner, this.updateTableName, changedData)
-      .subscribe((res) => {
-        console.log('response:', res);
-        this.loadData();
+      .subscribe({
+        next: (res) => {
+          console.log('response:', res);
+          this.loadData();
+          this.notification.success('', 'Изменения успешно охранены');
+        },
+        error: (err) => {
+          this.notification.error('Ошибка', err.message);
+        },
       });
   }
 
