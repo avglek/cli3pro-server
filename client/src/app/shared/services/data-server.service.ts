@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   ContextMenuData,
   IData,
@@ -44,11 +44,20 @@ export class DataServerService {
         return param;
       }
     });
-    const url = `/api/proc/${owner}/${procName}?params=${JSON.stringify(
-      outParams
-    )}&uid=${uid}&docId=${docId}&isCache=${isCache}`;
+    //Замена спецсимволов для индекса поезда.
+    const paramJson = JSON.stringify(outParams);
+    const paramBody = paramJson.replace(/\+/gm, '%2B');
+    const url = `/api/proc/${owner}/${procName}?params=${paramBody}`;
 
-    return this.http.get<IData>(url);
+    const queryParams = new HttpParams({
+      fromObject: {
+        uid,
+        docId,
+        isCache,
+      },
+    });
+
+    return this.http.get<IData>(url, { params: queryParams });
   }
 
   getLookTable(
