@@ -190,9 +190,57 @@ async function testInsert() {
   }
 }
 
+async function executeProc() {
+  let connection = null;
+  try {
+    connection = await oracledb.getConnection({
+      user: 'client02',
+      password: 'pass4client02',
+      connectString: 'eva',
+    });
+
+    const stm = `begin test_01(:P_DOC);end;`;
+    const bind = {
+      P_DOC: { type: oracledb['CURSOR'], dir: oracledb['BIND_OUT'] },
+    };
+
+    const result = await connection.execute(stm, bind);
+    const resultSet = result.outBinds['P_DOC'];
+
+    let row;
+    const rowArray = [];
+    const meta = resultSet.metaData;
+
+    while ((row = await resultSet.getRow())) {
+      const obj = {};
+      meta.forEach((i, index) => {
+        const str = i.name;
+        const inx = str.indexOf('_');
+        let key;
+        if (inx > 0) {
+          key =
+            str.slice(0, inx).toLowerCase() +
+            str.slice(inx + 1, inx + 2) +
+            str.slice(inx + 2).toLowerCase();
+        } else {
+          key = str.toLowerCase();
+        }
+
+        // console.log(key, str.indexOf('_'));
+        obj[key] = row[index];
+      });
+      rowArray.push(obj);
+    }
+    console.log(rowArray[0], rowArray.length);
+  } catch (e) {
+    console.log('error:', e);
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
 console.log('start test');
 
-const ws = prepareInsertSql();
-
-console.log('sql:', ws);
-testInsert().then(() => console.log('end test'));
+executeProc().then(() => console.log('end'));

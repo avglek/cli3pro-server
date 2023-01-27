@@ -26,9 +26,8 @@ export function dataFormatter(
     case 'DATE':
       if (dayjs(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ').isValid()) {
         const currYear = value.slice(0, value.indexOf('-'));
-        const nowYear = dayjs().year();
         if (currYear === '0000') {
-          value = nowYear + '-' + value.slice(value.indexOf('-') + 1);
+          return '01.01.0001';
         }
         if (format) {
           format = format
