@@ -187,7 +187,7 @@ export class ExcelService {
     for (let i = 0; i < countCols; i++) {
       const cols = this.worksheet.getColumn(i + 1);
       cols.eachCell((cell) => {
-        cell.alignment = { wrapText: true, ...cell.alignment };
+        //cell.alignment = { wrapText: true, ...cell.alignment };
         cell.border = {
           top: { style: 'thin' },
           left: { style: 'thin' },
