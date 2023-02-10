@@ -6,7 +6,7 @@ import {
   IDescParam,
   IOption,
 } from '../../../interfaces';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { DataServerService } from '../../../services/data-server.service';
 import { toCamelCase } from '../../../utils/str-utils';
 
@@ -26,7 +26,7 @@ export class UiComboComponent extends UiBaseControlComponent implements OnInit {
   controls: IExtOption[] = [];
   isSelect: boolean = false;
   value: string = '';
-  insideGroup!: FormGroup;
+  insideGroup!: UntypedFormGroup;
 
   controlOptions: IOption[] = [];
   rowPoint = 0;

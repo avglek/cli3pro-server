@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup} from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-base-control',
@@ -8,13 +8,13 @@ import { FormControl, FormGroup} from '@angular/forms';
 })
 export class UiBaseControlComponent implements OnInit {
   @Input() name!: string;
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() defaultValue = '';
   @Input() disabled: boolean = false;
 
   ngOnInit(): void {
     const value = this.defaultValue || '';
-    const formControl = new FormControl(value);
+    const formControl = new UntypedFormControl(value);
 
     if (this.formGroup) {
       this.formGroup.addControl(this.name, formControl);

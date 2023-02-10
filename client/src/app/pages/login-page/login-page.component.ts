@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/interfaces';
 import { Subscription } from 'rxjs';
@@ -12,13 +12,13 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./login-page.component.less'],
 })
 export class LoginPageComponent implements OnInit, OnDestroy {
-  validateForm!: FormGroup;
+  validateForm!: UntypedFormGroup;
   authSub!: Subscription;
   passwordVisible!: boolean;
   isLoading: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private auth: AuthService,
     private router: Router,
     private route: ActivatedRoute,

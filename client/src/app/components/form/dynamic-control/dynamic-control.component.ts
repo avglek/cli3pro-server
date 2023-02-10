@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { IControlBase } from '../../../shared/interfaces';
 
 @Component({
@@ -9,7 +9,7 @@ import { IControlBase } from '../../../shared/interfaces';
 })
 export class DynamicControlComponent implements OnInit {
   @Input() control!: IControlBase;
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   ngOnInit() {}
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { IControlBase } from '../interfaces';
 
 @Injectable()
@@ -11,10 +11,10 @@ export class ControlService {
 
     controls.forEach((control) => {
       group[control.key] = control.required
-        ? new FormControl(control.value || '', Validators.required)
-        : new FormControl(control.value || '');
+        ? new UntypedFormControl(control.value || '', Validators.required)
+        : new UntypedFormControl(control.value || '');
     });
 
-    return new FormGroup(group);
+    return new UntypedFormGroup(group);
   }
 }

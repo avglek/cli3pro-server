@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ControlService } from '../../../shared/services/control.service';
 import { IControlBase } from '../../../shared/interfaces';
 
@@ -12,7 +12,7 @@ export class DynamicFormComponent implements OnInit {
   @Input() controls: IControlBase[] | null = [];
   @Output() Submit = new EventEmitter<any>();
 
-  form!: FormGroup;
+  form!: UntypedFormGroup;
 
   constructor(private controlService: ControlService) {}
 
